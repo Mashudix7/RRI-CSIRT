@@ -34,30 +34,7 @@
                 </ul>
             </div>
             
-            <!-- Incident Management -->
-            <div class="mb-6">
-                <p class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Insiden</p>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="<?= base_url('incidents') ?>" 
-                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && $page === 'incidents') ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                            <span>Daftar Insiden</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= base_url('incidents/create') ?>" 
-                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-slate-300 hover:bg-white/5">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                            </svg>
-                            <span>Lapor Insiden</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+
             
             <!-- Content Management -->
             <div class="mb-6">
@@ -88,31 +65,153 @@
             <div class="mb-6">
                 <p class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Infrastruktur</p>
                 <ul class="space-y-1">
-                    <li x-data="{ open: <?= (isset($page) && in_array($page, ['ip_management', 'vpn_management'])) ? 'true' : 'false' ?> }">
+                    <!-- Network -->
+                    <li x-data="{ open: <?= (isset($page) && strpos($page, 'network_') === 0 || in_array($page, ['ip_management', 'vpn_management'])) ? 'true' : 'false' ?> }">
                         <button @click="open = !open" 
-                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && in_array($page, ['ip_management', 'vpn_management'])) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && (strpos($page, 'network_') === 0 || in_array($page, ['ip_management', 'vpn_management']))) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
                                 </svg>
-                                <span>Manajemen IP</span>
+                                <span>Network</span>
                             </div>
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
-                        <!-- Submenu -->
+                        <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
+                            <!-- Manajemen IP Dropdown -->
+                            <li x-data="{ openIP: <?= (in_array($page, ['ip_management', 'ip_private', 'vpn_management'])) ? 'true' : 'false' ?> }">
+                                <button @click="openIP = !openIP" 
+                                        class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors <?= (in_array($page, ['ip_management', 'ip_private', 'vpn_management'])) ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    <span class="flex items-center gap-2">
+                                        Manajemen IP
+                                    </span>
+                                    <svg class="w-3 h-3 transition-transform duration-200" :class="{'rotate-180': openIP}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                <ul x-show="openIP" x-transition class="pl-4 mt-1 space-y-1 border-l border-white/10 ml-3">
+                                    <li>
+                                        <a href="<?= base_url('admin/ip-management') ?>" 
+                                           class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'ip_management') ? 'text-blue-400' : 'text-slate-400 hover:text-slate-200' ?>">
+                                            IP Public
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('admin/ip-private') ?>" 
+                                           class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'ip_private') ? 'text-blue-400' : 'text-slate-400 hover:text-slate-200' ?>">
+                                            IP Private
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('admin/vpn-management') ?>" 
+                                           class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'vpn_management') ? 'text-blue-400' : 'text-slate-400 hover:text-slate-200' ?>">
+                                            IP VPN
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/network-traffic-mrtg') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'network_traffic_mrtg') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Traffic MRTG
+                                </a>
+                            </li>
+                             <li>
+                                <a href="<?= base_url('admin/network-traffic-ap') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'network_traffic_ap') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Traffic Access Point
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Data Center -->
+                    <li x-data="{ open: <?= (isset($page) && strpos($page, 'datacenter_') === 0) ? 'true' : 'false' ?> }">
+                        <button @click="open = !open" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && strpos($page, 'datacenter_') === 0) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                                </svg>
+                                <span>Data Center</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
                         <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
                             <li>
-                                <a href="<?= base_url('admin/ip-management') ?>" 
-                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'ip_management') ? 'text-blue-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5' ?>">
-                                    IP Publik
+                                <a href="<?= base_url('admin/datacenter-resource-server') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'datacenter_resource_server') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Resource Server
                                 </a>
                             </li>
                             <li>
-                                <a href="<?= base_url('admin/vpn-management') ?>" 
-                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'vpn_management') ? 'text-blue-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5' ?>">
-                                    IP VPN
+                                <a href="<?= base_url('admin/datacenter-traffic-vm') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'datacenter_traffic_vm') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Traffic Virtual Machine
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Security -->
+                    <li x-data="{ open: <?= (isset($page) && strpos($page, 'security_') === 0) ? 'true' : 'false' ?> }">
+                        <button @click="open = !open" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && strpos($page, 'security_') === 0) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                                <span>Security</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
+                            <li>
+                                <a href="<?= base_url('admin/security-fortigate') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'security_fortigate') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Fortigate
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/security-safeline') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'security_safeline') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Safe Line
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Satellite -->
+                    <li x-data="{ open: <?= (isset($page) && strpos($page, 'satellite_') === 0) ? 'true' : 'false' ?> }">
+                        <button @click="open = !open" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && strpos($page, 'satellite_') === 0) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                <span>Satelite</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
+                            <li>
+                                <a href="<?= base_url('admin/satellite-starlink') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'satellite_starlink') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Starlink
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/satellite-broadcast-audio') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'satellite_broadcast_audio') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
+                                    Broadcast Audio
                                 </a>
                             </li>
                         </ul>

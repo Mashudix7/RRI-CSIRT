@@ -45,17 +45,15 @@ class Admin extends CI_Controller {
     /**
      * User Management
      */
-    public function users($action = 'index', $id = null)
+    public function users()
     {
         $data['title'] = 'Manajemen Pengguna';
         $data['page'] = 'users';
         $data['user'] = $this->_get_user_data();
         
-        // Dummy users
+        // Dummy users - Filtered out Analyst and Reporter
         $data['users'] = [
             ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'last_login' => '2026-01-20 08:30:00'],
-            ['id' => 2, 'username' => 'analyst1', 'email' => 'analyst1@rri.co.id', 'role' => 'analyst', 'status' => 'active', 'last_login' => '2026-01-19 14:20:00'],
-            ['id' => 3, 'username' => 'reporter1', 'email' => 'reporter1@rri.co.id', 'role' => 'reporter', 'status' => 'active', 'last_login' => '2026-01-18 09:15:00'],
             ['id' => 4, 'username' => 'auditor1', 'email' => 'auditor1@rri.co.id', 'role' => 'auditor', 'status' => 'inactive', 'last_login' => '2026-01-10 11:00:00'],
         ];
         
@@ -83,8 +81,6 @@ class Admin extends CI_Controller {
     public function user_store()
     {
         // Mock storage logic
-        // In real app: $this->User_model->create($this->input->post());
-        
         $this->session->set_flashdata('success', 'Pengguna berhasil ditambahkan!');
         redirect('admin/users');
     }
@@ -100,14 +96,14 @@ class Admin extends CI_Controller {
             'id' => $id, 
             'username' => 'user_mock_' . $id, 
             'email' => 'user' . $id . '@rri.co.id', 
-            'role' => 'user', 
+            'role' => 'admin', 
             'status' => 'active', 
             'full_name' => 'User Mock ' . $id
         ];
         
-        // Override with some specific dummy data if ID matches standard dummies
-        if ($id == 1) $data['user_edit'] = ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'full_name' => 'Administrator'];
-        if ($id == 2) $data['user_edit'] = ['id' => 2, 'username' => 'analyst1', 'email' => 'analyst1@rri.co.id', 'role' => 'analyst', 'status' => 'active', 'full_name' => 'Security Analyst 1'];
+        // Override with specific dummy data
+        if ($id == 1) $data['user'] = ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'full_name' => 'Administrator'];
+        if ($id == 4) $data['user'] = ['id' => 4, 'username' => 'auditor1', 'email' => 'auditor1@rri.co.id', 'role' => 'auditor', 'status' => 'inactive', 'full_name' => 'Auditor User'];
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -117,18 +113,12 @@ class Admin extends CI_Controller {
 
     public function user_update($id)
     {
-        // Mock update logic
-        // In real app: $this->User_model->update($id, $this->input->post());
-        
         $this->session->set_flashdata('success', 'Data pengguna berhasil diperbarui!');
         redirect('admin/users');
     }
 
     public function user_delete($id)
     {
-        // Mock delete logic
-        // In real app: $this->User_model->delete($id);
-        
         $this->session->set_flashdata('success', 'Pengguna berhasil dihapus!');
         redirect('admin/users');
     }
@@ -136,23 +126,52 @@ class Admin extends CI_Controller {
     /**
      * Article Management
      */
+    /**
+     * Article Management
+     */
     public function articles($action = 'index', $id = null)
     {
-        $data['title'] = 'Manajemen Artikel';
-        $data['page'] = 'articles';
         $data['user'] = $this->_get_user_data();
         
-        // Dummy articles
-        $data['articles'] = [
-            ['id' => 1, 'title' => 'Panduan Keamanan Password', 'category' => 'Keamanan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-20'],
-            ['id' => 2, 'title' => 'Cara Mengenali Email Phishing', 'category' => 'Panduan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-18'],
-            ['id' => 3, 'title' => 'Update Sistem Q1 2026', 'category' => 'Pengumuman', 'status' => 'draft', 'author' => 'Admin', 'date' => '2026-01-15'],
-        ];
-        
-        $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/articles', $data);
-        $this->load->view('admin/templates/footer', $data);
+        switch ($action) {
+            case 'create':
+                $data['title'] = 'Tambah Artikel';
+                $data['page'] = 'articles';
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/artikle/create', $data);
+                $this->load->view('admin/templates/footer', $data);
+                break;
+                
+            case 'edit':
+                $data['title'] = 'Edit Artikel';
+                $data['page'] = 'articles';
+                // Mock article data
+                $data['article'] = ['id' => $id, 'title' => 'Panduan Keamanan Password', 'category' => 'Keamanan', 'status' => 'published', 'content' => 'Lorem ipsum...']; // Dummy
+                
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/artikle/edit', $data);
+                $this->load->view('admin/templates/footer', $data);
+                break;
+                
+            case 'index':
+            default:
+                $data['title'] = 'Manajemen Artikel';
+                $data['page'] = 'articles';
+                // Dummy articles
+                $data['articles'] = [
+                    ['id' => 1, 'title' => 'Panduan Keamanan Password', 'category' => 'Keamanan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-20'],
+                    ['id' => 2, 'title' => 'Cara Mengenali Email Phishing', 'category' => 'Panduan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-18'],
+                    ['id' => 3, 'title' => 'Update Sistem Q1 2026', 'category' => 'Pengumuman', 'status' => 'draft', 'author' => 'Admin', 'date' => '2026-01-15'],
+                ];
+                
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/artikle/articles', $data); // Updated path
+                $this->load->view('admin/templates/footer', $data);
+                break;
+        }
     }
 
     /**
@@ -166,10 +185,10 @@ class Admin extends CI_Controller {
         
         // Stats for reports
         $data['stats'] = [
-            'total_incidents' => 156,
-            'resolved' => 142,
-            'pending' => 14,
-            'avg_resolution_time' => '4.2 jam'
+            'total_attacks' => 12450,
+            'blocked_attacks' => 12400,
+            'threats_detected' => 50,
+            'uptime' => '99.9%'
         ];
         
         $this->load->view('admin/templates/header', $data);
@@ -190,10 +209,10 @@ class Admin extends CI_Controller {
         // Dummy audit logs
         $data['logs'] = [
             ['id' => 1, 'user' => 'admin', 'action' => 'LOGIN', 'details' => 'Login berhasil', 'ip' => '192.168.1.100', 'time' => '2026-01-20 08:30:00'],
-            ['id' => 2, 'user' => 'admin', 'action' => 'UPDATE_INCIDENT', 'details' => 'Mengubah status insiden #5', 'ip' => '192.168.1.100', 'time' => '2026-01-20 08:25:00'],
-            ['id' => 3, 'user' => 'analyst1', 'action' => 'CREATE_INCIDENT', 'details' => 'Membuat insiden baru #6', 'ip' => '192.168.1.105', 'time' => '2026-01-19 16:45:00'],
-            ['id' => 4, 'user' => 'admin', 'action' => 'CREATE_USER', 'details' => 'Membuat user baru: reporter2', 'ip' => '192.168.1.100', 'time' => '2026-01-19 10:30:00'],
-            ['id' => 5, 'user' => 'reporter1', 'action' => 'LOGIN', 'details' => 'Login berhasil', 'ip' => '192.168.1.110', 'time' => '2026-01-18 09:15:00'],
+            ['id' => 2, 'user' => 'admin', 'action' => 'UPDATE_FIREWALL', 'details' => 'Memblokir IP 192.168.1.50', 'ip' => '192.168.1.100', 'time' => '2026-01-20 08:25:00'],
+            ['id' => 3, 'user' => 'system', 'action' => 'AUTO_BLOCK', 'details' => 'Memblokir serangan DDoS', 'ip' => 'System', 'time' => '2026-01-19 16:45:00'],
+            ['id' => 4, 'user' => 'admin', 'action' => 'CREATE_USER', 'details' => 'Membuat user baru: auditor_jr', 'ip' => '192.168.1.100', 'time' => '2026-01-19 10:30:00'],
+            ['id' => 5, 'user' => 'admin', 'action' => 'LOGIN', 'details' => 'Login berhasil', 'ip' => '192.168.1.110', 'time' => '2026-01-18 09:15:00'],
         ];
         
         $this->load->view('admin/templates/header', $data);
@@ -222,38 +241,65 @@ class Admin extends CI_Controller {
      */
     public function teams($action = 'index', $id = null)
     {
-        $data['title'] = 'Manajemen Tim';
-        $data['page'] = 'teams';
         $data['user'] = $this->_get_user_data();
         
-        // Dummy team data for Tim Teknologi Media Baru
-        $data['team_media_baru'] = [
-            ['id' => 1, 'name' => 'Ahmad Fauzi', 'position' => 'Kepala Tim Media Baru', 'role' => 'leader', 'order' => 1],
-            ['id' => 2, 'name' => 'Siti Rahayu', 'position' => 'Web Dev Lead', 'role' => 'member', 'order' => 2],
-            ['id' => 3, 'name' => 'Budi Santoso', 'position' => 'Content Lead', 'role' => 'member', 'order' => 3],
-            ['id' => 4, 'name' => 'Dewi Pertiwi', 'position' => 'UI/UX Designer', 'role' => 'member', 'order' => 4],
-            ['id' => 5, 'name' => 'Rudi Hermawan', 'position' => 'Web Developer', 'role' => 'member', 'order' => 5],
-            ['id' => 6, 'name' => 'Rina Wulandari', 'position' => 'Video Producer', 'role' => 'member', 'order' => 6],
-            ['id' => 7, 'name' => 'Agus Prasetyo', 'position' => 'Podcast Manager', 'role' => 'member', 'order' => 7],
-            ['id' => 8, 'name' => 'Maya Kusuma', 'position' => 'Social Media', 'role' => 'member', 'order' => 8],
-        ];
-        
-        // Dummy team data for Tim IT
-        $data['team_it'] = [
-            ['id' => 9, 'name' => 'Hendra Wijaya', 'position' => 'Kepala Tim IT', 'role' => 'leader', 'order' => 1],
-            ['id' => 10, 'name' => 'Eko Nugroho', 'position' => 'Infrastructure Lead', 'role' => 'member', 'order' => 2],
-            ['id' => 11, 'name' => 'Dian Pratama', 'position' => 'Security Lead', 'role' => 'member', 'order' => 3],
-            ['id' => 12, 'name' => 'Fitri Handayani', 'position' => 'Security Analyst', 'role' => 'member', 'order' => 4],
-            ['id' => 13, 'name' => 'Gunawan Setiadi', 'position' => 'DBA', 'role' => 'member', 'order' => 5],
-            ['id' => 14, 'name' => 'Indra Lesmana', 'position' => 'IT Support', 'role' => 'member', 'order' => 6],
-            ['id' => 15, 'name' => 'Joko Widodo', 'position' => 'Cloud Engineer', 'role' => 'member', 'order' => 7],
-            ['id' => 16, 'name' => 'Kartika Sari', 'position' => 'DevOps', 'role' => 'member', 'order' => 8],
-        ];
-        
-        $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/teams', $data);
-        $this->load->view('admin/templates/footer', $data);
+        switch ($action) {
+            case 'create':
+                $data['title'] = 'Tambah Anggota Tim';
+                $data['page'] = 'teams';
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/teams/create', $data);
+                $this->load->view('admin/templates/footer', $data);
+                break;
+                
+            case 'edit':
+                $data['title'] = 'Edit Anggota Tim';
+                $data['page'] = 'teams';
+                // Mock team data
+                $data['member'] = ['id' => $id, 'name' => 'Ahmad Fauzi', 'position' => 'Kepala Tim Media Baru', 'role' => 'leader', 'division' => 'media_baru']; // Dummy
+                
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/teams/edit', $data);
+                $this->load->view('admin/templates/footer', $data);
+                break;
+                
+            case 'index':
+            default:
+                $data['title'] = 'Manajemen Tim';
+                $data['page'] = 'teams';
+                
+                // Dummy team data for Tim Teknologi Media Baru
+                $data['team_media_baru'] = [
+                    ['id' => 1, 'name' => 'Ahmad Fauzi', 'position' => 'Kepala Tim Media Baru', 'role' => 'leader', 'order' => 1],
+                    ['id' => 2, 'name' => 'Siti Rahayu', 'position' => 'Web Dev Lead', 'role' => 'member', 'order' => 2],
+                    ['id' => 3, 'name' => 'Budi Santoso', 'position' => 'Content Lead', 'role' => 'member', 'order' => 3],
+                    ['id' => 4, 'name' => 'Dewi Pertiwi', 'position' => 'UI/UX Designer', 'role' => 'member', 'order' => 4],
+                    ['id' => 5, 'name' => 'Rudi Hermawan', 'position' => 'Web Developer', 'role' => 'member', 'order' => 5],
+                    ['id' => 6, 'name' => 'Rina Wulandari', 'position' => 'Video Producer', 'role' => 'member', 'order' => 6],
+                    ['id' => 7, 'name' => 'Agus Prasetyo', 'position' => 'Podcast Manager', 'role' => 'member', 'order' => 7],
+                    ['id' => 8, 'name' => 'Maya Kusuma', 'position' => 'Social Media', 'role' => 'member', 'order' => 8],
+                ];
+                
+                // Dummy team data for Tim IT
+                $data['team_it'] = [
+                    ['id' => 9, 'name' => 'Hendra Wijaya', 'position' => 'Kepala Tim IT', 'role' => 'leader', 'order' => 1],
+                    ['id' => 10, 'name' => 'Eko Nugroho', 'position' => 'Infrastructure Lead', 'role' => 'member', 'order' => 2],
+                    ['id' => 11, 'name' => 'Dian Pratama', 'position' => 'Security Lead', 'role' => 'member', 'order' => 3],
+                    ['id' => 12, 'name' => 'Fitri Handayani', 'position' => 'Security Analyst', 'role' => 'member', 'order' => 4],
+                    ['id' => 13, 'name' => 'Gunawan Setiadi', 'position' => 'DBA', 'role' => 'member', 'order' => 5],
+                    ['id' => 14, 'name' => 'Indra Lesmana', 'position' => 'IT Support', 'role' => 'member', 'order' => 6],
+                    ['id' => 15, 'name' => 'Joko Widodo', 'position' => 'Cloud Engineer', 'role' => 'member', 'order' => 7],
+                    ['id' => 16, 'name' => 'Kartika Sari', 'position' => 'DevOps', 'role' => 'member', 'order' => 8],
+                ];
+                
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/templates/sidebar', $data);
+                $this->load->view('admin/teams/teams', $data); // Updated path
+                $this->load->view('admin/templates/footer', $data);
+                break;
+        }
     }
 
     /**
@@ -431,6 +477,18 @@ class Admin extends CI_Controller {
         }
 
         $this->load->view('admin/templates/footer');
+    }
+
+    public function ip_private()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Manajemen IP Private';
+        $data['page'] = 'ip_private';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/ip/ip_private', $data);
+        $this->load->view('admin/templates/footer', $data);
     }
 
 
@@ -740,6 +798,122 @@ class Admin extends CI_Controller {
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
         $this->load->view('admin/ip/vpn_management/index', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    // =====================================================
+    // Infrastructure - Network
+    // =====================================================
+
+    public function network_traffic_mrtg()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Traffic MRTG';
+        $data['page'] = 'network_traffic_mrtg';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        // Note: Filesystem shows network files in 'security' folder
+        $this->load->view('admin/infrastructure/security/network_traffic_mrtg', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function network_traffic_ap()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Traffic Access Point';
+        $data['page'] = 'network_traffic_ap';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        // Note: Filesystem shows network files in 'security' folder
+        $this->load->view('admin/infrastructure/security/network_traffic_ap', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    // =====================================================
+    // Infrastructure - Data Center
+    // =====================================================
+
+    public function datacenter_resource_server()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Resource Server (JKT, MBC)';
+        $data['page'] = 'datacenter_resource_server';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/infrastructure/data_center/datacenter_resource_server', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function datacenter_traffic_vm()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Traffic Virtual Machine';
+        $data['page'] = 'datacenter_traffic_vm';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/infrastructure/data_center/datacenter_traffic_vm', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    // =====================================================
+    // Infrastructure - Security
+    // =====================================================
+
+    public function security_fortigate()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Fortigate';
+        $data['page'] = 'security_fortigate';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        // Note: Filesystem shows security files in 'network' folder
+        $this->load->view('admin/infrastructure/network/security_fortigate', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function security_safeline()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Safe Line';
+        $data['page'] = 'security_safeline';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        // Note: Filesystem shows security files in 'network' folder
+        $this->load->view('admin/infrastructure/network/security_safeline', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    // =====================================================
+    // Infrastructure - Satellite
+    // =====================================================
+
+    public function satellite_starlink()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Starlink';
+        $data['page'] = 'satellite_starlink';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/infrastructure/satelite/satellite_starlink', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function satellite_broadcast_audio()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Broadcast Audio';
+        $data['page'] = 'satellite_broadcast_audio';
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/infrastructure/satelite/satellite_broadcast_audio', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 

@@ -61,56 +61,60 @@ class Dashboard extends CI_Controller {
             'role_name' => $this->session->userdata('role_name')
         ];
         
-        // Statistik dummy - akan diganti dengan query database
+        // Attack Data Stats
         $data['stats'] = [
-            'total_incidents' => 127,
-            'active_incidents' => 8,
-            'resolved_today' => 3,
-            'avg_response_time' => '45 menit'
+            'total_attacks' => 1245,
+            'blocked_attacks' => 1240,
+            'active_threats' => 5,
+            'protection_level' => '99.6%'
         ];
         
-        // Insiden terbaru - dummy data
-        $data['recent_incidents'] = [
+        // Attack Types Distribution
+        $data['attack_stats'] = [
+            'ddos' => 450,
+            'malware' => 230,
+            'phishing' => 320,
+            'intrusion' => 245
+        ];
+
+        // Recent Threats
+        $data['recent_threats'] = [
             [
                 'id' => 1,
-                'title' => 'Percobaan akses tidak sah ke server mail',
-                'severity' => 'high',
-                'status' => 'in_progress',
-                'reporter' => 'John Doe',
-                'created_at' => '2026-01-20 07:30:00'
+                'type' => 'DDoS Attack',
+                'source' => '192.168.1.105',
+                'target' => 'Web Server',
+                'status' => 'blocked',
+                'timestamp' => '2026-01-21 14:30:00',
+                'severity' => 'critical'
             ],
             [
                 'id' => 2,
-                'title' => 'Malware terdeteksi pada workstation IT',
-                'severity' => 'critical',
-                'status' => 'validated',
-                'reporter' => 'Jane Smith',
-                'created_at' => '2026-01-20 06:15:00'
+                'type' => 'SQL Injection',
+                'source' => '10.0.0.50',
+                'target' => 'Database',
+                'status' => 'blocked',
+                'timestamp' => '2026-01-21 13:15:00',
+                'severity' => 'high'
             ],
             [
                 'id' => 3,
-                'title' => 'Phishing email ditemukan di inbox publik',
-                'severity' => 'medium',
-                'status' => 'reported',
-                'reporter' => 'Bob Wilson',
-                'created_at' => '2026-01-19 16:45:00'
+                'type' => 'Malware Download',
+                'source' => 'Internal PC',
+                'target' => 'Gateway',
+                'status' => 'quarantined',
+                'timestamp' => '2026-01-21 11:45:00',
+                'severity' => 'medium'
             ],
             [
                 'id' => 4,
-                'title' => 'Update keamanan tertunda pada server web',
-                'severity' => 'low',
-                'status' => 'closed',
-                'reporter' => 'Admin',
-                'created_at' => '2026-01-19 14:20:00'
+                'type' => 'Port Scanning',
+                'source' => 'Unknown',
+                'target' => 'Firewall',
+                'status' => 'detected',
+                'timestamp' => '2026-01-21 09:20:00',
+                'severity' => 'low'
             ]
-        ];
-        
-        // Statistik per severity
-        $data['severity_stats'] = [
-            'critical' => 2,
-            'high' => 5,
-            'medium' => 12,
-            'low' => 8
         ];
         
         // Load views

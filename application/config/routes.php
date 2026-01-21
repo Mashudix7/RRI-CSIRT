@@ -90,12 +90,6 @@ $route['auth/logout'] = 'auth/logout';
 // Dashboard Routes (Protected)
 // =====================================================
 $route['dashboard'] = 'dashboard/index';
-$route['incidents'] = 'incidents/index';
-$route['incidents/(:num)'] = 'incidents/detail/$1';
-$route['incidents/create'] = 'incidents/create';
-$route['incidents/store'] = 'incidents/store';
-$route['incidents/(:num)/notes'] = 'incidents/notes/$1';
-$route['admin/incidents'] = 'incidents/index'; // Alias for admin consistency
 
 // =====================================================
 // Admin Routes (Protected - Admin Only)
@@ -108,8 +102,28 @@ $route['admin/teams'] = 'admin/teams';
 $route['admin/teams/(:any)'] = 'admin/teams/$1';
 $route['admin/ip-management'] = 'admin/ip_management';
 $route['admin/ip-management/(:any)'] = 'admin/ip_management/$1';
+$route['admin/ip-private'] = 'admin/ip_private';
 $route['admin/vpn-management'] = 'admin/vpn_management';
 $route['admin/reports'] = 'admin/reports';
 $route['admin/audit'] = 'admin/audit';
 $route['admin/settings'] = 'admin/settings';
+
+// =====================================================
+// Infrastructure Routes
+// =====================================================
+// Network
+$route['admin/network-traffic-mrtg'] = 'admin/network_traffic_mrtg';
+$route['admin/network-traffic-ap'] = 'admin/network_traffic_ap';
+
+// Data Center
+$route['admin/datacenter-resource-server'] = 'admin/datacenter_resource_server';
+$route['admin/datacenter-traffic-vm'] = 'admin/datacenter_traffic_vm';
+
+// Security
+$route['admin/security-fortigate'] = 'admin/security_fortigate';
+$route['admin/security-safeline'] = 'admin/security_safeline';
+
+// Satellite
+$route['admin/satellite-starlink'] = 'admin/satellite_starlink';
+$route['admin/satellite-broadcast-audio'] = 'admin/satellite_broadcast_audio';
 
