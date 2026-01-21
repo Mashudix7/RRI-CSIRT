@@ -88,14 +88,34 @@
             <div class="mb-6">
                 <p class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Infrastruktur</p>
                 <ul class="space-y-1">
-                    <li>
-                        <a href="<?= base_url('admin/ip-management') ?>" 
-                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && $page === 'ip_management') ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                    <li x-data="{ open: <?= (isset($page) && in_array($page, ['ip_management', 'vpn_management'])) ? 'true' : 'false' ?> }">
+                        <button @click="open = !open" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && in_array($page, ['ip_management', 'vpn_management'])) ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Manajemen IP</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
-                            <span>Manajemen IP</span>
-                        </a>
+                        </button>
+                        <!-- Submenu -->
+                        <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
+                            <li>
+                                <a href="<?= base_url('admin/ip-management') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'ip_management') ? 'text-blue-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5' ?>">
+                                    IP Publik
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/vpn-management') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'vpn_management') ? 'text-blue-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5' ?>">
+                                    IP VPN
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>

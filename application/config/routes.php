@@ -93,6 +93,9 @@ $route['dashboard'] = 'dashboard/index';
 $route['incidents'] = 'incidents/index';
 $route['incidents/(:num)'] = 'incidents/detail/$1';
 $route['incidents/create'] = 'incidents/create';
+$route['incidents/store'] = 'incidents/store';
+$route['incidents/(:num)/notes'] = 'incidents/notes/$1';
+$route['admin/incidents'] = 'incidents/index'; // Alias for admin consistency
 
 // =====================================================
 // Admin Routes (Protected - Admin Only)

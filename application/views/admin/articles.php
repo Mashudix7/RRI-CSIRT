@@ -59,7 +59,7 @@
                             <div class="text-sm text-gray-500 dark:text-gray-400">oleh <?= htmlspecialchars($article['author']) ?></div>
                         </div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-     4">
                         <span class="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300">
                             <?= htmlspecialchars($article['category']) ?>
                         </span>

@@ -66,6 +66,74 @@ class Admin extends CI_Controller {
     }
 
     /**
+     * User Management CRUD
+     */
+    public function user_create()
+    {
+        $data['title'] = 'Tambah Pengguna';
+        $data['page'] = 'users'; // Keep 'users' active in sidebar
+        $data['user'] = $this->_get_user_data();
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/users/create', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function user_store()
+    {
+        // Mock storage logic
+        // In real app: $this->User_model->create($this->input->post());
+        
+        $this->session->set_flashdata('success', 'Pengguna berhasil ditambahkan!');
+        redirect('admin/users');
+    }
+
+    public function user_edit($id)
+    {
+        $data['title'] = 'Edit Pengguna';
+        $data['page'] = 'users';
+        $data['user'] = $this->_get_user_data();
+        
+        // Mock fetching user data based on ID
+        $data['user_edit'] = [
+            'id' => $id, 
+            'username' => 'user_mock_' . $id, 
+            'email' => 'user' . $id . '@rri.co.id', 
+            'role' => 'user', 
+            'status' => 'active', 
+            'full_name' => 'User Mock ' . $id
+        ];
+        
+        // Override with some specific dummy data if ID matches standard dummies
+        if ($id == 1) $data['user_edit'] = ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'full_name' => 'Administrator'];
+        if ($id == 2) $data['user_edit'] = ['id' => 2, 'username' => 'analyst1', 'email' => 'analyst1@rri.co.id', 'role' => 'analyst', 'status' => 'active', 'full_name' => 'Security Analyst 1'];
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/users/edit', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function user_update($id)
+    {
+        // Mock update logic
+        // In real app: $this->User_model->update($id, $this->input->post());
+        
+        $this->session->set_flashdata('success', 'Data pengguna berhasil diperbarui!');
+        redirect('admin/users');
+    }
+
+    public function user_delete($id)
+    {
+        // Mock delete logic
+        // In real app: $this->User_model->delete($id);
+        
+        $this->session->set_flashdata('success', 'Pengguna berhasil dihapus!');
+        redirect('admin/users');
+    }
+
+    /**
      * Article Management
      */
     public function articles($action = 'index', $id = null)
@@ -191,36 +259,470 @@ class Admin extends CI_Controller {
     /**
      * IP Address Management
      */
-    public function ip_management($action = 'index', $id = null)
+    /**
+     * IP Address Management
+     */
+
+    // =====================================================
+    // INCIDENT RESPONSE SYSTEM
+    // =====================================================
+
+    public function incident_triage($id)
     {
-        $data['title'] = 'Manajemen IP Address';
-        $data['page'] = 'ip_management';
-        $data['user'] = $this->_get_user_data();
+        $data = $this->_get_user_data();
+        $data['title'] = 'Incident Triage';
+        $data['incident'] = $this->_get_mock_incident($id); // Mock data for now
         
-        // Dummy IP data - Local
-        $data['ip_local'] = [
-            ['id' => 1, 'name' => 'Server Web Utama', 'ip_address' => '192.168.1.10', 'description' => 'Web server utama untuk hosting aplikasi', 'status' => 'active'],
-            ['id' => 2, 'name' => 'Database Server', 'ip_address' => '192.168.1.20', 'description' => 'MySQL database server', 'status' => 'active'],
-            ['id' => 3, 'name' => 'Backup Server', 'ip_address' => '192.168.1.30', 'description' => 'Server untuk backup data', 'status' => 'active'],
-        ];
-        
-        // Dummy IP data - Private
-        $data['ip_private'] = [
-            ['id' => 4, 'name' => 'Streaming Server', 'ip_address' => '10.0.1.100', 'description' => 'Server streaming internal', 'status' => 'active'],
-            ['id' => 5, 'name' => 'File Server', 'ip_address' => '10.0.1.101', 'description' => 'NAS untuk penyimpanan file', 'status' => 'active'],
-            ['id' => 6, 'name' => 'Monitoring Server', 'ip_address' => '10.0.1.102', 'description' => 'Zabbix monitoring', 'status' => 'inactive'],
-        ];
-        
-        // Dummy IP data - VPN
-        $data['ip_vpn'] = [
-            ['id' => 7, 'name' => 'VPN Gateway Jakarta', 'ip_address' => '203.189.XX.XX', 'description' => 'Gateway VPN kantor pusat', 'status' => 'active'],
-            ['id' => 8, 'name' => 'VPN Gateway Bandung', 'ip_address' => '103.123.XX.XX', 'description' => 'Gateway VPN cabang Bandung', 'status' => 'active'],
-            ['id' => 9, 'name' => 'VPN Gateway Surabaya', 'ip_address' => '182.253.XX.XX', 'description' => 'Gateway VPN cabang Surabaya', 'status' => 'inactive'],
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+        // $this->load->view('admin/templates/topbar'); // Removed invalid view
+        $this->load->view('admin/incidents/triage', $data);
+        $this->load->view('admin/templates/footer');
+    }
+
+    public function incident_assignment($id)
+    {
+        $data = $this->_get_user_data();
+        $data['title'] = 'Incident Assignment';
+        $data['incident'] = $this->_get_mock_incident($id);
+        $data['teams'] = [
+            'network' => 'Tim Jaringan',
+            'server' => 'Tim Server',
+            'security' => 'Tim Keamanan',
+            'dev' => 'Tim Developer'
         ];
         
         $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+        // $this->load->view('admin/templates/topbar'); // Removed invalid view
+        $this->load->view('admin/incidents/assignment', $data);
+        $this->load->view('admin/templates/footer');
+    }
+
+    public function incident_investigation($id)
+    {
+        $data = $this->_get_user_data();
+        $data['title'] = 'Incident Investigation';
+        $data['incident'] = $this->_get_mock_incident($id);
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+        // $this->load->view('admin/templates/topbar'); // Removed invalid view
+        $this->load->view('admin/incidents/investigation', $data);
+        $this->load->view('admin/templates/footer');
+    }
+
+    public function incident_mitigation($id)
+    {
+        $data = $this->_get_user_data();
+        $data['title'] = 'Incident Mitigation';
+        $data['incident'] = $this->_get_mock_incident($id);
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+        // $this->load->view('admin/templates/topbar'); // Removed invalid view
+        $this->load->view('admin/incidents/mitigation', $data);
+        $this->load->view('admin/templates/footer');
+    }
+
+    public function incident_recovery($id)
+    {
+        $data = $this->_get_user_data();
+        $data['title'] = 'Incident Recovery';
+        $data['incident'] = $this->_get_mock_incident($id);
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+        // $this->load->view('admin/templates/topbar'); // Removed invalid view
+        $this->load->view('admin/incidents/recovery', $data);
+        $this->load->view('admin/templates/footer');
+    }
+
+    private function _get_mock_incident($id)
+    {
+        return [
+            'id' => $id,
+            'title' => 'Suspicious Activity Detected',
+            'description' => 'Unusual traffic pattern observed on port 8080.',
+            'status' => 'Open',
+            'source' => 'System Monitoring',
+            'reported_at' => date('Y-m-d H:i:s'),
+            'reporter' => 'SysAdmin',
+            'severity' => 'High',
+            'category' => 'Intrusion',
+            'affected_systems' => 'Web Server 01',
+            'pic' => 'Budi Santoso',
+            'sla_deadline' => date('Y-m-d H:i:s', strtotime('+4 hours'))
+        ];
+    }
+
+
+
+    /**
+     * IP Address Management
+     */
+
+
+    // =====================================================
+    // IP Management (Public IP - Hardcoded View)
+    // =====================================================
+    public function ip_management($region = null)
+    {
+        $data['user'] = $this->_get_user_data();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar');
+
+        $all_ip_data = $this->_generate_public_ips();
+
+        // If no region selected, show dashboard with summary data
+        if (!$region) {
+            $data['title'] = 'Manajemen IP Address';
+            
+            // Calculate summaries for the dashboard
+            $summary = [];
+            $total_ips = 0;
+            $used_ips = 0;
+
+            foreach ($all_ip_data as $key => $region_data) {
+                $region_total = count($region_data['ips']);
+                $region_used = 0;
+                foreach ($region_data['ips'] as $ip) {
+                    if (!empty($ip['description']) || (isset($ip['type']) && $ip['type'] === 'gateway')) {
+                        $region_used++;
+                    }
+                }
+
+                $summary[$key] = [
+                    'name' => $region_data['name'],
+                    'cidr' => $region_data['cidr'],
+                    'total' => $region_total,
+                    'used' => $region_used,
+                    'free' => $region_total - $region_used,
+                    'usage_percent' => ($region_total > 0) ? round(($region_used / $region_total) * 100) : 0
+                ];
+
+                $total_ips += $region_total;
+                $used_ips += $region_used;
+            }
+
+            $data['regions'] = $summary;
+            $data['global_stats'] = [
+                'total_ips' => $total_ips,
+                'used_ips' => $used_ips,
+                'free_ips' => $total_ips - $used_ips,
+                'usage_percent' => ($total_ips > 0) ? round(($used_ips / $total_ips) * 100) : 0,
+                'total_networks' => count($summary)
+            ];
+
+            $this->load->view('admin/ip_management/index', $data);
+        } else {
+            // Show specific region list
+            if (isset($all_ip_data[$region])) {
+                $data['title'] = $all_ip_data[$region]['name'];
+                $data['location_name'] = $all_ip_data[$region]['name'];
+                $data['network_cidr'] = $all_ip_data[$region]['cidr'];
+                $data['ip_list'] = $all_ip_data[$region]['ips'];
+                $this->load->view('admin/ip_management/list', $data);
+            } else {
+                show_404();
+            }
+        }
+
+        $this->load->view('admin/templates/footer');
+    }
+
+
+    // =====================================================
+    // Network Config Helpers (JSON Persistence)
+    // =====================================================
+    private function _get_networks()
+    {
+        $file = APPPATH . 'config/ip_networks.json';
+        if (file_exists($file)) {
+            $json = file_get_contents($file);
+            return json_decode($json, true) ?? [];
+        }
+        return [];
+    }
+
+    private function _save_networks($data)
+    {
+        $file = APPPATH . 'config/ip_networks.json';
+        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
+    }
+
+    // =====================================================
+    // Network CRUD Actions
+    // =====================================================
+    public function networks()
+    {
+        $data['title'] = 'Kelola Network Wilayah';
+        $data['page'] = 'ip_management';
+        $data['user'] = $this->_get_user_data();
+        $data['networks'] = $this->_get_networks();
+
+        $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/ip_management', $data);
+        $this->load->view('admin/ip_management/networks/index', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function network_create()
+    {
+        $data['title'] = 'Tambah Network';
+        $data['page'] = 'ip_management';
+        $data['user'] = $this->_get_user_data();
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/ip_management/networks/form', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function network_store()
+    {
+        $networks = $this->_get_networks();
+        $id = $this->input->post('id'); // slug
+        
+        if(isset($networks[$id])) {
+            $this->session->set_flashdata('error', 'ID Network sudah ada!');
+            redirect('admin/ip_management/network_create');
+        }
+
+        $networks[$id] = [
+            'id' => $id,
+            'name' => $this->input->post('name'),
+            'cidr' => $this->input->post('cidr'),
+            'range_start' => $this->input->post('range_start'),
+            'range_end' => $this->input->post('range_end'),
+            'subnet_mask' => $this->input->post('subnet_mask'),
+            'description' => $this->input->post('description'),
+            'is_reserve' => $this->input->post('is_reserve') ? true : false
+        ];
+
+        $this->_save_networks($networks);
+        $this->session->set_flashdata('success', 'Network berhasil ditambahkan!');
+        redirect('admin/ip_management/networks');
+    }
+
+    public function network_edit($id)
+    {
+        $networks = $this->_get_networks();
+        if(!isset($networks[$id])) show_404();
+
+        $data['title'] = 'Edit Network';
+        $data['page'] = 'ip_management';
+        $data['user'] = $this->_get_user_data();
+        $data['network'] = $networks[$id];
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/ip_management/networks/form', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function network_update($id)
+    {
+        $networks = $this->_get_networks();
+        if(!isset($networks[$id])) show_404();
+
+        // Update fields (ID logic preserved as key)
+        $networks[$id]['name'] = $this->input->post('name');
+        $networks[$id]['cidr'] = $this->input->post('cidr');
+        $networks[$id]['range_start'] = $this->input->post('range_start');
+        $networks[$id]['range_end'] = $this->input->post('range_end');
+        $networks[$id]['subnet_mask'] = $this->input->post('subnet_mask');
+        $networks[$id]['description'] = $this->input->post('description');
+        $networks[$id]['is_reserve'] = $this->input->post('is_reserve') ? true : false;
+
+        $this->_save_networks($networks);
+        $this->session->set_flashdata('success', 'Data Network berhasil diperbarui!');
+        redirect('admin/ip_management/networks');
+    }
+
+    public function network_delete($id)
+    {
+        $networks = $this->_get_networks();
+        if(isset($networks[$id])) {
+            unset($networks[$id]);
+            $this->_save_networks($networks);
+            $this->session->set_flashdata('success', 'Network berhasil dihapus!');
+        }
+        redirect('admin/ip_management/networks');
+    }
+
+
+    private function _generate_public_ips()
+    {
+        $networks = $this->_get_networks();
+        $regions = [];
+
+        foreach ($networks as $key => $net) {
+            $ips = [];
+            
+            // Extract start/end range from IPs (assuming IPv4)
+            // Ideally we'd calculate from CIDR, but for simplicity we rely on the input range strings last segment
+            // e.g. "218.33.123.0" -> last octet 0
+            
+            $start_parts = explode('.', $net['range_start']);
+            $end_parts = explode('.', $net['range_end']);
+            
+            $prefix = $start_parts[0] . '.' . $start_parts[1] . '.' . $start_parts[2];
+            $start_idx = (int)end($start_parts);
+            $end_idx = (int)end($end_parts);
+
+            // Safety cap
+            if ($end_idx < $start_idx) $end_idx = $start_idx;
+            if ($end_idx - $start_idx > 255) $end_idx = $start_idx + 255;
+
+            $counter = 1;
+            for ($i = $start_idx; $i <= $end_idx; $i++) {
+                $ip_addr = "$prefix.$i";
+                $desc = "";
+                $type = "normal";
+
+                // INJECT HARDCODED DATA based on Network ID and Index
+                if ($key === 'jakarta') {
+                    if ($i == 1) { $desc = "Gateway"; $type = "gateway"; }
+                    elseif ($i == 2) $desc = "Internet DNS Server Lokal";
+                    elseif ($i == 3) $desc = "Internet Aplikasi NextCloud";
+                    elseif ($i == 4) $desc = "Aplikasi AudioLibrary";
+                    elseif ($i == 5) $desc = "Internet PPID RRI";
+                    elseif ($i == 6) $desc = "Aplikasi Simpatik (PT. Novarya)";
+                    elseif ($i == 7) $desc = "Aplikasi Drive Cloud";
+                    elseif ($i == 8) $desc = "WAF-Jakarta";
+                    elseif ($i == 9) $desc = "Pro 1 Streaming";
+                    elseif ($i == 10) $desc = "Pro 2 Streaming";
+                    elseif ($i == 11) $desc = "Pro 4 Streaming";
+                    elseif ($i == 12) $desc = "Streaming Sentral";
+                    elseif ($i == 13) $desc = "Aplikasi Logger NEW";
+                    elseif ($i == 14) $desc = "GL Audio Streaming";
+                    elseif ($i == 15) $desc = "SIP Server Lama";
+                    elseif ($i == 16) $desc = "Zabbix All NMS";
+                    elseif ($i == 17) $desc = "Aplikasi Meeting TMB";
+                    elseif ($i == 18) $desc = "Aplikasi Video GL";
+                    elseif ($i == 19) $desc = "Omada Controller";
+                    elseif ($i == 20) $desc = "Aplikasi Sisporja NEW";
+                    elseif ($i == 21) $desc = "Unify Controller Pusat";
+                    elseif ($i == 22) $desc = "DC JKT Cloud Proxmox VE";
+                    elseif ($i == 23) $desc = "Aplikasi DAP & MEDIA";
+                    elseif ($i == 24) $desc = "Intranet JKT";
+                    elseif ($i == 25) $desc = "Aplikasi Supporting Server";
+                    elseif ($i == 26) $desc = "IP PUBLIK NEW PRO 1";
+                    elseif ($i == 27) $desc = "IP PUBLIK NEW PRO 2";
+                    elseif ($i == 28) $desc = "IP PUBLIK NEW PRO 4";
+                    elseif ($i == 29) $desc = "Global Media Academy";
+                    elseif ($i == 30) $desc = "Aplikasi Presensi Mobile API Node JS";
+                    elseif ($i == 31) $desc = "Aplikasi PNBP NEW";
+                    elseif ($i == 32) $desc = "Aplikasi PNet Lab";
+                    elseif ($i == 33) $desc = "IoT Siaga";
+                    elseif ($i == 34) $desc = "IP Extend Portal Berita RRI";
+                    elseif ($i == 35) $desc = "IP Private-Streaming Video";
+                    elseif ($i == 36) $desc = "Aplikasi Mail Corporate (rri.co.id)";
+                    elseif ($i == 37) $desc = "Aplikasi Mail Gateway Corporate (rri.co.id)";
+                    elseif ($i == 38) $desc = "Aplikasi E-Learning MBC";
+                    elseif ($i == 39) $desc = "Aplikasi WAZUH SOC";
+                    elseif ($i == 40) $desc = "DevOps";
+                    elseif ($i == 41) $desc = "RRI Digital 1";
+                    elseif ($i == 42) $desc = "RRI Digital 2";
+                    elseif ($i == 43) $desc = "RRI Digital 3";
+                    elseif ($i == 44) $desc = "S3 RRI Digital";
+                    elseif ($i == 45) $desc = "NextCloud Collabora";
+                    elseif ($i == 46) $desc = "Docker Swarm";
+                    elseif ($i == 47) $desc = "My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 48) $desc = "LB My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 49) $desc = "MinIO My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 50) $desc = "JDIH Nginx";
+                    elseif ($i == 51) $desc = "Codec Backup";
+                    elseif ($i == 52) $desc = "H3C";
+                    elseif ($i == 53) $desc = "Aplikasi DIAS";
+                    elseif ($i == 54) $desc = "IP Router Firewall DC Jakarta";
+                    elseif ($i == 56) $desc = "TrueNas";
+                    elseif ($i == 57) $desc = "internet Gedung Sebelah (sebelumnya digunakan LPU)";
+                    elseif ($i == 58) $desc = "CMS Portal";
+                    elseif ($i == 59) $desc = "Front Portal";
+                    elseif ($i == 60) $desc = "Server API Portal";
+                }
+                elseif ($key === 'serpong') {
+                    if ($i == 65) { $desc = "Gateway"; $type = "gateway"; }
+                    elseif ($i == 66) $desc = "IP Router 1";
+                    elseif ($i == 67) $desc = "IP Router 2";
+                    elseif ($i == 68) $desc = "IP Server";
+                    elseif ($i == 69) $desc = "IP API Portal";
+                    elseif ($i == 70) $desc = "IP CMS Portal";
+                    elseif ($i == 71) $desc = "IP Frontend Portal";
+                    elseif ($i == 72) $desc = "IP Pro 1 Streaming";
+                    elseif ($i == 73) $desc = "IP Pro 2 Streaming";
+                    elseif ($i == 74) $desc = "IP Pro 4 Streaming";
+                    elseif ($i == 75) $desc = "IP WAF DC PDN Serpong";
+                    elseif ($i == 76) $desc = "IP S3 Portal";
+                }
+                elseif ($key === 'pusat') {
+                    if ($i == 129) { $desc = "Gateway"; $type = "gateway"; }
+                    elseif ($i == 130) $desc = "IP Firewall Kantor Pusat";
+                    elseif ($i == 131) $desc = "IP Router Kantor Pusat";
+                }
+                elseif ($key === 'depok') {
+                    if ($i == 193) { $desc = "Gateway"; $type = "gateway"; }
+                    elseif ($i == 194) $desc = "Internet Semua Perangkat DC MBC";
+                    elseif ($i == 195) $desc = "Aplikasi Manajemen IP";
+                    elseif ($i == 196) $desc = "Aplikasi Pusdatin NEW";
+                    elseif ($i == 197) $desc = "Aplikasi JDIH NEW";
+                    elseif ($i == 198) $desc = "IP Internet Server Aplikasi E-Learning MBC";
+                    elseif ($i == 199) $desc = "IP Internet Server Docker MBC";
+                    elseif ($i == 200) $desc = "T-Track Pemancar";
+                    elseif ($i == 201) $desc = "IP Publik Email Corporate RRI (rri.go.id)";
+                    elseif ($i == 202) $desc = "Aplikasi DRM Proxy";
+                    elseif ($i == 203) $desc = "Aplikasi WAF MBC";
+                    elseif ($i == 204) $desc = "Aplikasi Jenkins Git Docker";
+                    elseif ($i == 205) $desc = "IP Router Core Operasional";
+                    elseif ($i == 206) $desc = "IP Publik-Streaming Video";
+                    elseif ($i == 207) $desc = "IP Aplikasi Logger NEW";
+                    elseif ($i == 208) $desc = "IP Aplikasi Simpatik (PT. Novarya)";
+                    elseif ($i == 209) $desc = "IP My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 210) $desc = "IP LB My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 211) $desc = "IP MinIO My-Presensi Terbaru (PT. TKM)";
+                    elseif ($i == 212) $desc = "IP Aplikasi Presensi Mobile API Node JS";
+                }
+                elseif (isset($net['is_reserve']) && $net['is_reserve']) {
+                    // For reserves, no description yet other than the network description but here we are listing IPs
+                    $desc = $net['description']; // Fallback
+                }
+                
+                $is_reserve = isset($net['is_reserve']) && $net['is_reserve'];
+                
+                $ips[] = [
+                    'no' => $counter++,
+                    'ip_address' => $ip_addr,
+                    'description' => $desc,
+                    'type' => $type,
+                    'is_reserve' => $is_reserve
+                ];
+            }
+
+            $regions[$key] = [
+                'name' => $net['name'],
+                'cidr' => $net['cidr'],
+                'ips' => $ips
+            ];
+        }
+
+        return $regions;
+    }
+
+
+    // =====================================================
+    // VPN Management 
+    // =====================================================
+    public function vpn_management()
+    {
+        $data['title'] = 'Manajemen IP VPN';
+        $data['page'] = 'vpn_management';
+        $data['user'] = $this->_get_user_data();
+
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/vpn_management/index', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 

@@ -95,6 +95,30 @@ class Incidents extends CI_Controller {
     }
 
     /**
+     * Simpan Insiden Baru
+     */
+    public function store()
+    {
+        // Validasi CSRF otomatis via Security class
+        
+        // Ambil data dari form
+        $title = $this->input->post('title');
+        $category = $this->input->post('category');
+        $severity = $this->input->post('severity');
+        $description = $this->input->post('description');
+        $source = $this->input->post('source');
+        
+        // TODO: Simpan ke database
+        // Untuk saat ini hanya dummy logic
+        
+        // Simpan flashdata untuk notifikasi sukses
+        // $this->session->set_flashdata('message', 'Insiden berhasil dilaporkan.');
+        
+        // Redirect ke daftar insiden
+        redirect('incidents');
+    }
+
+    /**
      * Detail Insiden
      */
     public function detail($id)
@@ -130,6 +154,29 @@ class Incidents extends CI_Controller {
         $this->load->view('admin/templates/sidebar', $data);
         $this->load->view('admin/incidents/detail', $data);
         $this->load->view('admin/templates/footer', $data);
+    }
+
+    /**
+     * Catatan Insiden
+     */
+    public function notes($id)
+    {
+        // Handle POST request untuk tambah catatan
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            $note = $this->input->post('note');
+            // TODO: Simpan catatan ke database
+            
+            redirect('incidents/' . $id);
+            return;
+        }
+
+        // Tampilkan daftar catatan (jika diakses via GET, meski biasanya via AJAX atau embedded di detail)
+        $data['title'] = 'Catatan Insiden #' . $id;
+        $data['user'] = $this->_get_user_data();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        // Load view khusus notes jika ada, atau redirect ke detail
+        redirect('incidents/' . $id);
     }
 
     /**
