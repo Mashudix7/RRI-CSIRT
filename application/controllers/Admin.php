@@ -369,8 +369,10 @@ class Admin extends CI_Controller {
     public function ip_management($region = null)
     {
         $data['user'] = $this->_get_user_data();
+        $data['page'] = 'ip_management'; // Set active page for sidebar
+        
         $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar');
+        $this->load->view('admin/templates/sidebar', $data); // Pass data to sidebar
 
         $all_ip_data = $this->_generate_public_ips();
 
@@ -414,7 +416,7 @@ class Admin extends CI_Controller {
                 'total_networks' => count($summary)
             ];
 
-            $this->load->view('admin/ip_management/index', $data);
+            $this->load->view('admin/ip/ip_management/index', $data);
         } else {
             // Show specific region list
             if (isset($all_ip_data[$region])) {
@@ -422,7 +424,7 @@ class Admin extends CI_Controller {
                 $data['location_name'] = $all_ip_data[$region]['name'];
                 $data['network_cidr'] = $all_ip_data[$region]['cidr'];
                 $data['ip_list'] = $all_ip_data[$region]['ips'];
-                $this->load->view('admin/ip_management/list', $data);
+                $this->load->view('admin/ip/ip_management/list', $data);
             } else {
                 show_404();
             }
@@ -463,7 +465,7 @@ class Admin extends CI_Controller {
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/ip_management/networks/index', $data);
+        $this->load->view('admin/ip/ip_management/networks/index', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 
@@ -475,7 +477,7 @@ class Admin extends CI_Controller {
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/ip_management/networks/form', $data);
+        $this->load->view('admin/ip/ip_management/networks/form', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 
@@ -517,7 +519,7 @@ class Admin extends CI_Controller {
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/ip_management/networks/form', $data);
+        $this->load->view('admin/ip/ip_management/networks/form', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 
@@ -720,10 +722,109 @@ class Admin extends CI_Controller {
         $data['page'] = 'vpn_management';
         $data['user'] = $this->_get_user_data();
 
+        // Get VPN Data
+        $vpn_data = $this->_generate_vpn_ip_data();
+        $data['vpn_connected'] = $vpn_data['connected'];
+        $data['vpn_not_connected'] = $vpn_data['not_connected'];
+
+        // Calculate Stats
+        $connected_count = count($data['vpn_connected']);
+        $not_connected_count = count($data['vpn_not_connected']);
+        
+        $data['stats'] = [
+            'total' => $connected_count + $not_connected_count,
+            'online' => $connected_count,
+            'offline' => $not_connected_count
+        ];
+
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/vpn_management/index', $data);
+        $this->load->view('admin/ip/vpn_management/index', $data);
         $this->load->view('admin/templates/footer', $data);
+    }
+
+    private function _generate_vpn_ip_data()
+    {
+        $data = [];
+        
+        // 1. TERHUBUNG (CONNECTED) - From Image 1 (Yellow)
+        // Headers: No, Satker, Username, Password, ISP Satker, IP VPN, IP LAN Satker, ISP VPN Pusat, SNMP, Keterangan
+        $connected = [
+            [
+                'satker' => 'LPP RRI Entikong',
+                'username' => '', 'password' => '',
+                'isp_satker' => 'DSCPC', 'ip_vpn' => '', 'ip_lan' => '10.115.1.0/24',
+                'isp_pusat' => '', 'snmp' => 'entikong', 'keterangan' => 'ONLINE DSCPC'
+            ],
+            [
+                'satker' => 'LPP RRI Tahuna',
+                'username' => 'RRI TAHUNA', 'password' => 'lpprri45',
+                'isp_satker' => 'DSCPC', 'ip_vpn' => '172.16.3.45', 'ip_lan' => '192.168.85.0/24',
+                'isp_pusat' => '', 'snmp' => 'tahuna', 'keterangan' => 'ONLINE DSCPC'
+            ],
+            [
+                'satker' => 'LPP RRI Wamena',
+                'username' => '', 'password' => '',
+                'isp_satker' => 'DSCPC', 'ip_vpn' => '', 'ip_lan' => '10.88.1.0/24',
+                'isp_pusat' => '', 'snmp' => 'wamena', 'keterangan' => 'ONLINE DSCPC'
+            ],
+            [
+                'satker' => 'LPP RRI Boven Digoel',
+                'username' => '', 'password' => '',
+                'isp_satker' => 'DSCPC', 'ip_vpn' => '', 'ip_lan' => '10.108.1.0/24',
+                'isp_pusat' => '', 'snmp' => 'bovendigoel', 'keterangan' => 'ONLINE DSCPC'
+            ]
+        ];
+
+        // 2. BELUM TERHUBUNG (NO CONNECTED) - Data from Image
+        $not_connected = [
+            // Row 1-18 (Multi Channel Format)
+            ['satker' => 'LPP RRI Meulaboh', 'u_pro1' => 'PRO 1 RRI MEULABOH', 'u_pro2' => 'PRO 2 RRI MEULABOH', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Takengon', 'u_pro1' => 'PRO 1 RRI TAKENGON', 'u_pro2' => 'PRO 2 RRI TAKENGON', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Jambi', 'u_pro1' => 'PRO 1 RRI JAMBI', 'u_pro2' => 'PRO 2 RRI JAMBI', 'u_pro4' => 'PRO 4 RRI JAMBI', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Tanjung Pinang', 'u_pro1' => 'PRO 1 RRI TANJUNG PINANG', 'u_pro2' => 'PRO 2 RRI TANJUNG PINANG', 'u_pro4' => 'PRO 4 TANJUNG PINANG', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Ranai', 'u_pro1' => 'PRO 1 RRI RANAI', 'u_pro2' => 'PRO 2 RRI RANAI', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Sungailiat', 'u_pro1' => 'PRO 1 RRI SUNGAI LIAT', 'u_pro2' => 'PRO 2 RRI SUNGAI LIAT', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Madiun', 'u_pro1' => 'PRO 1 RRI MADIUN', 'u_pro2' => 'PRO 2 RRI MADIUN', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Sintang', 'u_pro1' => 'PRO 1 RRI SINTANG', 'u_pro2' => 'PRO 2 RRI SINTANG', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Entikong', 'u_pro1' => '', 'u_pro2' => '', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => false, 'isp_dscpc' => true, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Tahuna', 'u_pro1' => '', 'u_pro2' => '', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => false, 'isp_dscpc' => true, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Jayapura', 'u_pro1' => 'PRO 1 RRI JAYAPURA', 'u_pro2' => 'PRO 2 RRI JAYAPURA', 'u_pro4' => 'PRO 4 JAYAPURA', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Merauke', 'u_pro1' => 'PRO 1 RRI MERAUKE', 'u_pro2' => 'PRO 2 RRI MERAUKE', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Nabire', 'u_pro1' => 'PRO 1 RRI NABIRE', 'u_pro2' => 'PRO 2 RRI NABIRE', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Wamena', 'u_pro1' => '', 'u_pro2' => '', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => false, 'isp_dscpc' => true, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Achmad Sulaeman'],
+            ['satker' => 'LPP RRI Serui', 'u_pro1' => 'PRO 1 RRI SERUI', 'u_pro2' => 'PRO 2 RRI SERUI', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Boven Digoel', 'u_pro1' => '', 'u_pro2' => '', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => false, 'isp_dscpc' => true, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Mamuju', 'u_pro1' => 'PRO 1 RRI MAMUJU', 'u_pro2' => 'PRO 2 RRI MAMUJU', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Fak-fak', 'u_pro1' => 'PRO 1 RRI FAK-FAK', 'u_pro2' => 'PRO 2 RRI FAK-FAK', 'u_pro4' => '', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+
+            // Single Channel (SP)
+            ['satker' => 'LPP RRI Aceh Singkil', 'u_single' => 'SP ACEH SINGKIL', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Ampana', 'u_single' => 'SP AMPANA', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Bau-bau', 'u_single' => 'SP BAU-BAU', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Belitung', 'u_single' => 'SP BELITUNG', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Bengkalis', 'u_single' => 'SP BENGKALIS', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Bima', 'u_single' => 'SP BIMA', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Bula', 'u_single' => 'SP BULA', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Kaimana', 'u_single' => 'SP KAIMANA', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Bintuhan', 'u_single' => 'SP BINTUHAN', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa'],
+            ['satker' => 'LPP RRI Kediri', 'u_single' => 'SP KEDIRI', 'password' => 'lpprri45', 'isp_astinet' => true, 'isp_dscpc' => false, 'isp_hsp' => false, 'status' => 'NO CONNECTED', 'pic' => 'Randy Phoa']
+        ];
+
+        // Add numbering to not_connected
+        foreach ($not_connected as $k => &$v) {
+            $v['no'] = $k + 1;
+            // Default empty fields if not set
+            if(!isset($v['u_single'])) $v['u_single'] = null;
+            if(!isset($v['u_pro1'])) $v['u_pro1'] = '';
+            if(!isset($v['u_pro2'])) $v['u_pro2'] = '';
+            if(!isset($v['u_pro4'])) $v['u_pro4'] = '';
+        }
+
+        return [
+            'connected' => $connected,
+            'not_connected' => $not_connected
+        ];
     }
 
     private function _get_user_data()

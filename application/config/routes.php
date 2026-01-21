@@ -108,6 +108,7 @@ $route['admin/teams'] = 'admin/teams';
 $route['admin/teams/(:any)'] = 'admin/teams/$1';
 $route['admin/ip-management'] = 'admin/ip_management';
 $route['admin/ip-management/(:any)'] = 'admin/ip_management/$1';
+$route['admin/vpn-management'] = 'admin/vpn_management';
 $route['admin/reports'] = 'admin/reports';
 $route['admin/audit'] = 'admin/audit';
 $route['admin/settings'] = 'admin/settings';
