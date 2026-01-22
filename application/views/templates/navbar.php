@@ -6,11 +6,9 @@
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <a href="<?= base_url() ?>" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 btn-gradient rounded-lg flex items-center justify-center 
-                            group-hover:scale-110 transition-transform duration-300 shadow-md">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center 
+                            group-hover:scale-110 transition-transform duration-300 shadow-md overflow-hidden">
+                    <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo RRI" class="w-full h-full object-contain p-1">
                 </div>
                 <div>
                     <span class="text-xl font-bold gradient-text">CSIRT</span>
@@ -54,12 +52,56 @@
                     </svg>
                 </button>
                 
-                <!-- Login Button -->
-                <a href="<?= base_url('auth/login') ?>" 
-                   class="px-5 py-2.5 btn-gradient text-white font-semibold rounded-lg 
-                          shadow-md hover:shadow-lg transition-all duration-300">
-                    Login
-                </a>
+                <!-- Auth Status -->
+                <?php if ($this->session->userdata('logged_in')): ?>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false" class="flex items-center gap-3 focus:outline-none">
+                            <div class="text-right hidden lg:block">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white"><?= $this->session->userdata('username') ?></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400"><?= $this->session->userdata('role_name') ?? ucfirst($this->session->userdata('role')) ?></p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500 shadow-sm">
+                                <?php $avatar = $this->session->userdata('avatar'); ?>
+                                <?php if (!empty($avatar) && $avatar !== 'default_avatar.png'): ?>
+                                    <img src="<?= base_url('uploads/avatars/' . $avatar) ?>" alt="Profile" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <div class="w-full h-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                        <?= strtoupper(substr($this->session->userdata('username'), 0, 1)) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </button>
+                        
+                        <!-- Dropdown -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 py-1 z-50">
+                            
+                            <div class="px-4 py-3 border-b border-gray-100 dark:border-slate-700 lg:hidden">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white"><?= $this->session->userdata('username') ?></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400"><?= ucfirst($this->session->userdata('role')) ?></p>
+                            </div>
+                            
+                            <a href="<?= base_url('dashboard') ?>" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400">
+                                Dashboard
+                            </a>
+                            <a href="<?= base_url('auth/logout') ?>" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-slate-700">
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <a href="<?= base_url('auth/login') ?>" 
+                       class="px-5 py-2.5 btn-gradient text-white font-semibold rounded-lg 
+                              shadow-md hover:shadow-lg transition-all duration-300">
+                        Login
+                    </a>
+                <?php endif; ?>
             </div>
             
             <!-- Mobile Menu Button -->

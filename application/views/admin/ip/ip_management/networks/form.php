@@ -9,6 +9,7 @@
         <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-6"><?= isset($network) ? 'Edit Data Network' : 'Tambah Network Baru' ?></h1>
 
         <form action="<?= isset($network) ? base_url('admin/ip_management/network_update/'.$network['id']) : base_url('admin/ip_management/network_store') ?>" method="POST" class="space-y-6">
+            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
             
             <?php if(!isset($network)): ?>
             <!-- ID/Slug (Only for create) -->

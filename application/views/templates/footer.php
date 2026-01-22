@@ -60,11 +60,6 @@
                 <p class="text-gray-500 dark:text-gray-500 text-sm">
                     &copy; <?= date('Y') ?> CSIRT RRI. Hak Cipta Dilindungi.
                 </p>
-                <div class="flex items-center gap-6">
-                    <a href="<?= base_url('auth/login') ?>" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm font-medium">
-                        Login Dashboard
-                    </a>
-                </div>
             </div>
         </div>
     </footer>
@@ -79,6 +74,13 @@
     </button>
     
     <script>
+        // Initialize AOS Animation
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
         // Navbar Scroll Effect & Scroll-to-Top Button
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');

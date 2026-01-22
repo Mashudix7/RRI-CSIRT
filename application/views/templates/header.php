@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CSIRT RRI - Tim Tanggap Insiden Keamanan Siber Radio Republik Indonesia">
     <title><?= isset($title) ? $title . ' | ' : '' ?>CSIRT RRI</title>
+    <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     
     <!-- CRITICAL: Apply dark mode IMMEDIATELY to prevent flash - Default to DARK -->
     <script>
@@ -55,6 +56,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- AOS Animation Library -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
     <!-- Custom Styles -->
     <style>
         /* =====================================================

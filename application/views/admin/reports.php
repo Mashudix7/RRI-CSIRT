@@ -10,7 +10,7 @@
 
 <!-- Stats Overview -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="0">
         <div class="flex items-center justify-between">
             <div>
                 <div class="text-3xl font-bold text-gray-900 dark:text-white"><?= $stats['total_incidents'] ?></div>
@@ -24,7 +24,7 @@
         </div>
     </div>
     
-    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="100">
         <div class="flex items-center justify-between">
             <div>
                 <div class="text-3xl font-bold text-green-600 dark:text-green-400"><?= $stats['resolved'] ?></div>
@@ -38,7 +38,7 @@
         </div>
     </div>
     
-    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="200">
         <div class="flex items-center justify-between">
             <div>
                 <div class="text-3xl font-bold text-amber-600 dark:text-amber-400"><?= $stats['pending'] ?></div>
@@ -52,7 +52,7 @@
         </div>
     </div>
     
-    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="300">
         <div class="flex items-center justify-between">
             <div>
                 <div class="text-3xl font-bold text-purple-600 dark:text-purple-400"><?= $stats['avg_resolution_time'] ?></div>
@@ -68,7 +68,7 @@
 </div>
 
 <!-- Charts Placeholder -->
-<div class="grid lg:grid-cols-2 gap-6 mb-8">
+<div class="grid lg:grid-cols-2 gap-6 mb-8" data-aos="fade-up" data-aos-delay="400">
     <!-- Incidents by Month -->
     <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Insiden per Bulan</h3>
@@ -99,7 +99,7 @@
 </div>
 
 <!-- Export Options -->
-<div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+<div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-left" data-aos-delay="500">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Export Laporan</h3>
     <div class="flex flex-wrap gap-3">
         <button class="px-4 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">

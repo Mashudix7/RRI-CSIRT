@@ -1,3 +1,28 @@
+<?php
+// Calculate Global Stats from Regions data
+$total_capacity = 0;
+$total_used = 0;
+$networks_count = count($regions);
+$network_names = [];
+
+foreach ($regions as $slug => $net) {
+    // Determine number of IPs from the generated list (which represents partial or full subnet)
+    // If the list is filtered by search, this might be inaccurate for "Global Dashboard", 
+    // but ip_management() checks if !$region, it loads ALL data without search usually?
+    // Wait, ip_management does NOT pass search param in the dashboard branch (lines 598+ in Admin.php)
+    // Actually lines 596 calling get_all_grouped_by_network() gets everything if search is null.
+    // So $net['ips'] is the full list.
+    
+    $total_capacity += $net['total'];
+    $total_used += $net['used'];
+    $network_names[] = $net['name'];
+}
+
+$total_free = $total_capacity - $total_used;
+$percent_free = ($total_capacity > 0) ? round(($total_free / $total_capacity) * 100) : 0;
+$percent_used = ($total_capacity > 0) ? round(($total_used / $total_capacity) * 100) : 0;
+?>
+
 <div class="space-y-8">
     <!-- Page Header & Summary -->
     <div>
@@ -23,13 +48,13 @@
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between">
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between" data-aos="fade-up" data-aos-delay="0">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total IP Publik</p>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">256</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1" data-count-up="<?= $total_capacity ?>"><?= $total_capacity ?></h3>
                     <p class="text-xs text-green-600 font-medium mt-1 flex items-center gap-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        All Allocated
+                        Termasuk Reserved
                     </p>
                 </div>
                 <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-600 dark:text-blue-400">
@@ -37,29 +62,31 @@
                 </div>
             </div>
             
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between">
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between" data-aos="fade-up" data-aos-delay="100">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Networks</p>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">6</h3>
-                    <p class="text-xs text-gray-500 mt-1">JKT, PDN, PST, DPK, +2 RS</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1" data-count-up="<?= $networks_count ?>"><?= $networks_count ?></h3>
+                    <p class="text-xs text-gray-500 mt-1 truncate w-40" title="<?= implode(', ', $network_names) ?>">
+                        <?= count($network_names) > 3 ? implode(', ', array_slice($network_names, 0, 3)) . ', ...' : implode(', ', $network_names) ?>
+                    </p>
                 </div>
                 <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-purple-600 dark:text-purple-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
             </div>
 
-             <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between">
+             <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex items-start justify-between" data-aos="fade-up" data-aos-delay="200">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Available IP</p>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">~45%</h3>
-                    <p class="text-xs text-yellow-600 font-medium mt-1">Estimated Free Space</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><span data-count-up="<?= $percent_free ?>"><?= $percent_free ?></span>%</h3>
+                    <p class="text-xs text-yellow-600 font-medium mt-1"><?= $total_free ?> IP Kosong</p>
                 </div>
                 <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-green-600 dark:text-green-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-5 rounded-xl shadow-lg shadow-blue-500/20 text-white flex items-center justify-between">
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-5 rounded-xl shadow-lg shadow-blue-500/20 text-white flex items-center justify-between" data-aos="fade-up" data-aos-delay="300">
                 <div>
                     <p class="text-xs font-medium text-blue-100 uppercase tracking-wider">System Status</p>
                     <h3 class="text-xl font-bold mt-1">Normal</h3>
@@ -73,7 +100,7 @@
     </div>
 
     <!-- Main Table Card -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-black/20 border border-gray-100 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-black/20 border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="400">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/50">
             <h3 class="font-semibold text-gray-900 dark:text-white">Daftar Network & Wilayah</h3>
             <div class="text-xs text-gray-500 italic">Klik pada baris untuk melihat detail IP</div>
@@ -94,132 +121,49 @@
                     </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
-                    <!-- DC Jakarta -->
-                    <tr class="group hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-all duration-200 relative" onclick="window.location='<?= base_url('admin/ip_management/jakarta') ?>'">
-                        <td class="px-6 py-4 text-center font-medium text-gray-500">1</td>
-                        <td class="px-6 py-4 font-mono text-blue-600 dark:text-blue-400 font-medium">218.33.123.0</td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.63</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.192</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-gray-100 dark:bg-slate-700 rounded text-xs font-bold text-gray-600 dark:text-gray-300">/26</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">64</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50"></span>
-                                <span class="font-medium text-gray-900 dark:text-white">DC Jakarta</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-500 italic">Core Network</td>
-                        <td class="px-4 py-4 text-gray-400 group-hover:text-blue-500">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
-                    <!-- DC PDN Serpong -->
-                    <tr class="group hover:bg-purple-50 dark:hover:bg-purple-900/10 cursor-pointer transition-all duration-200" onclick="window.location='<?= base_url('admin/ip_management/serpong') ?>'">
-                        <td class="px-6 py-4 text-center font-medium text-gray-500">2</td>
-                        <td class="px-6 py-4 font-mono text-purple-600 dark:text-purple-400 font-medium">218.33.123.64</td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.127</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.192</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-gray-100 dark:bg-slate-700 rounded text-xs font-bold text-gray-600 dark:text-gray-300">/26</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">64</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-sm shadow-purple-500/50"></span>
-                                <span class="font-medium text-gray-900 dark:text-white">DC PDN Serpong</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-500 italic">Disaster Recovery (DRC)</td>
-                        <td class="px-4 py-4 text-gray-400 group-hover:text-purple-500">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
-                    <!-- DC Kantor Pusat -->
-                    <tr class="group hover:bg-amber-50 dark:hover:bg-amber-900/10 cursor-pointer transition-all duration-200" onclick="window.location='<?= base_url('admin/ip_management/pusat') ?>'">
-                        <td class="px-6 py-4 text-center font-medium text-gray-500">3</td>
-                        <td class="px-6 py-4 font-mono text-amber-600 dark:text-amber-400 font-medium">218.33.123.128</td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.159</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.224</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-gray-100 dark:bg-slate-700 rounded text-xs font-bold text-gray-600 dark:text-gray-300">/27</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">32</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
-                                <span class="font-medium text-gray-900 dark:text-white">DC Kantor Pusat</span>
-                            </div>
-                        </td>
-                         <td class="px-6 py-4 text-gray-500 italic">Headquarters</td>
-                        <td class="px-4 py-4 text-gray-400 group-hover:text-amber-500">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
-                    <!-- Cadangan 1 -->
-                    <tr class="group bg-yellow-50 dark:bg-yellow-900/10 hover:bg-yellow-100 dark:hover:bg-yellow-900/20 cursor-pointer transition-all duration-200 border-l-4 border-yellow-400" onclick="window.location='<?= base_url('admin/ip_management/reserve1') ?>'">
-                         <td class="px-6 py-4 text-center font-medium text-gray-500">4</td>
-                        <td class="px-6 py-4">
-                            <span class="font-mono font-bold text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded">218.33.123.160</span>
-                        </td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.175</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.240</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-white dark:bg-slate-800 border border-yellow-100 dark:border-yellow-900 rounded text-xs font-bold text-yellow-600 dark:text-yellow-400">/28</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">16</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                Reserved
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                           Dapat digunakan untuk: IP Transit
-                        </td>
-                         <td class="px-4 py-4 text-gray-400 group-hover:text-yellow-600">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
-                    <!-- Cadangan 2 -->
-                    <tr class="group bg-yellow-50 dark:bg-yellow-900/10 hover:bg-yellow-100 dark:hover:bg-yellow-900/20 cursor-pointer transition-all duration-200 border-l-4 border-yellow-400" onclick="window.location='<?= base_url('admin/ip_management/reserve2') ?>'">
-                         <td class="px-6 py-4 text-center font-medium text-gray-500">5</td>
-                        <td class="px-6 py-4">
-                            <span class="font-mono font-bold text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded">218.33.123.176</span>
-                        </td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.191</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.240</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-white dark:bg-slate-800 border border-yellow-100 dark:border-yellow-900 rounded text-xs font-bold text-yellow-600 dark:text-yellow-400">/28</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">16</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                Reserved
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                           Future DC / Event / Kebutuhan Dadakan
-                        </td>
-                         <td class="px-4 py-4 text-gray-400 group-hover:text-yellow-600">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
-                     <!-- DC Depok -->
-                     <tr class="group hover:bg-emerald-50 dark:hover:bg-emerald-900/10 cursor-pointer transition-all duration-200" onclick="window.location='<?= base_url('admin/ip_management/depok') ?>'">
-                        <td class="px-6 py-4 text-center font-medium text-gray-500">6</td>
-                        <td class="px-6 py-4 font-mono text-emerald-600 dark:text-emerald-400 font-medium">218.33.123.192</td>
-                        <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">218.33.123.255</td>
-                        <td class="px-6 py-4 font-mono text-gray-500">255.255.255.192</td>
-                        <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-gray-100 dark:bg-slate-700 rounded text-xs font-bold text-gray-600 dark:text-gray-300">/26</span></td>
-                        <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">64</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
-                                <span class="font-medium text-gray-900 dark:text-white">DC Depok</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-500 italic">Data Center</td>
-                         <td class="px-4 py-4 text-gray-400 group-hover:text-emerald-500">
-                             <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </td>
-                    </tr>
-
+                    <?php $no = 1; foreach($regions as $slug => $net): ?>
+                        <?php 
+                            // Determine Color Scheme based on slug/name roughly or random?
+                            // Let's use simple logic or cycle colors.
+                            $colors = ['blue', 'purple', 'amber', 'emerald', 'indigo', 'rose'];
+                            $color = $colors[($no - 1) % count($colors)];
+                            
+                            // Yellow for reserve
+                            if (stripos($slug, 'reserve') !== false || stripos($net['name'], 'reserve') !== false) {
+                                $color = 'yellow';
+                            }
+                        ?>
+                        <tr class="group hover:bg-<?= $color ?>-50 dark:hover:bg-<?= $color ?>-900/10 cursor-pointer transition-all duration-200 relative <?= $color == 'yellow' ? 'border-l-4 border-yellow-400' : '' ?>" onclick="window.location='<?= base_url('admin/ip_management/' . $slug) ?>'">
+                            <td class="px-6 py-4 text-center font-medium text-gray-500"><?= $no++ ?></td>
+                            <td class="px-6 py-4">
+                                <span class="font-mono font-bold text-<?= $color ?>-600 dark:text-<?= $color ?>-400 <?= $color == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded' : '' ?>">
+                                    <?= $net['range_start'] ?>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300"><?= $net['range_end'] ?></td>
+                            <td class="px-6 py-4 font-mono text-gray-500">
+                                <?= $net['subnet_mask'] ?? '255.255.255.0' ?>
+                            </td>
+                            <td class="px-6 py-4 text-center"><span class="px-2 py-1 bg-gray-100 dark:bg-slate-700 rounded text-xs font-bold text-gray-600 dark:text-gray-300"><?= $net['cidr'] ?></span></td>
+                            <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200"><?= $net['total'] ?></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-<?= $color ?>-500 shadow-sm shadow-<?= $color ?>-500/50"></span>
+                                    <span class="font-medium text-gray-900 dark:text-white"><?= $net['name'] ?></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-gray-500 italic">
+                                <?php if($color == 'yellow'): ?>
+                                    Reserved / Cadangan
+                                <?php else: ?>
+                                    Data Center / Core
+                                <?php endif; ?>
+                            </td>
+                            <td class="px-4 py-4 text-gray-400 group-hover:text-<?= $color ?>-500">
+                                 <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

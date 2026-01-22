@@ -12,7 +12,7 @@
     <!-- Main Settings -->
     <div class="lg:col-span-2 space-y-6">
         <!-- General Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pengaturan Umum</h3>
             
             <div class="space-y-4">
@@ -38,7 +38,7 @@
         </div>
         
         <!-- Notification Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="100">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Notifikasi</h3>
             
             <div class="space-y-4">
@@ -75,7 +75,7 @@
         </div>
         
         <!-- Security Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="200">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Keamanan</h3>
             
             <div class="space-y-4">
@@ -112,7 +112,7 @@
     <!-- Sidebar Info -->
     <div class="space-y-6">
         <!-- System Info -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-left" data-aos-delay="300">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informasi Sistem</h3>
             
             <div class="space-y-3 text-sm">
@@ -136,7 +136,7 @@
         </div>
         
         <!-- Quick Links -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-left" data-aos-delay="400">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Aksi Cepat</h3>
             
             <div class="space-y-2">

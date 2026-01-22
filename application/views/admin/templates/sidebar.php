@@ -5,10 +5,8 @@
     <div class="flex flex-col h-full">
         <!-- Logo -->
         <div class="h-16 flex items-center gap-3 px-5 border-b border-white/10">
-            <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
+            <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-lg overflow-hidden">
+                <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo RRI" class="w-full h-full object-contain p-1">
             </div>
             <div>
                 <span class="text-lg font-bold text-white">CSIRT</span>
@@ -276,8 +274,12 @@
         <!-- User Info -->
         <div class="p-4 border-t border-white/10 bg-slate-950/50">
             <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <span class="text-white font-semibold"><?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?></span>
+                <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($user['avatar']) || $user['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-800' ?>">
+                    <?php if (!empty($user['avatar']) && $user['avatar'] !== 'default_avatar.png'): ?>
+                        <img src="<?= base_url('uploads/avatars/' . $user['avatar']) ?>" alt="User Avatar" class="w-full h-full object-cover">
+                    <?php else: ?>
+                        <span class="text-white font-semibold"><?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?></span>
+                    <?php endif; ?>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-white truncate"><?= $user['username'] ?? 'User' ?></p>

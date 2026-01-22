@@ -1,0 +1,61 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Team_model extends CI_Model {
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->database();
+    }
+
+    public function get_all() {
+        return $this->db->get('teams')->result_array();
+    }
+
+    public function get_by_id($id) {
+        return $this->db->get_where('teams', ['id' => $id])->row_array();
+    }
+
+    public function create($data) {
+        $data['created_at'] = date('Y-m-d H:i:s');
+        return $this->db->insert('teams', $data);
+    }
+
+    public function update($id, $data) {
+        $this->db->where('id', $id);
+        return $this->db->update('teams', $data);
+    }
+
+    public function delete($id) {
+        $this->db->where('id', $id);
+        return $this->db->delete('teams');
+    }
+
+    public function has_leader($division, $exclude_id = null) {
+        $this->db->where('division', $division);
+        $this->db->where('role', 'leader');
+        if ($exclude_id) {
+            $this->db->where('id !=', $exclude_id);
+        }
+        $query = $this->db->get('teams');
+        return $query->num_rows() > 0;
+    }
+
+    public function get_all_by_division_sorted() {
+        $this->db->from('teams');
+        // Sort by division first
+        $this->db->order_by('division', 'ASC');
+        
+        // Then custom sort by role: leader=1, member=2
+        // MySQL FIELD() function returns the index of the value in the list
+        $this->db->order_by("FIELD(role, 'leader', 'member')", '', FALSE);
+        
+        $this->db->order_by('name', 'ASC');
+        
+        return $this->db->get()->result_array();
+    }
+    public function delete_invalid_divisions() {
+        $this->db->where_in('division', ['it', 'media_baru']);
+        $this->db->delete('teams');
+    }
+}

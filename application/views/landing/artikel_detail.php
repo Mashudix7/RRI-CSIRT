@@ -36,17 +36,21 @@
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
                     </div>
-                    <span><?= htmlspecialchars($article['author']) ?></span>
+                    <span>CSIRT Team</span>
                 </div>
                 <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
-                <span><?= date('d M Y', strtotime($article['date'])) ?></span>
+                <span><?= date('d M Y', strtotime($article['created_at'])) ?></span>
             </div>
         </header>
         
         <!-- Featured Image Placeholder -->
         <div class="relative h-64 md:h-96 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden mb-8">
-            <?php if ($article['image']): ?>
-                <img src="<?= base_url('assets/images/articles/' . $article['image']) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover">
+            <?php if (!empty($article['thumbnail'])): ?>
+                <?php 
+                    $thumb = $article['thumbnail'];
+                    if (strpos($thumb, 'assets/') === false) $thumb = 'assets/uploads/articles/' . $thumb;
+                ?>
+                <img src="<?= base_url($thumb) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover">
             <?php else: ?>
                 <div class="absolute inset-0 flex items-center justify-center">
                     <svg class="w-24 h-24 text-white/20" fill="currentColor" viewBox="0 0 24 24">
@@ -81,20 +85,18 @@
         </div>
         
         <!-- Related Articles -->
-        <?php if (!empty($related)): ?>
+        <?php if (!empty($related_articles)): ?>
         <section>
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Artikel Lainnya</h2>
             <div class="grid md:grid-cols-3 gap-6">
-                <?php foreach ($related as $rel): ?>
-                    <?php if ($rel['id'] != $article['id']): ?>
-                    <a href="<?= base_url('artikel/' . $rel['id']) ?>" class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
+                <?php foreach ($related_articles as $rel): ?>
+                    <a href="<?= base_url('artikel/' . $rel['slug']) ?>" class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
                         <span class="text-xs text-blue-600 dark:text-blue-400 font-medium"><?= htmlspecialchars($rel['category']) ?></span>
                         <h3 class="font-semibold text-gray-900 dark:text-white mt-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             <?= htmlspecialchars($rel['title']) ?>
                         </h3>
-                        <span class="text-xs text-gray-400 mt-2 block"><?= date('d M Y', strtotime($rel['date'])) ?></span>
+                        <span class="text-xs text-gray-400 mt-2 block"><?= date('d M Y', strtotime($rel['created_at'])) ?></span>
                     </a>
-                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         </section>

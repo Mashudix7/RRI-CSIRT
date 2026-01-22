@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? $title . ' | ' : '' ?>Dashboard - CSIRT RRI</title>
+    <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     
     <!-- CRITICAL: Apply dark mode IMMEDIATELY to prevent flash - Default to DARK -->
     <script>
@@ -79,11 +80,18 @@
         .dark .badge-high { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
         .dark .badge-medium { background: rgba(234, 179, 8, 0.2); color: #fde047; }
         .dark .badge-low { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .dark .badge-low { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+
+        /* Page Transition & AOS Defaults */
+        body { opacity: 0; transition: opacity 0.15s ease-out; }
+        body.loaded { opacity: 1; }
     </style>
-</head>
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <body x-data="{ adminDarkMode: localStorage.getItem('adminDarkMode') === 'true', sidebarOpen: false }" 
       x-init="$watch('adminDarkMode', val => { localStorage.setItem('adminDarkMode', val); document.documentElement.classList.toggle('dark', val) })"
-      class="font-sans antialiased bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300">
+      class="font-sans antialiased bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300"
+      onload="document.body.classList.add('loaded')">
 
 <!-- Main Layout Container -->
 <div class="h-screen flex overflow-hidden">

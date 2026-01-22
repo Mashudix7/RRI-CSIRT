@@ -31,20 +31,15 @@ class Auth extends CI_Controller {
         parent::__construct();
         $this->load->helper('url');
         $this->load->library('session');
-        // $this->load->model('User_model'); // Akan diaktifkan setelah model dibuat
-        // $this->load->model('Audit_log_model'); // Akan diaktifkan setelah model dibuat
+        $this->load->model('User_model');
+        $this->load->model('Audit_model');
     }
 
     /**
      * Halaman Login
-     * 
-     * Komentar:
-     * - Jika user sudah login, redirect ke dashboard
-     * - Form submit akan dihandle oleh method authenticate()
      */
     public function login()
     {
-        // Redirect jika sudah login
         if ($this->session->userdata('logged_in')) {
             redirect('dashboard');
         }
@@ -58,23 +53,21 @@ class Auth extends CI_Controller {
 
     /**
      * Proses Autentikasi
-     * 
-     * Komentar Kritikal:
-     * - Validasi input WAJIB dilakukan
-     * - Password comparison menggunakan password_verify()
-     * - Regenerate session ID setelah login berhasil
-     * - Catat SEMUA attempt login (berhasil/gagal) ke audit log
      */
     public function authenticate()
     {
-        // Validasi CSRF
+        // Validasi
         $this->load->library('form_validation');
         
-        $this->form_validation->set_rules('username', 'Username', 'required|trim');
-        $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim', [
+            'required' => 'Username harus diisi.'
+        ]);
+        $this->form_validation->set_rules('password', 'Password', 'required', [
+            'required' => 'Password harus diisi.'
+        ]);
 
         if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('error', 'Username dan password harus diisi.');
+            $this->session->set_flashdata('error', validation_errors('<li>', '</li>')); // Capture specific errors
             redirect('auth/login');
             return;
         }
@@ -82,54 +75,54 @@ class Auth extends CI_Controller {
         $username = $this->input->post('username', TRUE);
         $password = $this->input->post('password');
 
-        // TODO: Implementasi setelah User_model dibuat
-        // $user = $this->User_model->get_by_username($username);
-        
-        // DEMO: Login dummy untuk testing UI
-        // HAPUS blok ini setelah model diimplementasikan
-        if ($username === 'admin' && $password === 'admin123') {
-            // Regenerate session untuk keamanan
+        // Check Login
+        $user = $this->User_model->login($username, $password);
+
+        if ($user) {
+             // Block access if inactive? (If status column exists. For now assuming all users in DB are active)
+            
+            // Regenerate session
             $this->session->sess_regenerate(TRUE);
             
             // Set session data
-            $this->session->set_userdata([
-                'user_id' => 1,
-                'username' => 'admin',
-                'role' => 'admin',
-                'role_name' => 'Admin CSIRT',
+            $sess_data = [
+                'user_id' => $user['id'],
+                'username' => $user['username'],
+                'role' => $user['role'],
+                'role_name' => ucfirst($user['role']), // Display nicety
                 'logged_in' => TRUE,
-                'login_time' => time()
-            ]);
+                'login_time' => time(),
+                'avatar' => $user['avatar'] ?? 'default_avatar.png'
+            ];
+            $this->session->set_userdata($sess_data);
 
-            // TODO: Catat ke audit log
-            // $this->Audit_log_model->log('login', 'User logged in successfully');
+            // Audit Log
+            $this->Audit_model->log('login', 'User logged in successfully', $user['id']);
 
             redirect('dashboard');
-            return;
-        }
+        } else {
+            // Audit Log (Failed)
+            // Need to log without ID or with '0'
+            $this->Audit_model->log('login_failed', "Failed login attempt for username: $username", 0);
 
-        // Login gagal
-        // TODO: Catat ke audit log (failed attempt)
-        $this->session->set_flashdata('error', 'Username atau password salah.');
-        redirect('auth/login');
+            $this->session->set_flashdata('error', 'Username atau password salah.');
+            redirect('auth/login');
+        }
     }
 
     /**
      * Logout
-     * 
-     * Komentar Kritikal:
-     * - Destroy session SEPENUHNYA
-     * - Catat ke audit log sebelum destroy
      */
     public function logout()
     {
-        // TODO: Catat ke audit log sebelum destroy session
-        // $this->Audit_log_model->log('logout', 'User logged out');
+        // Audit Log
+        if ($this->session->userdata('logged_in')) {
+            $this->Audit_model->log('logout', 'User logged out');
+        }
 
         // Destroy session
         $this->session->sess_destroy();
         
-        $this->session->set_flashdata('success', 'Anda telah berhasil logout.');
         redirect('auth/login');
     }
 }

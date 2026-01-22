@@ -42,12 +42,17 @@
         <!-- Articles Grid -->
         <?php if (!empty($articles)): ?>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($articles as $article): ?>
-            <article class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden hover-lift group">
+            <?php foreach ($articles as $index => $article): ?>
+            <article class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden hover-lift group" 
+                     data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
                 <!-- Image Placeholder -->
                 <div class="relative h-48 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
-                    <?php if ($article['image']): ?>
-                        <img src="<?= base_url('assets/images/articles/' . $article['image']) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover">
+                    <?php if (!empty($article['thumbnail'])): ?>
+                        <?php 
+                            $thumb = $article['thumbnail'];
+                            if (strpos($thumb, 'assets/') === false) $thumb = 'assets/uploads/articles/' . $thumb;
+                        ?>
+                        <img src="<?= base_url($thumb) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <?php else: ?>
                         <div class="absolute inset-0 flex items-center justify-center">
                             <svg class="w-16 h-16 text-white/20" fill="currentColor" viewBox="0 0 24 24">
@@ -57,25 +62,18 @@
                     <?php endif; ?>
                     <!-- Category Badge -->
                     <div class="absolute top-3 left-3">
-                        <span class="px-2.5 py-1 bg-white/90 dark:bg-slate-900/90 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-full">
+                        <span class="px-2.5 py-1 bg-white/90 dark:bg-slate-900/90 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-full shadow-sm">
                             <?= htmlspecialchars($article['category']) ?>
                         </span>
                     </div>
-                    <?php if ($article['is_featured']): ?>
-                    <div class="absolute top-3 right-3">
-                        <span class="px-2.5 py-1 bg-red-500 text-white text-xs font-semibold rounded-full">
-                            PENTING
-                        </span>
-                    </div>
-                    <?php endif; ?>
                 </div>
                 
                 <!-- Content -->
                 <div class="p-5">
                     <div class="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                        <span><?= date('d M Y', strtotime($article['date'])) ?></span>
+                        <span><?= date('d M Y', strtotime($article['created_at'])) ?></span>
                         <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
-                        <span><?= htmlspecialchars($article['author']) ?></span>
+                        <span>CSIRT Team</span>
                     </div>
                     
                     <h2 class="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
@@ -83,10 +81,10 @@
                     </h2>
                     
                     <p class="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4">
-                        <?= htmlspecialchars($article['excerpt']) ?>
+                        <?= htmlspecialchars(strip_tags($article['content'])) ?>
                     </p>
                     
-                    <a href="<?= base_url('artikel/' . $article['id']) ?>" 
+                    <a href="<?= base_url('artikel/detail/' . $article['id']) ?>" 
                        class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-sm font-medium hover:gap-2 transition-all">
                         Baca Selengkapnya
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,9 +101,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
             </svg>
             <p class="text-gray-500 dark:text-gray-400 text-lg">Belum ada artikel dalam kategori ini.</p>
-            <a href="<?= base_url('artikel') ?>" class="inline-flex items-center gap-2 mt-4 text-blue-600 dark:text-blue-400 font-medium">
-                ← Lihat semua artikel
-            </a>
         </div>
         <?php endif; ?>
     </div>

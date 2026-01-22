@@ -26,19 +26,27 @@ class Admin extends CI_Controller {
     {
         parent::__construct();
         $this->load->helper('url');
+        $this->load->helper('form');
         $this->load->library('session');
+        $this->load->library('form_validation'); // Make sure validation is loaded
+        $this->load->model('Article_model');
+        $this->load->model('Team_model');
+        $this->load->model('User_model');
+        $this->load->model('Audit_model');
         
         // Proteksi: Cek login
         if (!$this->session->userdata('logged_in')) {
             redirect('auth/login');
         }
         
-        // Proteksi: Cek role admin
-        // Komentar Kritikal: Role check - hanya admin yang boleh akses
+        // Proteksi: Cek role yang diizinkan (Semua role yang valid boleh masuk, tapi akses menu dibatasi di method masing-masing)
         $role = $this->session->userdata('role');
-        if ($role !== 'admin') {
-            // Redirect ke dashboard jika bukan admin
-            redirect('dashboard');
+        $allowed_roles = ['admin', 'management', 'auditor'];
+        
+        if (!in_array($role, $allowed_roles)) {
+            // Role tidak dikenali
+            $this->session->sess_destroy();
+            redirect('auth/login');
         }
     }
 
@@ -47,15 +55,16 @@ class Admin extends CI_Controller {
      */
     public function users()
     {
+        // RBAC: Admin Only
+        if ($this->session->userdata('role') !== 'admin') {
+            show_error('Unauthorized Access', 403);
+        }
+
         $data['title'] = 'Manajemen Pengguna';
         $data['page'] = 'users';
         $data['user'] = $this->_get_user_data();
         
-        // Dummy users - Filtered out Analyst and Reporter
-        $data['users'] = [
-            ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'last_login' => '2026-01-20 08:30:00'],
-            ['id' => 4, 'username' => 'auditor1', 'email' => 'auditor1@rri.co.id', 'role' => 'auditor', 'status' => 'inactive', 'last_login' => '2026-01-10 11:00:00'],
-        ];
+        $data['users'] = $this->User_model->get_all();
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -68,8 +77,10 @@ class Admin extends CI_Controller {
      */
     public function user_create()
     {
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
         $data['title'] = 'Tambah Pengguna';
-        $data['page'] = 'users'; // Keep 'users' active in sidebar
+        $data['page'] = 'users'; 
         $data['user'] = $this->_get_user_data();
         
         $this->load->view('admin/templates/header', $data);
@@ -80,30 +91,72 @@ class Admin extends CI_Controller {
 
     public function user_store()
     {
-        // Mock storage logic
-        $this->session->set_flashdata('success', 'Pengguna berhasil ditambahkan!');
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->user_create();
+            return;
+        }
+
+        $data = [
+            'username' => $this->input->post('username'),
+            'email' => $this->input->post('email'),
+            'password' => $this->input->post('password'), // Model will hash it
+            'role' => $this->input->post('role'),
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        // Handle Image Upload
+        if (!empty($_FILES['avatar']['name'])) {
+            $config['upload_path'] = './uploads/avatars/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['max_size'] = 2048;
+            $config['file_name'] = 'avatar_' . time();
+
+            if (!is_dir($config['upload_path'])) mkdir($config['upload_path'], 0777, TRUE);
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('avatar')) {
+                $upload_data = $this->upload->data();
+                $data['avatar'] = $upload_data['file_name'];
+            } else {
+                $this->session->set_flashdata('error', $this->upload->display_errors());
+                $this->user_create();
+                return;
+            }
+        } else {
+            $data['avatar'] = 'default_avatar.png'; // Default
+        }
+
+        if ($this->User_model->create($data)) {
+            $this->Audit_model->log('create_user', 'Created user: ' . $data['username']);
+            $this->session->set_flashdata('success', 'Pengguna berhasil ditambahkan!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menambahkan pengguna DB.');
+        }
+        
         redirect('admin/users');
     }
 
     public function user_edit($id)
     {
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
         $data['title'] = 'Edit Pengguna';
         $data['page'] = 'users';
         $data['user'] = $this->_get_user_data();
         
-        // Mock fetching user data based on ID
-        $data['user_edit'] = [
-            'id' => $id, 
-            'username' => 'user_mock_' . $id, 
-            'email' => 'user' . $id . '@rri.co.id', 
-            'role' => 'admin', 
-            'status' => 'active', 
-            'full_name' => 'User Mock ' . $id
-        ];
+        $data['user_edit'] = $this->User_model->get_by_id($id);
         
-        // Override with specific dummy data
-        if ($id == 1) $data['user'] = ['id' => 1, 'username' => 'admin', 'email' => 'admin@rri.co.id', 'role' => 'admin', 'status' => 'active', 'full_name' => 'Administrator'];
-        if ($id == 4) $data['user'] = ['id' => 4, 'username' => 'auditor1', 'email' => 'auditor1@rri.co.id', 'role' => 'auditor', 'status' => 'inactive', 'full_name' => 'Auditor User'];
+        if (!$data['user_edit']) {
+            show_404();
+        }
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -113,14 +166,95 @@ class Admin extends CI_Controller {
 
     public function user_update($id)
     {
-        $this->session->set_flashdata('success', 'Data pengguna berhasil diperbarui!');
+         if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');
+        
+        if ($this->form_validation->run() === FALSE) {
+            $this->user_edit($id);
+            return;
+        }
+
+        $data = [
+            'email' => $this->input->post('email'),
+            'role' => $this->input->post('role')
+        ];
+
+        // Update Password only if provided
+        $password = $this->input->post('password');
+        if (!empty($password)) {
+            $data['password'] = $password; 
+        }
+
+        // Handle Image Upload
+        if (!empty($_FILES['avatar']['name'])) {
+            $config['upload_path'] = './uploads/avatars/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['max_size'] = 2048;
+            $config['file_name'] = 'avatar_' . time();
+
+            if (!is_dir($config['upload_path'])) mkdir($config['upload_path'], 0777, TRUE);
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('avatar')) {
+                $upload_data = $this->upload->data();
+                $data['avatar'] = $upload_data['file_name'];
+            }
+        }
+
+        if ($this->User_model->update($id, $data)) {
+            $this->Audit_model->log('update_user', 'Updated user ID: ' . $id);
+            $this->session->set_flashdata('success', 'Pengguna berhasil diperbarui!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memperbarui pengguna.');
+        }
+
         redirect('admin/users');
     }
 
     public function user_delete($id)
     {
-        $this->session->set_flashdata('success', 'Pengguna berhasil dihapus!');
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+        
+        if ($id == $this->session->userdata('user_id')) {
+            $this->session->set_flashdata('error', 'Anda tidak dapat menghapus akun sendiri!');
+            redirect('admin/users');
+            return;
+        }
+
+        $user = $this->User_model->get_by_id($id);
+        if ($this->User_model->delete($id)) {
+             $this->Audit_model->log('delete_user', 'Deleted user: ' . ($user['username'] ?? $id));
+             $this->session->set_flashdata('success', 'Pengguna berhasil dihapus!');
+        } else {
+             $this->session->set_flashdata('error', 'Gagal menghapus pengguna.');
+        }
         redirect('admin/users');
+    }
+
+    /**
+     * Audit Log
+     */
+    public function audit_log()
+    {
+        $role = $this->session->userdata('role');
+        if ($role !== 'admin' && $role !== 'auditor') {
+            show_error('Unauthorized', 403);
+        }
+
+        $data['title'] = 'Audit Log';
+        $data['page'] = 'audit_log';
+        $data['user'] = $this->_get_user_data();
+        
+        $data['logs'] = $this->Audit_model->get_all(100); 
+
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/audit_log', $data); 
+        $this->load->view('admin/templates/footer', $data);
     }
 
     /**
@@ -132,7 +266,20 @@ class Admin extends CI_Controller {
     public function articles($action = 'index', $id = null)
     {
         $data['user'] = $this->_get_user_data();
-        
+
+        // RBAC Check for CUD
+        $role = $this->session->userdata('role');
+        if (in_array($action, ['create', 'store', 'edit', 'update', 'delete'])) {
+             if (!in_array($role, ['admin', 'management'])) {
+                 show_error('Unauthorized', 403);
+             }
+        }
+
+        // Ensure models are loaded
+        if (!isset($this->Article_model)) {
+            $this->load->model('Article_model');
+        }
+
         switch ($action) {
             case 'create':
                 $data['title'] = 'Tambah Artikel';
@@ -142,36 +289,142 @@ class Admin extends CI_Controller {
                 $this->load->view('admin/artikle/create', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
+
+            case 'store':
+                // Handle form submission
+                $input = $this->input->post();
                 
+                // Handle File Upload
+                if (!empty($_FILES['thumbnail']['name'])) {
+                    $upload = $this->_upload_and_resize('thumbnail', 800, 600);
+                    if ($upload['status']) {
+                        $input['thumbnail'] = $upload['file_name'];
+                    } else {
+                        $this->session->set_flashdata('error', $upload['error']);
+                        redirect('admin/articles/create');
+                        return;
+                    }
+                }
+                
+                $input['slug'] = url_title($input['title'], '-', TRUE);
+                $input['author_id'] = $this->session->userdata('user_id');
+                $input['author'] = $this->session->userdata('username'); // Add author name
+
+                if ($this->Article_model->create($input)) {
+                    $this->Audit_model->log('create_article', 'Created article: ' . substr($input['title'], 0, 50));
+                    $this->session->set_flashdata('success', 'Artikel berhasil ditambahkan');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal menambahkan artikel');
+                }
+                redirect('admin/articles');
+                break;
+
             case 'edit':
                 $data['title'] = 'Edit Artikel';
                 $data['page'] = 'articles';
-                // Mock article data
-                $data['article'] = ['id' => $id, 'title' => 'Panduan Keamanan Password', 'category' => 'Keamanan', 'status' => 'published', 'content' => 'Lorem ipsum...']; // Dummy
+                $data['article'] = $this->Article_model->get_by_id($id);
                 
+                if (!$data['article']) {
+                    show_404();
+                }
+
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
                 $this->load->view('admin/artikle/edit', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
                 
+            case 'update':
+                $input = $this->input->post();
+                
+                // Handle File Upload
+                if (!empty($_FILES['thumbnail']['name'])) {
+                    $upload = $this->_upload_and_resize('thumbnail', 800, 600);
+                    if ($upload['status']) {
+                        $input['thumbnail'] = $upload['file_name'];
+                    } else {
+                        $this->session->set_flashdata('error', $upload['error']);
+                        redirect('admin/articles/edit/' . $id);
+                        return;
+                    }
+                }
+                
+                if (isset($input['title'])) {
+                    $input['slug'] = url_title($input['title'], '-', TRUE);
+                }
+
+                if ($this->Article_model->update($id, $input)) {
+                    $this->Audit_model->log('update_article', 'Updated article ID: ' . $id);
+                    $this->session->set_flashdata('success', 'Artikel berhasil diperbarui');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal memperbarui artikel');
+                }
+                redirect('admin/articles');
+                break;
+                
+            case 'delete':
+                $article = $this->Article_model->get_by_id($id);
+                if ($this->Article_model->delete($id)) {
+                    $this->Audit_model->log('delete_article', 'Deleted article: ' . ($article['title'] ?? $id));
+                    $this->session->set_flashdata('success', 'Artikel berhasil dihapus');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal menghapus artikel');
+                }
+                redirect('admin/articles');
+                break;
+
             case 'index':
             default:
                 $data['title'] = 'Manajemen Artikel';
                 $data['page'] = 'articles';
-                // Dummy articles
-                $data['articles'] = [
-                    ['id' => 1, 'title' => 'Panduan Keamanan Password', 'category' => 'Keamanan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-20'],
-                    ['id' => 2, 'title' => 'Cara Mengenali Email Phishing', 'category' => 'Panduan', 'status' => 'published', 'author' => 'Admin', 'date' => '2026-01-18'],
-                    ['id' => 3, 'title' => 'Update Sistem Q1 2026', 'category' => 'Pengumuman', 'status' => 'draft', 'author' => 'Admin', 'date' => '2026-01-15'],
-                ];
+                $data['articles'] = $this->Article_model->get_all();
                 
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/artikle/articles', $data); // Updated path
+                $this->load->view('admin/artikle/articles', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
         }
+    }
+
+    /**
+     * Helper: Upload and Resize Image
+     */
+    private function _upload_and_resize($field_name, $width, $height)
+    {
+        $config['upload_path']   = './assets/uploads/';
+        $config['allowed_types'] = 'gif|jpg|png|jpeg|webp';
+        $config['max_size']      = 2048; // 2MB
+        // $config['encrypt_name']  = TRUE; // Disable to keep easy names or enable for security
+
+        // Check if directory exists
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, TRUE);
+        }
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload($field_name)) {
+            return ['status' => false, 'error' => $this->upload->display_errors()];
+        }
+
+        $upload_data = $this->upload->data();
+        
+        // Resize Image
+        $config_resize['image_library']  = 'gd2';
+        $config_resize['source_image']   = $upload_data['full_path'];
+        $config_resize['create_thumb']   = FALSE;
+        $config_resize['maintain_ratio'] = TRUE;
+        $config_resize['width']          = $width;
+        $config_resize['height']         = $height;
+        $config_resize['quality']        = '80%'; 
+
+        $this->load->library('image_lib', $config_resize);
+        $this->image_lib->resize();
+        $this->image_lib->clear();
+
+        return ['status' => true, 'file_name' => $upload_data['file_name']];
     }
 
     /**
@@ -198,34 +451,14 @@ class Admin extends CI_Controller {
     }
 
     /**
-     * Audit Log
-     */
-    public function audit()
-    {
-        $data['title'] = 'Audit Log';
-        $data['page'] = 'audit';
-        $data['user'] = $this->_get_user_data();
-        
-        // Dummy audit logs
-        $data['logs'] = [
-            ['id' => 1, 'user' => 'admin', 'action' => 'LOGIN', 'details' => 'Login berhasil', 'ip' => '192.168.1.100', 'time' => '2026-01-20 08:30:00'],
-            ['id' => 2, 'user' => 'admin', 'action' => 'UPDATE_FIREWALL', 'details' => 'Memblokir IP 192.168.1.50', 'ip' => '192.168.1.100', 'time' => '2026-01-20 08:25:00'],
-            ['id' => 3, 'user' => 'system', 'action' => 'AUTO_BLOCK', 'details' => 'Memblokir serangan DDoS', 'ip' => 'System', 'time' => '2026-01-19 16:45:00'],
-            ['id' => 4, 'user' => 'admin', 'action' => 'CREATE_USER', 'details' => 'Membuat user baru: auditor_jr', 'ip' => '192.168.1.100', 'time' => '2026-01-19 10:30:00'],
-            ['id' => 5, 'user' => 'admin', 'action' => 'LOGIN', 'details' => 'Login berhasil', 'ip' => '192.168.1.110', 'time' => '2026-01-18 09:15:00'],
-        ];
-        
-        $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/audit', $data);
-        $this->load->view('admin/templates/footer', $data);
-    }
-
-    /**
      * Settings
      */
     public function settings()
     {
+        if ($this->session->userdata('role') !== 'admin') {
+             show_error('Unauthorized', 403);
+        }
+
         $data['title'] = 'Pengaturan';
         $data['page'] = 'settings';
         $data['user'] = $this->_get_user_data();
@@ -242,7 +475,22 @@ class Admin extends CI_Controller {
     public function teams($action = 'index', $id = null)
     {
         $data['user'] = $this->_get_user_data();
+
+        // RBAC Check
+        $role = $this->session->userdata('role');
+        if (in_array($action, ['create', 'store', 'edit', 'update', 'delete'])) {
+             if (!in_array($role, ['admin', 'management'])) {
+                 show_error('Unauthorized', 403);
+             }
+        }
+
+
         
+        // Ensure models are loaded
+        if (!isset($this->Team_model)) {
+            $this->load->model('Team_model');
+        }
+
         switch ($action) {
             case 'create':
                 $data['title'] = 'Tambah Anggota Tim';
@@ -252,51 +500,116 @@ class Admin extends CI_Controller {
                 $this->load->view('admin/teams/create', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
+
+            case 'store':
+                $input = $this->input->post();
+
+                // Validation: Check for existing leader in division
+                if ($input['role'] === 'leader') {
+                    if ($this->Team_model->has_leader($input['division'])) {
+                        $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua Tim. Hapus atau ubah ketua tim lama terlebih dahulu.');
+                        redirect('admin/teams/create');
+                        return;
+                    }
+                }
                 
+                // Upload Photo
+                if (!empty($_FILES['photo']['name'])) {
+                    $upload = $this->_upload_and_resize('photo', 400, 400); // 1:1 Aspect Ratio preferred
+                    if ($upload['status']) {
+                        $input['photo'] = $upload['file_name'];
+                    } else {
+                        $this->session->set_flashdata('error', $upload['error']);
+                        redirect('admin/teams/create');
+                        return;
+                    }
+                }
+
+                if ($this->Team_model->create($input)) {
+                    $this->Audit_model->log('create_team', 'Added team member: ' . $input['name']);
+                    $this->session->set_flashdata('success', 'Anggota tim berhasil ditambahkan');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal menambahkan anggota tim');
+                }
+                redirect('admin/teams');
+                break;
+
             case 'edit':
                 $data['title'] = 'Edit Anggota Tim';
                 $data['page'] = 'teams';
-                // Mock team data
-                $data['member'] = ['id' => $id, 'name' => 'Ahmad Fauzi', 'position' => 'Kepala Tim Media Baru', 'role' => 'leader', 'division' => 'media_baru']; // Dummy
-                
+                $data['member'] = $this->Team_model->get_by_id($id);
+
+                if (!$data['member']) show_404();
+
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
                 $this->load->view('admin/teams/edit', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
                 
+            case 'update':
+                $input = $this->input->post();
+                
+                // Validation: Check for existing leader (exclude self)
+                if ($input['role'] === 'leader') {
+                    if ($this->Team_model->has_leader($input['division'], $id)) {
+                        $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua Tim.');
+                        redirect('admin/teams/edit/' . $id);
+                        return;
+                    }
+                }
+
+                if (!empty($_FILES['photo']['name'])) {
+                    $upload = $this->_upload_and_resize('photo', 400, 400);
+                    if ($upload['status']) {
+                        $input['photo'] = $upload['file_name'];
+                    } else {
+                        $this->session->set_flashdata('error', $upload['error']);
+                        redirect('admin/teams/edit/' . $id);
+                        return;
+                    }
+                }
+
+                if ($this->Team_model->update($id, $input)) {
+                    $this->Audit_model->log('update_team', 'Updated team member ID: ' . $id);
+                    $this->session->set_flashdata('success', 'Data tim berhasil diperbarui');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal memperbarui data');
+                }
+                redirect('admin/teams');
+                break;
+
+            case 'delete':
+                $member = $this->Team_model->get_by_id($id);
+                if ($this->Team_model->delete($id)) {
+                    $this->Audit_model->log('delete_team', 'Deleted team member: ' . ($member['name'] ?? $id));
+                    $this->session->set_flashdata('success', 'Anggota tim berhasil dihapus');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal menghapus anggota');
+                }
+                redirect('admin/teams');
+                break;
+
             case 'index':
             default:
                 $data['title'] = 'Manajemen Tim';
                 $data['page'] = 'teams';
                 
-                // Dummy team data for Tim Teknologi Media Baru
-                $data['team_media_baru'] = [
-                    ['id' => 1, 'name' => 'Ahmad Fauzi', 'position' => 'Kepala Tim Media Baru', 'role' => 'leader', 'order' => 1],
-                    ['id' => 2, 'name' => 'Siti Rahayu', 'position' => 'Web Dev Lead', 'role' => 'member', 'order' => 2],
-                    ['id' => 3, 'name' => 'Budi Santoso', 'position' => 'Content Lead', 'role' => 'member', 'order' => 3],
-                    ['id' => 4, 'name' => 'Dewi Pertiwi', 'position' => 'UI/UX Designer', 'role' => 'member', 'order' => 4],
-                    ['id' => 5, 'name' => 'Rudi Hermawan', 'position' => 'Web Developer', 'role' => 'member', 'order' => 5],
-                    ['id' => 6, 'name' => 'Rina Wulandari', 'position' => 'Video Producer', 'role' => 'member', 'order' => 6],
-                    ['id' => 7, 'name' => 'Agus Prasetyo', 'position' => 'Podcast Manager', 'role' => 'member', 'order' => 7],
-                    ['id' => 8, 'name' => 'Maya Kusuma', 'position' => 'Social Media', 'role' => 'member', 'order' => 8],
-                ];
+                // Fetch ALL teams and sort/group them in the view or here
+                // For simplified grouping as requested (Media Baru vs IT)
+                // We'll fetch all sorted by division & level using the new model method
+                $all_teams = $this->Team_model->get_all_by_division_sorted();
                 
-                // Dummy team data for Tim IT
-                $data['team_it'] = [
-                    ['id' => 9, 'name' => 'Hendra Wijaya', 'position' => 'Kepala Tim IT', 'role' => 'leader', 'order' => 1],
-                    ['id' => 10, 'name' => 'Eko Nugroho', 'position' => 'Infrastructure Lead', 'role' => 'member', 'order' => 2],
-                    ['id' => 11, 'name' => 'Dian Pratama', 'position' => 'Security Lead', 'role' => 'member', 'order' => 3],
-                    ['id' => 12, 'name' => 'Fitri Handayani', 'position' => 'Security Analyst', 'role' => 'member', 'order' => 4],
-                    ['id' => 13, 'name' => 'Gunawan Setiadi', 'position' => 'DBA', 'role' => 'member', 'order' => 5],
-                    ['id' => 14, 'name' => 'Indra Lesmana', 'position' => 'IT Support', 'role' => 'member', 'order' => 6],
-                    ['id' => 15, 'name' => 'Joko Widodo', 'position' => 'Cloud Engineer', 'role' => 'member', 'order' => 7],
-                    ['id' => 16, 'name' => 'Kartika Sari', 'position' => 'DevOps', 'role' => 'member', 'order' => 8],
-                ];
+                $data['team_media_baru'] = array_filter($all_teams, function($t) { 
+                    return $t['division'] == 'media_baru'; 
+                });
+                $data['team_it'] = array_filter($all_teams, function($t) { 
+                    return $t['division'] == 'it'; 
+                });
                 
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/teams/teams', $data); // Updated path
+                $this->load->view('admin/teams/teams', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
         }
@@ -415,52 +728,53 @@ class Admin extends CI_Controller {
     public function ip_management($region = null)
     {
         $data['user'] = $this->_get_user_data();
-        $data['page'] = 'ip_management'; // Set active page for sidebar
+        $data['page'] = 'ip_management'; 
+        
+        $this->load->model('Ip_model');
         
         $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar', $data); // Pass data to sidebar
+        $this->load->view('admin/templates/sidebar', $data); 
 
-        $all_ip_data = $this->_generate_public_ips();
+        // Fetch Data from DB
+        $search = $this->input->get('q');
+        $all_ip_data = $this->Ip_model->get_all_grouped_by_network($search);
 
         // If no region selected, show dashboard with summary data
         if (!$region) {
             $data['title'] = 'Manajemen IP Address';
             
-            // Calculate summaries for the dashboard
+            // Generate Summary for Dashboard Cards
             $summary = [];
-            $total_ips = 0;
-            $used_ips = 0;
-
-            foreach ($all_ip_data as $key => $region_data) {
-                $region_total = count($region_data['ips']);
-                $region_used = 0;
-                foreach ($region_data['ips'] as $ip) {
-                    if (!empty($ip['description']) || (isset($ip['type']) && $ip['type'] === 'gateway')) {
-                        $region_used++;
-                    }
+            foreach ($all_ip_data as $slug => $net) {
+                // Calculate usage stats dynamically based on DB rows
+                // Assumptions: 
+                // - Total IPs = Rows in DB (for now, as we only seeded significant ones)
+                // - Used = Status active
+                // To display "Total Capacity" (e.g. /26 = 64 IPs), we would need calculation. 
+                // User requirement: "Data yg sebelumnya hardcode dijadikan database".
+                // The DB rows represent the "Inventory".
+                
+                $total_rows = count($net['ips']);
+                $used_rows = 0;
+                foreach ($net['ips'] as $ip) {
+                    if ($ip['status'] == 'active') $used_rows++;
                 }
 
-                $summary[$key] = [
-                    'name' => $region_data['name'],
-                    'cidr' => $region_data['cidr'],
-                    'total' => $region_total,
-                    'used' => $region_used,
-                    'free' => $region_total - $region_used,
-                    'usage_percent' => ($region_total > 0) ? round(($region_used / $region_total) * 100) : 0
+                $summary[$slug] = [
+                    'name' => $net['name'],
+                    'cidr' => $net['cidr'],
+                    'range_start' => $net['range_start'],
+                    'range_end' => $net['range_end'],
+                    'subnet_mask' => $net['subnet_mask'] ?? '255.255.255.0',
+                    'total' => $total_rows,
+                    'used' => $used_rows,
+                    'free' => $total_rows - $used_rows,
+                    'usage_percent' => ($total_rows > 0) ? round(($used_rows / $total_rows) * 100) : 0
                 ];
-
-                $total_ips += $region_total;
-                $used_ips += $region_used;
             }
 
             $data['regions'] = $summary;
-            $data['global_stats'] = [
-                'total_ips' => $total_ips,
-                'used_ips' => $used_ips,
-                'free_ips' => $total_ips - $used_ips,
-                'usage_percent' => ($total_ips > 0) ? round(($used_ips / $total_ips) * 100) : 0,
-                'total_networks' => count($summary)
-            ];
+            $data['global_stats'] = $this->Ip_model->get_global_stats();
 
             $this->load->view('admin/ip/ip_management/index', $data);
         } else {
@@ -477,6 +791,52 @@ class Admin extends CI_Controller {
         }
 
         $this->load->view('admin/templates/footer');
+    }
+
+    public function ip_export($region)
+    {
+        // Cek login & role (redundant with constructor but good practice)
+        if (!$this->session->userdata('logged_in') || $this->session->userdata('role') !== 'admin') {
+            redirect('auth/login');
+        }
+
+        $this->load->model('Ip_model');
+        $this->load->helper('download');
+
+        $search = $this->input->get('q');
+        $all_ip_data = $this->Ip_model->get_all_grouped_by_network($search);
+
+        if (!isset($all_ip_data[$region])) {
+            show_404();
+            return;
+        }
+
+        $network = $all_ip_data[$region];
+        $ips = $network['ips'];
+
+        // CSV Header
+        $csv_content = "No,IP Address,Status,Keterangan,Tipe\n";
+
+        // CSV Data
+        foreach ($ips as $ip) {
+            // Escape content for CSV
+            $keterangan = str_replace('"', '""', $ip['description']);
+            $status = ucfirst($ip['status']);
+            $type = ucfirst($ip['type']);
+            
+            $line = [
+                $ip['no'],
+                $ip['ip_address'],
+                $status,
+                '"' . $keterangan . '"',
+                $type
+            ];
+            
+            $csv_content .= implode(',', $line) . "\n";
+        }
+
+        $filename = 'IP_Data_' . $network['name'] . '_' . date('Ymd_His') . '.csv';
+        force_download($filename, $csv_content);
     }
 
     public function ip_private()
@@ -519,7 +879,9 @@ class Admin extends CI_Controller {
         $data['title'] = 'Kelola Network Wilayah';
         $data['page'] = 'ip_management';
         $data['user'] = $this->_get_user_data();
-        $data['networks'] = $this->_get_networks();
+        
+        $this->load->model('Ip_model');
+        $data['networks'] = $this->Ip_model->get_networks();
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -529,6 +891,8 @@ class Admin extends CI_Controller {
 
     public function network_create()
     {
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
         $data['title'] = 'Tambah Network';
         $data['page'] = 'ip_management';
         $data['user'] = $this->_get_user_data();
@@ -541,39 +905,46 @@ class Admin extends CI_Controller {
 
     public function network_store()
     {
-        $networks = $this->_get_networks();
-        $id = $this->input->post('id'); // slug
-        
-        if(isset($networks[$id])) {
-            $this->session->set_flashdata('error', 'ID Network sudah ada!');
-            redirect('admin/ip_management/network_create');
-        }
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
 
-        $networks[$id] = [
-            'id' => $id,
+        $this->load->model('Ip_model');
+        
+        $data = [
+            'slug' => url_title($this->input->post('name'), 'dash', TRUE),
             'name' => $this->input->post('name'),
             'cidr' => $this->input->post('cidr'),
             'range_start' => $this->input->post('range_start'),
             'range_end' => $this->input->post('range_end'),
             'subnet_mask' => $this->input->post('subnet_mask'),
             'description' => $this->input->post('description'),
-            'is_reserve' => $this->input->post('is_reserve') ? true : false
+            'is_reserve' => $this->input->post('is_reserve') ? 1 : 0
         ];
 
-        $this->_save_networks($networks);
-        $this->session->set_flashdata('success', 'Network berhasil ditambahkan!');
+        // Check duplicate? For now, standard insert
+        if ($this->Ip_model->create_network($data)) {
+            $this->Audit_model->log('create_network', 'Created network: ' . $data['name']);
+            $this->session->set_flashdata('success', 'Network berhasil ditambahkan!');
+        } else {
+            $error = $this->db->error(); // Capture DB error like duplicate slug
+            $this->session->set_flashdata('error', 'Gagal menambahkan network: ' . $error['message']);
+        }
+        
         redirect('admin/ip_management/networks');
     }
 
     public function network_edit($id)
     {
-        $networks = $this->_get_networks();
-        if(!isset($networks[$id])) show_404();
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $this->load->model('Ip_model');
+        $network = $this->Ip_model->get_network_by_id($id);
+        
+        if(!$network) show_404();
 
         $data['title'] = 'Edit Network';
         $data['page'] = 'ip_management';
         $data['user'] = $this->_get_user_data();
-        $data['network'] = $networks[$id];
+        $data['network'] = $network;
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -583,34 +954,145 @@ class Admin extends CI_Controller {
 
     public function network_update($id)
     {
-        $networks = $this->_get_networks();
-        if(!isset($networks[$id])) show_404();
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
 
-        // Update fields (ID logic preserved as key)
-        $networks[$id]['name'] = $this->input->post('name');
-        $networks[$id]['cidr'] = $this->input->post('cidr');
-        $networks[$id]['range_start'] = $this->input->post('range_start');
-        $networks[$id]['range_end'] = $this->input->post('range_end');
-        $networks[$id]['subnet_mask'] = $this->input->post('subnet_mask');
-        $networks[$id]['description'] = $this->input->post('description');
-        $networks[$id]['is_reserve'] = $this->input->post('is_reserve') ? true : false;
+        $this->load->model('Ip_model');
+        
+        $data = [
+            'name' => $this->input->post('name'),
+            'cidr' => $this->input->post('cidr'),
+            'range_start' => $this->input->post('range_start'),
+            'range_end' => $this->input->post('range_end'),
+            'subnet_mask' => $this->input->post('subnet_mask'),
+            'description' => $this->input->post('description'),
+            'is_reserve' => $this->input->post('is_reserve') ? 1 : 0
+        ];
 
-        $this->_save_networks($networks);
-        $this->session->set_flashdata('success', 'Data Network berhasil diperbarui!');
+        if ($this->Ip_model->update_network($id, $data)) {
+            $this->Audit_model->log('update_network', 'Updated network ID: ' . $id);
+            $this->session->set_flashdata('success', 'Data Network berhasil diperbarui!');
+        } else {
+             $this->session->set_flashdata('error', 'Gagal memperbarui data network.');
+        }
         redirect('admin/ip_management/networks');
     }
 
     public function network_delete($id)
     {
-        $networks = $this->_get_networks();
-        if(isset($networks[$id])) {
-            unset($networks[$id]);
-            $this->_save_networks($networks);
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $this->load->model('Ip_model');
+        // Get name before delete for log
+        $network = $this->Ip_model->get_network_by_id($id);
+
+        if ($this->Ip_model->delete_network($id)) {
+            $this->Audit_model->log('delete_network', 'Deleted network: ' . ($network['name'] ?? $id));
             $this->session->set_flashdata('success', 'Network berhasil dihapus!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menghapus network.');
         }
         redirect('admin/ip_management/networks');
     }
 
+    // =====================================================
+    // IP CRUD (Individual)
+    // =====================================================
+
+    public function ip_edit($ip_or_id = null)
+    {
+        // Admin & Management
+        if (!in_array($this->session->userdata('role'), ['admin', 'management'])) {
+            show_error('Unauthorized', 403);
+        }
+
+        $this->load->model('Ip_model');
+        
+        $ip_data = null;
+        
+        // Retrieve explicit query param if present (safer for IPs with dots)
+        $query_ip = $this->input->get('ip'); 
+        if ($query_ip) {
+            $ip_or_id = $query_ip;
+        }
+
+        // 1. Try by ID (if numeric)
+        if (is_numeric($ip_or_id)) {
+            $ip_data = $this->Ip_model->get_ip_by_id($ip_or_id);
+        }
+
+        // 2. If not found by ID (or not numeric), try by IP Address String
+        if (!$ip_data && $ip_or_id) {
+             $ip_data = $this->Ip_model->get_ip_by_address($ip_or_id);
+        }
+
+        // 3. If still not found, it means it's a "Free/Virtual" IP we want to activate/edit
+        if (!$ip_data && $ip_or_id) {
+             // Create a temporary object for the view
+             $ip_data = [
+                 'id' => null,
+                 'network_id' => $this->input->get('network_id'), // Passed from link
+                 'ip_address' => $ip_or_id,
+                 'description' => '',
+                 'type' => 'normal',
+                 'status' => 'inactive'
+             ];
+        }
+
+        if (!$ip_data) {
+            show_404();
+            return;
+        }
+
+        $data['title'] = 'Edit IP Address';
+        $data['page'] = 'ip_management';
+        $data['user'] = $this->_get_user_data();
+        $data['ip'] = $ip_data;
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/ip/ip_management/form_ip', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function ip_update()
+    {
+        // Admin & Management
+        if (!in_array($this->session->userdata('role'), ['admin', 'management'])) {
+            show_error('Unauthorized', 403);
+        }
+
+        $this->load->model('Ip_model');
+        
+        $data = [
+            'network_id' => $this->input->post('network_id'),
+            'ip_address' => $this->input->post('ip_address'),
+            'description' => $this->input->post('description'),
+            'type' => $this->input->post('type'),
+            'status' => $this->input->post('status')
+        ];
+
+        // Basic Validation
+        if (empty($data['network_id']) || empty($data['ip_address'])) {
+             $this->session->set_flashdata('error', 'Data tidak lengkap (Network ID / IP missing).');
+             redirect('admin/ip_management');
+             return;
+        }
+
+        if ($this->Ip_model->save_ip($data)) {
+            $this->Audit_model->log('update_ip', "Updated IP: {$data['ip_address']} ({$data['status']})");
+            $this->session->set_flashdata('success', 'Data IP berhasil diperbarui!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memperbarui data IP.');
+        }
+
+        // Redirect logic
+        $network = $this->Ip_model->get_network_by_id($data['network_id']);
+        if ($network && isset($network['slug'])) {
+            redirect('admin/ip_management/' . $network['slug']);
+        } else {
+             redirect('admin/ip_management');
+        }
+    }
 
     private function _generate_public_ips()
     {
@@ -917,6 +1399,40 @@ class Admin extends CI_Controller {
         $this->load->view('admin/templates/footer', $data);
     }
 
+    /**
+     * Audit Log
+     */
+    public function audit()
+    {
+        // Admin Only
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $data['title'] = 'Audit Log';
+        $data['page'] = 'audit';
+        $data['user'] = $this->_get_user_data();
+
+        // Get logs
+        $raw_logs = $this->Audit_model->get_all(500); // Limit 500
+        
+        // Map to View Format
+        $data['logs'] = array_map(function($log) {
+            return [
+                'time' => $log['created_at'],
+                'user' => $log['username'] ?? 'System',
+                'action' => strtoupper($log['action']),
+                'details' => $log['details'],
+                'ip' => $log['ip_address']
+            ];
+        }, $raw_logs);
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/audit', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+
+
     private function _generate_vpn_ip_data()
     {
         $data = [];
@@ -1003,11 +1519,15 @@ class Admin extends CI_Controller {
 
     private function _get_user_data()
     {
+        // If we strictly want database data, fetch it.
+        // But session data is usually enough. For Avatar we might need to be sure.
+        // Let's use session, it's faster. Avatar is in session.
         return [
             'id' => $this->session->userdata('user_id'),
             'username' => $this->session->userdata('username'),
             'role' => $this->session->userdata('role'),
-            'role_name' => $this->session->userdata('role_name')
+            'role_name' => $this->session->userdata('role_name'),
+            'avatar' => $this->session->userdata('avatar') ?? 'default_avatar.png'
         ];
     }
 }

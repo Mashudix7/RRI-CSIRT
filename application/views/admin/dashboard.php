@@ -3,7 +3,7 @@
      ===================================================== -->
 
 <!-- Welcome Banner -->
-<div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 text-white relative overflow-hidden">
+<div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 text-white relative overflow-hidden" data-aos="fade-down">
     <div class="absolute inset-0 opacity-20">
         <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -25,12 +25,12 @@
 <!-- Attack Stats Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Attacks -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="0">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Serangan</p>
-                <p class="text-3xl font-bold text-gray-900 dark:text-white"><?= number_format($stats['total_attacks']) ?></p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['total_attacks'] ?>"><?= number_format($stats['total_attacks']) ?></p>
             </div>
             <div class="w-12 h-12 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,12 +42,12 @@
     </div>
     
     <!-- Blocked Attacks -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Serangan Diblokir</p>
-                <p class="text-3xl font-bold text-green-600 dark:text-green-400"><?= number_format($stats['blocked_attacks']) ?></p>
+                <p class="text-3xl font-bold text-green-600 dark:text-green-400" data-count-up="<?= $stats['blocked_attacks'] ?>"><?= number_format($stats['blocked_attacks']) ?></p>
             </div>
             <div class="w-12 h-12 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,12 +62,12 @@
     </div>
     
     <!-- Active Threats -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Ancaman Aktif</p>
-                <p class="text-3xl font-bold text-orange-600 dark:text-orange-400"><?= $stats['active_threats'] ?></p>
+                <p class="text-3xl font-bold text-orange-600 dark:text-orange-400" data-count-up="<?= $stats['active_threats'] ?>"><?= $stats['active_threats'] ?></p>
             </div>
             <div class="w-12 h-12 bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@
     </div>
     
     <!-- Protection Level -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="300">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
         <div class="flex items-center justify-between">
             <div>
@@ -99,7 +99,7 @@
 <!-- Main Content Grid -->
 <div class="grid lg:grid-cols-3 gap-6">
     <!-- Attack Activity Chart/List (Left - 2 columns) -->
-    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700">
+    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="400">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aktivitas Ancaman Terbaru</h2>
             <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
@@ -161,7 +161,7 @@
     <!-- Right Sidebar (1 column) -->
     <div class="space-y-6">
         <!-- Attack Types -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="500">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Jenis Serangan</h3>
             
             <div class="space-y-4">
@@ -194,7 +194,7 @@
         </div>
         
         <!-- Quick Actions (Updated) -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="600">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kontrol Keamanan</h3>
             
             <div class="space-y-3">
@@ -237,7 +237,7 @@
         </div>
         
         <!-- System Status -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="700">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status Agen</h3>
             
             <div class="space-y-3">

@@ -17,38 +17,30 @@
     </a>
 </div>
 
-<!-- Flash Message -->
-<?php if ($this->session->flashdata('success')): ?>
-<div class="mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-500/20 flex items-center gap-3">
-    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-    </svg>
-    <?= $this->session->flashdata('success') ?>
-</div>
-<?php endif; ?>
+
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
         <div class="text-2xl font-bold text-gray-900 dark:text-white"><?= count($users) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Total Pengguna</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-green-600 dark:text-green-400"><?= count(array_filter($users, fn($u) => $u['status'] === 'active')) ?></div>
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400"><?= count(array_filter($users, function($u) { return $u['status'] === 'active'; })) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Aktif</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-gray-400"><?= count(array_filter($users, fn($u) => $u['status'] === 'inactive')) ?></div>
+        <div class="text-2xl font-bold text-gray-400"><?= count(array_filter($users, function($u) { return $u['status'] === 'inactive'; })) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Nonaktif</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400"><?= count(array_filter($users, fn($u) => $u['role'] === 'admin')) ?></div>
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400"><?= count(array_filter($users, function($u) { return $u['role'] === 'admin'; })) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Admin</div>
     </div>
 </div>
 
 <!-- Users Table -->
-<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden">
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
     <div class="overflow-x-auto">
         <table class="w-full">
             <thead class="bg-gray-50 dark:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700">
@@ -67,8 +59,12 @@
                     <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium"><?= $no++ ?></td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                                <span class="text-white font-semibold"><?= strtoupper(substr($u['username'], 0, 1)) ?></span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($u['avatar']) || $u['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-100' ?>">
+                                <?php if (!empty($u['avatar']) && $u['avatar'] !== 'default_avatar.png'): ?>
+                                    <img src="<?= base_url('uploads/avatars/' . $u['avatar']) ?>" alt="<?= $u['username'] ?>" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <span class="text-white font-semibold"><?= strtoupper(substr($u['username'], 0, 1)) ?></span>
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <div class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($u['username']) ?></div>
@@ -80,8 +76,7 @@
                         <?php
                         $role_colors = [
                             'admin' => 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300',
-                            'analyst' => 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
-                            'reporter' => 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300',
+                            'management' => 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
                             'auditor' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
                         ];
                         $color = $role_colors[$u['role']] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300';
@@ -104,7 +99,7 @@
                         <?php endif; ?>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                        <?= date('d M Y, H:i', strtotime($u['last_login'])) ?>
+                        <?= !empty($u['last_login']) ? date('d M Y, H:i', strtotime($u['last_login'])) : '<span class="text-gray-400 italic">Belum login</span>' ?>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
@@ -113,7 +108,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </a>
-                            <a href="<?= base_url('admin/user_delete/' . $u['id']) ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')" class="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 rounded-lg transition-colors" title="Hapus">
+                            <a href="<?= base_url('admin/user_delete/' . $u['id']) ?>" data-confirm="Apakah Anda yakin ingin menghapus pengguna ini?" class="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 rounded-lg transition-colors" title="Hapus">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>

@@ -101,6 +101,18 @@ $route['admin/articles/(:any)'] = 'admin/articles/$1';
 $route['admin/teams'] = 'admin/teams';
 $route['admin/teams/(:any)'] = 'admin/teams/$1';
 $route['admin/ip-management'] = 'admin/ip_management';
+
+// Specific IP/Network CRUD Routes - MUST be before generic (:any)
+$route['admin/ip_management/networks'] = 'admin/networks'; // Handle the link currently in UI
+$route['admin/ip_management/network_create'] = 'admin/network_create';
+$route['admin/ip_management/network_store'] = 'admin/network_store';
+$route['admin/ip_management/network_edit/(:any)'] = 'admin/network_edit/$1';
+$route['admin/ip_management/network_update/(:any)'] = 'admin/network_update/$1';
+$route['admin/ip_management/network_delete/(:any)'] = 'admin/network_delete/$1';
+
+$route['admin/ip_edit/(:any)'] = 'admin/ip_edit/$1';
+$route['admin/ip_update'] = 'admin/ip_update';
+
 $route['admin/ip-management/(:any)'] = 'admin/ip_management/$1';
 $route['admin/ip-private'] = 'admin/ip_private';
 $route['admin/vpn-management'] = 'admin/vpn_management';

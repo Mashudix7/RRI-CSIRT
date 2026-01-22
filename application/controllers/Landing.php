@@ -31,6 +31,8 @@ class Landing extends CI_Controller {
         parent::__construct();
         // Load URL helper untuk base_url()
         $this->load->helper('url');
+        $this->load->model('Team_model');
+        $this->load->model('Article_model');
     }
 
     /**
@@ -40,6 +42,25 @@ class Landing extends CI_Controller {
     public function index()
     {
         $data['title'] = 'Beranda';
+        
+        // Get latest 3 articles for news section
+        $data['recent_articles'] = $this->Article_model->get_all(3, 0);
+
+        // Fetch Stats (Using DB count or fallback)
+        $data['stats'] = [
+            'tickets_resolved' => 1240, // Default base
+            'attacks_blocked' => 8500, // Default base
+            'active_monitoring' => '24/7',
+            'uptime' => '99.9%'
+        ];
+        
+        // Try to get real counts if tables exist
+        if ($this->db->table_exists('tickets')) {
+             $data['stats']['tickets_resolved'] += $this->db->where('status', 'resolved')->count_all_results('tickets');
+        }
+        if ($this->db->table_exists('login_attempts')) {
+             $data['stats']['attacks_blocked'] += $this->db->count_all('login_attempts');
+        }
         
         // Load views dengan template
         $this->load->view('templates/header', $data);
@@ -70,33 +91,36 @@ class Landing extends CI_Controller {
     {
         $data['title'] = 'Tim Kami';
         
-        // Data tim (bisa dipindah ke database nanti)
-        $data['team_members'] = [
-            [
-                'name' => 'Ahmad Fauzi',
-                'role' => 'Kepala Tim CSIRT',
-                'description' => 'Memimpin tim dalam penanganan insiden keamanan siber dan koordinasi respons.',
-                'image' => 'team1.jpg'
-            ],
-            [
-                'name' => 'Siti Rahayu',
-                'role' => 'Security Analyst',
-                'description' => 'Spesialisasi dalam analisis malware dan forensik digital.',
-                'image' => 'team2.jpg'
-            ],
-            [
-                'name' => 'Budi Santoso',
-                'role' => 'Incident Responder',
-                'description' => 'Menangani respons cepat terhadap insiden dan pemulihan sistem.',
-                'image' => 'team3.jpg'
-            ],
-            [
-                'name' => 'Dewi Pertiwi',
-                'role' => 'Security Engineer',
-                'description' => 'Mengembangkan dan memelihara infrastruktur keamanan.',
-                'image' => 'team4.jpg'
-            ]
-        ];
+        // Hapus data tim 'it' dan 'media_baru' jika ada (sesuai request)
+        $this->Team_model->delete_invalid_divisions();
+
+        // Data tim dari database
+        $all_teams = $this->Team_model->get_all();
+        
+        // Group by division
+        $grouped_teams = [];
+        foreach ($all_teams as $member) {
+            $division = $member['division'] ?? 'Lainnya'; // Fallback if division is empty
+            if (!isset($grouped_teams[$division])) {
+                $grouped_teams[$division] = [];
+            }
+            $grouped_teams[$division][] = $member;
+        }
+
+        // Sort each group: Leader first, then others
+        foreach ($grouped_teams as $div => &$members) {
+            usort($members, function($a, $b) {
+                // Priority: Leader < Staff
+                $level_order = ['leader' => 1, 'manager' => 2, 'staff' => 3];
+                $wa = $level_order[$a['level'] ?? 'staff'] ?? 99;
+                $wb = $level_order[$b['level'] ?? 'staff'] ?? 99;
+                if ($wa != $wb) return $wa - $wb;
+                
+                return strcmp($a['name'], $b['name']);
+            });
+        }
+        
+        $data['grouped_teams'] = $grouped_teams;
         
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar', $data);

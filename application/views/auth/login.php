@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Login - CSIRT RRI">
     <title>Login | CSIRT RRI</title>
+    <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>

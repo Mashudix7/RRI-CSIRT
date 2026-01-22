@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `rri_csirt`;
-USE `rri_csirt`;
+CREATE DATABASE IF NOT EXISTS `csirt_rri`;
+USE `csirt_rri`;
 
 -- 1. Users Table
 CREATE TABLE `users` (

@@ -11,12 +11,7 @@
     </div>
 
     <!-- Alert -->
-    <?php if($this->session->flashdata('success')): ?>
-    <div class="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-lg flex items-center gap-3">
-         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        <?= $this->session->flashdata('success') ?>
-    </div>
-    <?php endif; ?>
+
 
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div class="overflow-x-auto">
@@ -36,7 +31,7 @@
                          <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada data network.</td>
                     </tr>
                     <?php else: ?>
-                    <?php foreach ($networks as $id => $net): ?>
+                    <?php foreach ($networks as $net): ?>
                     <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
                             <?= $net['name'] ?>
@@ -54,9 +49,9 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="<?= base_url('admin/ip_management/network_edit/'.$id) ?>" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Edit</a>
+                                <a href="<?= base_url('admin/ip_management/network_edit/'.$net['id']) ?>" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Edit</a>
                                 <span class="text-gray-300">|</span>
-                                <a href="<?= base_url('admin/ip_management/network_delete/'.$id) ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus network ini?')" class="text-red-500 hover:text-red-700 font-medium text-sm">Hapus</a>
+                                <a href="<?= base_url('admin/ip_management/network_delete/'.$net['id']) ?>" data-confirm="Apakah Anda yakin ingin menghapus network ini?" class="text-red-500 hover:text-red-700 font-medium text-sm">Hapus</a>
                             </div>
                         </td>
                     </tr>
