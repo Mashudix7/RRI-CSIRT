@@ -155,6 +155,18 @@ class Admin extends CI_Controller {
         $data['page'] = 'dashboard';
         $data['user'] = $this->_get_user_data();
 
+<<<<<<< HEAD
+        // Mock Data for Admin Dashboard
+        $data['stats'] = [
+            'total_users' => $this->User_model->count_all(),
+            'total_articles' => $this->Article_model->count_all(),
+            'total_team_members' => $this->Team_model->count_all(),
+            'uptime' => '99.9%'
+        ];
+        
+        $data['attack_stats'] = [];
+        $data['recent_threats'] = [];
+=======
         // Load WAF Model
         $this->load->model('Waf_model');
         
@@ -185,6 +197,7 @@ class Admin extends CI_Controller {
             log_message('debug', 'DEBUG: recent_events has ' . count($data['recent_events']) . ' items');
             file_put_contents(APPPATH . 'cache/admin_events_check.txt', 'Count: ' . count($data['recent_events']));
         }
+>>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -538,9 +551,7 @@ class Admin extends CI_Controller {
         
         // Stats for reports
         $data['stats'] = [
-            'total_attacks' => 12450,
-            'blocked_attacks' => 12400,
-            'threats_detected' => 50,
+            'incidents_this_month' => 0,
             'uptime' => '99.9%'
         ];
         
@@ -735,10 +746,10 @@ class Admin extends CI_Controller {
                 $all_teams = $this->Team_model->get_all_by_division_sorted();
                 
                 $data['team_media_baru'] = array_filter($all_teams, function($t) { 
-                    return $t['division'] == 'media_baru'; 
+                    return $t['division'] == 'Tim Teknologi Media Baru'; 
                 });
                 $data['team_it'] = array_filter($all_teams, function($t) { 
-                    return $t['division'] == 'it'; 
+                    return $t['division'] == 'Tim IT'; 
                 });
                 
                 $this->load->view('admin/templates/header', $data);

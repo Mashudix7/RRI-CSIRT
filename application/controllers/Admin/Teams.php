@@ -63,12 +63,12 @@ class Teams extends Admin_Controller {
             'position' => $this->input->post('position'),
             'division' => $this->input->post('division'),
             'email' => $this->input->post('email'),
-            'level' => $this->input->post('level'),
+            'role' => $this->input->post('level'),
             'photo' => $photo
         ];
 
         // Validate One Leader Per Division
-        if ($data['level'] === 'leader') {
+        if ($data['role'] === 'leader') {
             if ($this->Team_model->has_leader($data['division'])) {
                 $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua! Hanya boleh ada 1 Ketua per Divisi.');
                 redirect('admin/teams/create');
@@ -122,11 +122,11 @@ class Teams extends Admin_Controller {
             'position' => $this->input->post('position'),
             'division' => $this->input->post('division'),
             'email' => $this->input->post('email'),
-            'level' => $this->input->post('level'),
+            'role' => $this->input->post('level'),
         ];
 
         // Validate One Leader Per Division
-        if ($data['level'] === 'leader') {
+        if ($data['role'] === 'leader') {
             if ($this->Team_model->has_leader($data['division'], $id)) {
                 $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua! Hanya boleh ada 1 Ketua per Divisi.');
                 redirect('admin/teams/edit/' . $id);

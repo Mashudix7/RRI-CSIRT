@@ -55,4 +55,8 @@ class Team_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    public function count_all() {
+        return $this->db->count_all('teams');
+    }
+
 }

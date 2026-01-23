@@ -178,12 +178,6 @@
                                     Fortigate
                                 </a>
                             </li>
-                            <li>
-                                <a href="<?= base_url('admin/security-safeline') ?>" 
-                                   class="block px-3 py-2 rounded-lg text-sm transition-colors <?= (isset($page) && $page === 'security_safeline') ? 'text-blue-400 bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' ?>">
-                                    Safe Line
-                                </a>
-                            </li>
                         </ul>
                     </li>
 

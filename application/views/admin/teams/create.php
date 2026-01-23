@@ -32,8 +32,8 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Divisi</label>
                     <select name="division" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
-                        <option value="media_baru">Teknologi Media Baru</option>
-                        <option value="it">Tim IT</option>
+                        <option value="Tim Teknologi Media Baru">Teknologi Media Baru</option>
+                        <option value="Tim IT">Tim IT</option>
                     </select>
                 </div>
 
