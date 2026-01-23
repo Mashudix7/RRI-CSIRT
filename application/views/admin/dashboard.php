@@ -23,182 +23,103 @@
 </div>
 
 <!-- Attack Stats Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <!-- Total Attacks -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="0">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden group" data-aos="fade-up">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Serangan</p>
-                <p class="text-3xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['total_attacks'] ?>"><?= number_format($stats['total_attacks']) ?></p>
+                <h3 id="stat-total-attacks" class="text-3xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['total_attacks'] ?>"><?= number_format($stats['total_attacks']) ?></h3>
             </div>
-            <div class="w-12 h-12 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
             </div>
         </div>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mt-3">24 jam terakhir</p>
     </div>
     
     <!-- Blocked Attacks -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Serangan Diblokir</p>
-                <p class="text-3xl font-bold text-green-600 dark:text-green-400" data-count-up="<?= $stats['blocked_attacks'] ?>"><?= number_format($stats['blocked_attacks']) ?></p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Diblokir Safeline</p>
+                <h3 id="stat-blocked-attacks" class="text-3xl font-bold text-green-600 dark:text-green-400" data-count-up="<?= $stats['blocked_attacks'] ?>"><?= number_format($stats['blocked_attacks']) ?></h3>
             </div>
-            <div class="w-12 h-12 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
         </div>
-        <p class="text-xs text-green-600 dark:text-green-400 mt-3 flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            Efektivitas Tinggi
-        </p>
     </div>
     
-    <!-- Active Threats -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
+    <!-- System Status -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Ancaman Aktif</p>
-                <p class="text-3xl font-bold text-orange-600 dark:text-orange-400" data-count-up="<?= $stats['active_threats'] ?>"><?= $stats['active_threats'] ?></p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Status Proteksi</p>
+                <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Terlindungi</h3>
             </div>
-            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
         </div>
-        <p class="text-xs text-orange-600 dark:text-orange-400 mt-3">Perlu investigasi</p>
-    </div>
-    
-    <!-- Protection Level -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600 transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="300">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Tingkat Proteksi</p>
-                <p class="text-3xl font-bold text-blue-600 dark:text-blue-400"><?= $stats['protection_level'] ?></p>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                </svg>
-            </div>
-        </div>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mt-3">Sistem Aman</p>
     </div>
 </div>
 
 <!-- Main Content Grid -->
-<div class="grid lg:grid-cols-3 gap-6">
-    <!-- Attack Activity Chart/List (Left - 2 columns) -->
-    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700" data-aos="fade-up" data-aos-delay="400">
+<div class="grid lg:grid-cols-1 gap-6">
+    <!-- Attack Activity Table -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700" data-aos="fade-up">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aktivitas Ancaman Terbaru</h2>
-            <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
-                Live View <span class="animate-pulse text-red-500">●</span>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aktivitas Serangan Terkini</h2>
+            <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium flex items-center gap-2" id="live-view-btn">
+                Live View <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
             </button>
         </div>
         
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full text-left border-collapse">
                 <thead class="bg-gray-50 dark:bg-slate-700/50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Jenis Serangan</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Sumber</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Target</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Waktu</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">IP Address</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Aplikasi (Target)</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-center">Jumlah</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-center">Durasi</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">Waktu Mulai</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
+                <tbody class="divide-y divide-gray-100 dark:divide-slate-700" id="threat-table-body">
                     <?php if (empty($recent_threats)): ?>
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center">
-                                <div class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                                    <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                    </svg>
-                                    <p class="text-sm italic">Belum ada data ancaman terbaru dari API.</p>
-                                </div>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                                <p class="text-sm italic">Menunggu data dari Safeline WAF...</p>
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($recent_threats as $threat): ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                             <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <?php
-                                    // Map module/attack_type to icon/color
-                                    $module = $threat['module'] ?? 'Unknown';
-                                    // Simple heuristic for icon based on module name
-                                    $icon_bg = 'bg-gray-100 dark:bg-gray-700';
-                                    $icon_text = 'text-gray-600 dark:text-gray-300';
-                                    
-                                    if (stripos($module, 'sql') !== false) {
-                                        $icon_bg = 'bg-orange-100 dark:bg-orange-500/20';
-                                        $icon_text = 'text-orange-600 dark:text-orange-400';
-                                    } elseif (stripos($module, 'xss') !== false || stripos($module, 'script') !== false) {
-                                        $icon_bg = 'bg-yellow-100 dark:bg-yellow-500/20';
-                                        $icon_text = 'text-yellow-600 dark:text-yellow-400';
-                                    } elseif (stripos($module, 'scan') !== false) {
-                                        $icon_bg = 'bg-blue-100 dark:bg-blue-500/20';
-                                        $icon_text = 'text-blue-600 dark:text-blue-400';
-                                    } elseif (stripos($module, 'php') !== false || stripos($module, 'code') !== false) {
-                                        $icon_bg = 'bg-red-100 dark:bg-red-500/20';
-                                        $icon_text = 'text-red-600 dark:text-red-400';
-                                    }
-                                    ?>
-                                    <div class="p-1.5 <?= $icon_bg ?> <?= $icon_text ?> rounded">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                        </svg>
-                                    </div>
-                                    <span class="font-medium text-gray-900 dark:text-white text-sm truncate max-w-[150px]" title="<?= htmlspecialchars($module) ?>">
-                                        <?= htmlspecialchars(str_replace('_', ' ', ucfirst($module))) ?>
-                                    </span>
-                                </div>
+                                <div class="font-mono text-sm text-gray-900 dark:text-white"><?= htmlspecialchars($threat['src_ip'] ?? '-') ?></div>
+                                <div class="text-xs text-blue-500"><?= htmlspecialchars($threat['country'] ?? 'Indonesia') ?></div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm font-mono text-gray-900 dark:text-white"><?= htmlspecialchars($threat['src_ip'] ?? '-') ?></div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">
-                                    <?= htmlspecialchars($threat['city'] ?? '') ?>, <?= htmlspecialchars($threat['country'] ?? '') ?>
-                                </div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?= htmlspecialchars($threat['host'] ?? '-') ?></div>
+                                <div class="text-xs text-gray-500 truncate max-w-[250px]" title="<?= htmlspecialchars($threat['url_path'] ?? '') ?>"><?= htmlspecialchars($threat['url_path'] ?? '') ?></div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 dark:text-white truncate max-w-[200px]" title="<?= htmlspecialchars($threat['host'] ?? '') ?>">
-                                    <?= htmlspecialchars($threat['host'] ?? '-') ?>
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]" title="<?= htmlspecialchars($threat['url_path'] ?? '') ?>">
-                                    <?= htmlspecialchars($threat['url_path'] ?? '') ?>
-                                </div>
+                            <td class="px-6 py-4 text-center">
+                                <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs"><?= isset($threat['count']) ? $threat['count'] : '1' ?></span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                <?= isset($threat['timestamp']) ? date('H:i:s', $threat['timestamp']) : '-' ?>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-xs text-gray-600 dark:text-gray-400"><?= isset($threat['duration']) ? $threat['duration'] : '1m' ?></span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <?php
-                                $action_code = $threat['action'] ?? -1;
-                                // 0: Detected/Log (Blue), 1: Blocked (Green)? Assuming 0 based on log data
-                                // Adjust based on real API meaning.
-                                if ($action_code == 1) {
-                                    $status_label = 'Blocked';
-                                    $status_style = 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300';
-                                } else {
-                                    $status_label = 'Detected';
-                                    $status_style = 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300';
-                                }
-                                ?>
-                                <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full <?= $status_style ?>">
-                                    <?= $status_label ?>
-                                </span>
+                                <div class="text-sm text-gray-900 dark:text-white"><?= date('Y-m-d', $threat['timestamp']) ?></div>
+                                <div class="text-xs text-gray-500"><?= date('H:i:s', $threat['timestamp']) ?></div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -207,6 +128,7 @@
             </table>
         </div>
     </div>
+</div>
     
     <!-- Right Sidebar (1 column) -->
     <div class="space-y-6">
@@ -316,3 +238,97 @@
         </div>
     </div>
 </div>
+
+<!-- WAF Live Update Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const liveViewBtn = document.getElementById('live-view-btn');
+    const threatTableBody = document.getElementById('threat-table-body');
+    let liveInterval = null;
+    let isLive = false;
+
+    function formatTime(timestamp) {
+        if (!timestamp) return '-';
+        const date = new Date(timestamp * 1000);
+        return date.getHours().toString().padStart(2, '0') + ':' + 
+               date.getMinutes().toString().padStart(2, '0') + ':' + 
+               date.getSeconds().toString().padStart(2, '0');
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '-';
+        const date = new Date(timestamp * 1000);
+        return date.getFullYear() + '-' + 
+               (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+               date.getDate().toString().padStart(2, '0');
+    }
+
+    function updateThreatTable(records) {
+        if (!records || records.length === 0) return;
+        
+        let html = '';
+        records.forEach(threat => {
+            html += `
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="font-mono text-sm text-gray-900 dark:text-white">${threat.src_ip || '-'}</div>
+                    <div class="text-xs text-blue-500">${threat.country || 'Indonesia'}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900 dark:text-white">${threat.host || '-'}</div>
+                    <div class="text-xs text-gray-500 truncate max-w-[250px]" title="${threat.url_path || ''}">${threat.url_path || ''}</div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs">${threat.count || '1'}</span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <span class="text-xs text-gray-600 dark:text-gray-400">${threat.duration || '1m'}</span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="text-sm text-gray-900 dark:text-white">${formatDate(threat.timestamp)}</div>
+                    <div class="text-xs text-gray-500">${formatTime(threat.timestamp)}</div>
+                </td>
+            </tr>`;
+        });
+        threatTableBody.innerHTML = html;
+    }
+
+    async function fetchLatestRecords() {
+        try {
+            const response = await fetch('<?= base_url("waf/records?limit=100") ?>');
+            const result = await response.json();
+            if (result.success && result.data && result.data.data) {
+                updateThreatTable(result.data.data);
+                
+                if (result.data.summary) {
+                    const totalElem = document.getElementById('stat-total-attacks');
+                    const blockedElem = document.getElementById('stat-blocked-attacks');
+                    
+                    if (totalElem) {
+                        totalElem.textContent = new Intl.NumberFormat().format(result.data.summary.total);
+                    }
+                    if (blockedElem) {
+                        blockedElem.textContent = new Intl.NumberFormat().format(result.data.summary.blocked);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch WAF records:', error);
+        }
+    }
+
+    if (liveViewBtn) {
+        liveViewBtn.addEventListener('click', function() {
+            isLive = !isLive;
+            if (isLive) {
+                liveViewBtn.classList.add('bg-blue-50', 'text-blue-700');
+                fetchLatestRecords();
+                liveInterval = setInterval(fetchLatestRecords, 30000); // 30s
+            } else {
+                liveViewBtn.classList.remove('bg-blue-50', 'text-blue-700');
+                clearInterval(liveInterval);
+            }
+        });
+    }
+});
+</script>

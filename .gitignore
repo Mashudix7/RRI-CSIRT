@@ -6,6 +6,10 @@ application/cache/*
 application/logs/*
 !application/logs/index.html
 
+# Sensitive files
+application/config/database.php
+application/config/safeline.php
+
 !application/*/.htaccess
 
 composer.lock
