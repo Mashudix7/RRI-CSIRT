@@ -155,6 +155,7 @@ class Admin extends CI_Controller {
         $data['page'] = 'dashboard';
         $data['user'] = $this->_get_user_data();
 
+<<<<<<< HEAD
         // Mock Data for Admin Dashboard
         $data['stats'] = [
             'total_users' => $this->User_model->count_all(),
@@ -165,6 +166,38 @@ class Admin extends CI_Controller {
         
         $data['attack_stats'] = [];
         $data['recent_threats'] = [];
+=======
+        // Load WAF Model
+        $this->load->model('Waf_model');
+        
+        // Fetch Real-time Stats & Logs from Safeline WAF
+        $waf_data = $this->Waf_model->get_daily_stats();
+        
+        // Fetch Dedicated Events from Safeline API
+        $waf_events = $this->Waf_model->get_daily_events(30);
+
+        $data['stats'] = $waf_data['summary'];
+        $data['attack_stats'] = $waf_data['types'];
+        // logs = raw records (individual events)
+        $data['recent_logs'] = $waf_data['recent'] ?? []; 
+        
+        // events = grouped events from open/events api
+        $data['recent_events'] = $waf_events ?? [];
+
+        // Add additional needed stats if not in WAF response
+        $data['stats']['uptime'] = '99.9%'; 
+
+        // Debug Log
+        if (empty($data['recent_logs'])) {
+            log_message('error', 'DEBUG: recent_logs is EMPTY');
+        }
+        if (empty($data['recent_events'])) {
+            log_message('error', 'DEBUG: recent_events is EMPTY');
+        } else {
+            log_message('debug', 'DEBUG: recent_events has ' . count($data['recent_events']) . ' items');
+            file_put_contents(APPPATH . 'cache/admin_events_check.txt', 'Count: ' . count($data['recent_events']));
+        }
+>>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
