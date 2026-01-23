@@ -40,8 +40,13 @@ class Waf_model extends CI_Model {
         // 2. Load Safeline Library
         $this->load->library('safeline_api');
         
-        // 3. Get Records (limit higher for grouping)
-        $result = $this->safeline_api->get_records(300, 0);
+        // 3. Get Records with Today's filter for accuracy
+        $today_start = strtotime('today');
+        // Safeline open/records filter format is typically JSON string
+        // endpoint example: open/records?limit=1&filter={"timestamp":[1234, 5678]}
+        $filter = json_encode(array('timestamp' => array($today_start, time() + 86400)));
+        
+        $result = $this->safeline_api->request('open/records?limit=300&filter=' . urlencode($filter));
 
         if (isset($result['error'])) {
             log_message('error', 'Safeline API Error in Waf_model: ' . $result['error']);
@@ -55,6 +60,39 @@ class Waf_model extends CI_Model {
         $this->_save_cache($stats);
 
         return $stats;
+    }
+
+    /**
+     * Get Paginated Records for WAF Logs
+     */
+    public function get_paginated_records($limit = 10, $offset = 0, $search = null)
+    {
+        $this->load->library('safeline_api');
+        $endpoint = 'open/records?limit=' . $limit . '&offset=' . $offset;
+        
+        if ($search) {
+            // Simple search by IP or Host if supported by API
+            $filter = array('src_ip' => $search); 
+            $endpoint .= '&filter=' . urlencode(json_encode($filter));
+        }
+
+        $result = $this->safeline_api->request($endpoint);
+        
+        if (isset($result['error'])) return array('data' => [], 'total' => 0);
+
+        $data_container = $result['data'] ?? [];
+        $records = [];
+        $total = 0;
+
+        if (isset($data_container['data'])) {
+            $records = $data_container['data'];
+            $total = $data_container['total'] ?? count($records);
+        } elseif (isset($data_container['list'])) {
+            $records = $data_container['list'];
+            $total = $data_container['total'] ?? count($records);
+        }
+
+        return array('data' => $records, 'total' => $total);
     }
 
     /**
@@ -172,10 +210,38 @@ class Waf_model extends CI_Model {
             }
         }
 
-        // Use helper for aggregation
-        $recent_threats = $this->aggregate_records($records);
-        // Limit for initial display
-        $recent_threats = array_slice($recent_threats, 0, 15);
+        // Decorate individual records with IP-based metrics instead of grouping
+        $ip_counts = array();
+        $ip_times = array();
+        foreach ($records as $r) {
+            $ip = $r['src_ip'] ?? ($r['ip'] ?? 'Unknown');
+            $ts = $r['timestamp'] ?? time();
+            $ip_counts[$ip] = ($ip_counts[$ip] ?? 0) + 1;
+            if (!isset($ip_times[$ip])) {
+                $ip_times[$ip] = array('min' => $ts, 'max' => $ts);
+            } else {
+                if ($ts < $ip_times[$ip]['min']) $ip_times[$ip]['min'] = $ts;
+                if ($ts > $ip_times[$ip]['max']) $ip_times[$ip]['max'] = $ts;
+            }
+        }
+
+        $recent_threats = array();
+        foreach (array_slice($records, 0, 30) as $r) {
+            $ip = $r['src_ip'] ?? ($r['ip'] ?? 'Unknown');
+            $diff = $ip_times[$ip]['max'] - $ip_times[$ip]['min'];
+            $recent_threats[] = array(
+                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Unknown'),
+                'src_ip' => $ip,
+                'city' => $r['city'] ?? '',
+                'country' => $r['country'] ?? '',
+                'host' => $r['host'] ?? '',
+                'url_path' => $r['url_path'] ?? '',
+                'timestamp' => $r['timestamp'] ?? time(),
+                'action' => $r['action'] ?? 0,
+                'count' => $ip_counts[$ip],
+                'duration' => ($diff < 60) ? '1m' : ceil($diff / 60) . 'm'
+            );
+        }
 
         if (count($records) > 0 && $blocked_attacks > 0) {
              $ratio = $blocked_attacks / count($records);

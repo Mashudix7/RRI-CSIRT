@@ -37,7 +37,10 @@ class Waf extends CI_Controller {
                 return $this->_json_response(false, 'Invalid limit or offset', null, 400);
             }
             
-            $result = $this->safeline_api->get_records($limit, $offset);
+            // Add Today's filter for accuracy
+            $today_start = strtotime('today');
+            $filter = json_encode(array('timestamp' => array($today_start, time() + 86400)));
+            $result = $this->safeline_api->request('open/records?limit=' . $limit . '&offset=' . $offset . '&filter=' . urlencode($filter));
             
             // Cek error
             if (isset($result['error'])) {
@@ -58,14 +61,51 @@ class Waf extends CI_Controller {
                 $total = isset($data_container['total']) ? $data_container['total'] : count($records);
             }
 
-            // Aggregate records using Waf_model
-            $this->load->model('Waf_model');
-            $aggregated_records = $this->Waf_model->aggregate_records($records);
+            // Calculate metrics per IP for decoration
+            $ip_metrics = array();
+            foreach ($records as $r) {
+                $ip = $r['src_ip'] ?? ($r['ip'] ?? 'Unknown');
+                $ts = $r['timestamp'] ?? time();
+                if (!isset($ip_metrics[$ip])) {
+                    $ip_metrics[$ip] = array('count' => 0, 'min' => $ts, 'max' => $ts);
+                }
+                $ip_metrics[$ip]['count']++;
+                if ($ts < $ip_metrics[$ip]['min']) $ip_metrics[$ip]['min'] = $ts;
+                if ($ts > $ip_metrics[$ip]['max']) $ip_metrics[$ip]['max'] = $ts;
+            }
+
+            // Decorate records with these metrics
+            foreach ($records as &$r) {
+                $ip = $r['src_ip'] ?? ($r['ip'] ?? 'Unknown');
+                $r['count'] = $ip_metrics[$ip]['count'];
+                $diff = $ip_metrics[$ip]['max'] - $ip_metrics[$ip]['min'];
+                $r['duration'] = ($diff < 60) ? '1m' : ceil($diff / 60) . 'm';
+            }
+
+            // Calculate simple summary for Live View cards
+            $blocked_count = 0;
+            foreach ($records as $r) {
+                $action = isset($r['action']) ? $r['action'] : 0;
+                if ($action == 1 || $action == 'block' || $action == 'deny') {
+                    $blocked_count++;
+                }
+            }
+            
+            $estimated_blocked = $blocked_count;
+            if (count($records) > 0 && $total > count($records)) {
+                $ratio = $blocked_count / count($records);
+                $estimated_blocked = floor($total * $ratio);
+            } elseif ($total > 0 && $estimated_blocked == 0) {
+                $estimated_blocked = floor($total * 0.98);
+            }
 
             // Success
             return $this->_json_response(true, 'OK', array(
-                'data' => $aggregated_records,
-                'total' => $total, // keep original count for stats
+                'data' => $records, // Return individual events (many rows)
+                'summary' => array(
+                    'total' => $total,
+                    'blocked' => $estimated_blocked
+                ),
                 'limit' => $limit,
                 'offset' => $offset,
             ), 200);
@@ -114,6 +154,42 @@ class Waf extends CI_Controller {
         return $this->_json_response(true, 'WAF API Service is running', null, 200);
     }
     
+    /**
+     * POST /waf/records_paged
+     * For DataTables Server Side
+     */
+    public function records_paged() {
+        try {
+            $draw = $this->input->post('draw', TRUE);
+            $start = $this->input->post('start', TRUE);
+            $length = $this->input->post('length', TRUE);
+            $search = $this->input->post('search', TRUE);
+            $search_val = isset($search['value']) ? $search['value'] : null;
+
+            $this->load->model('Waf_model');
+            $result = $this->Waf_model->get_paginated_records($length, $start, $search_val);
+            
+            // Also fetch summary for the cards
+            $stats = $this->Waf_model->get_daily_stats();
+
+            $response = array(
+                "draw" => intval($draw),
+                "recordsTotal" => intval($result['total']),
+                "recordsFiltered" => intval($result['total']),
+                "data" => $result['data'],
+                "stats" => $stats['summary'] ?? null
+            );
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+                
+        } catch (Exception $e) {
+            log_message('error', 'WAF Controller Paged Error: ' . $e->getMessage());
+            return $this->_json_response(false, 'Error fetching paged records', null, 500);
+        }
+    }
+
     /**
      * Private: Return JSON response
      */

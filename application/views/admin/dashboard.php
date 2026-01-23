@@ -30,7 +30,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Serangan</p>
-                <h3 class="text-3xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['total_attacks'] ?>"><?= number_format($stats['total_attacks']) ?></h3>
+                <h3 id="stat-total-attacks" class="text-3xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['total_attacks'] ?>"><?= number_format($stats['total_attacks']) ?></h3>
             </div>
             <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,7 +46,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Diblokir Safeline</p>
-                <h3 class="text-3xl font-bold text-green-600 dark:text-green-400" data-count-up="<?= $stats['blocked_attacks'] ?>"><?= number_format($stats['blocked_attacks']) ?></h3>
+                <h3 id="stat-blocked-attacks" class="text-3xl font-bold text-green-600 dark:text-green-400" data-count-up="<?= $stats['blocked_attacks'] ?>"><?= number_format($stats['blocked_attacks']) ?></h3>
             </div>
             <div class="w-12 h-12 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,15 +295,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchLatestRecords() {
         try {
-            const response = await fetch('<?= base_url("waf/records?limit=10") ?>');
+            const response = await fetch('<?= base_url("waf/records?limit=100") ?>');
             const result = await response.json();
             if (result.success && result.data && result.data.data) {
                 updateThreatTable(result.data.data);
                 
-                if (result.data.total) {
-                    const totalElem = document.querySelector('[data-count-up]');
+                if (result.data.summary) {
+                    const totalElem = document.getElementById('stat-total-attacks');
+                    const blockedElem = document.getElementById('stat-blocked-attacks');
+                    
                     if (totalElem) {
-                        totalElem.textContent = new Intl.NumberFormat().format(result.data.total);
+                        totalElem.textContent = new Intl.NumberFormat().format(result.data.summary.total);
+                    }
+                    if (blockedElem) {
+                        blockedElem.textContent = new Intl.NumberFormat().format(result.data.summary.blocked);
                     }
                 }
             }
