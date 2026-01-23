@@ -63,13 +63,6 @@ class Dashboard extends CI_Controller {
             'role_name' => $this->session->userdata('role_name')
         ];
         
-<<<<<<< HEAD
-        // Mock data for dashboard overview
-        $data['stats'] = [
-            'total_incidents' => 0,
-            'resolved_incidents' => 0,
-            'pending_incidents' => 0
-=======
         // Load WAF Model
         $this->load->model('Waf_model');
         
@@ -97,10 +90,9 @@ class Dashboard extends CI_Controller {
                 "attack_type" => 6,
                 "timestamp" => 1769134553
             ]
->>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915
         ];
-        $data['attack_stats'] = [];
-        $data['recent_threats'] = [];
+        */
+
         
         // Load views
         $this->load->view('admin/templates/header', $data);

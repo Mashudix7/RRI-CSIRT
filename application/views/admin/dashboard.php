@@ -22,69 +22,12 @@
     <div class="absolute -right-5 -bottom-5 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
 </div>
 
-<!-- Attack Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <!-- Total Incidents -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden group" data-aos="fade-up">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Insiden</p>
-                <h3 class="text-3xl font-bold text-gray-900 dark:text-white"><?= number_format($stats['total_incidents'] ?? 0) ?></h3>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Resolved Incidents -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Insiden Teratasi</p>
-                <h3 class="text-3xl font-bold text-green-600 dark:text-green-400"><?= number_format($stats['resolved_incidents'] ?? 0) ?></h3>
-            </div>
-            <div class="w-12 h-12 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Pending Incidents -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all relative overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-500"></div>
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Tertunda</p>
-                <h3 class="text-3xl font-bold text-yellow-600 dark:text-yellow-400"><?= number_format($stats['pending_incidents'] ?? 0) ?></h3>
-            </div>
-            <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Main Content Grid -->
-<div class="grid lg:grid-cols-1 gap-6">
-<<<<<<< HEAD
-    <!-- Empty State for Dashboard -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-12 text-center" data-aos="fade-up">
-        <div class="w-20 h-20 bg-slate-100 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-=======
-    <!-- Attack Activity Table -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700" data-aos="fade-up">
+<div class="grid lg:grid-cols-3 gap-6">
+    <!-- Attack Activity Table (Main Column) -->
+    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700" data-aos="fade-up">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aktivitas Serangan WAF</h2>
             
@@ -189,12 +132,11 @@
             </table>
         </div>
     </div>
-</div>
-    
-    <!-- Right Sidebar (1 column) -->
+
+    <!-- Right Sidebar -->
     <div class="space-y-6">
         <!-- Attack Types -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Jenis Serangan</h3>
             
             <div class="space-y-4">
@@ -205,7 +147,7 @@
                     'malware' => ['label' => 'Malware', 'color' => 'bg-yellow-500'],
                     'intrusion' => ['label' => 'Intrusion Attempts', 'color' => 'bg-blue-500']
                 ];
-                $total_types = array_sum($attack_stats);
+                $total_types = array_sum($attack_stats ?? []);
                 ?>
                 
                 <?php foreach ($attack_config as $key => $config): ?>
@@ -226,8 +168,8 @@
             </div>
         </div>
         
-        <!-- Quick Actions (Updated) -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="600">
+        <!-- Quick Actions -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="100">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kontrol Keamanan</h3>
             
             <div class="space-y-3">
@@ -240,18 +182,6 @@
                     <div>
                         <p class="font-medium text-gray-900 dark:text-white">Blokir IP</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Tambahkan ke blacklist</p>
-                    </div>
-                </button>
-                
-                <button class="w-full flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 rounded-xl transition-all text-left group">
-                    <div class="p-2 bg-blue-50 dark:bg-blue-500/10 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20 transition-colors">
-                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Scan Kerentanan</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Jalankan scan cepat</p>
                     </div>
                 </button>
                 
@@ -270,41 +200,34 @@
         </div>
         
         <!-- System Status -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="700">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="200">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status Agen</h3>
             
             <div class="space-y-3">
                 <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-500/10 rounded-lg">
                     <div class="flex items-center gap-2">
                          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Firewall</span>
+                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">WAF Protection</span>
                     </div>
                     <span class="text-xs font-bold text-green-600 dark:text-green-400">ACTIVE</span>
                 </div>
-                <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-500/10 rounded-lg">
+                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
                     <div class="flex items-center gap-2">
-                         <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">IDS/IPS</span>
+                         <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">SSL Status</span>
                     </div>
-                    <span class="text-xs font-bold text-green-600 dark:text-green-400">ONLINE</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-500/10 rounded-lg">
-                    <div class="flex items-center gap-2">
-                         <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">WAF</span>
-                    </div>
-                    <span class="text-xs font-bold text-green-600 dark:text-green-400">PROTECTED</span>
+                    <span class="text-xs font-bold text-blue-600 dark:text-blue-400">SECURE</span>
                 </div>
             </div>
->>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915
         </div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Selamat Datang di SOC RRI</h2>
-        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Gunakan menu di samping untuk mengelola konten, infrastruktur, dan administrasi sistem.</p>
     </div>
 </div>
 
-<<<<<<< HEAD
-=======
+<div class="mt-8 text-center" data-aos="fade-up">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Selamat Datang di SOC RRI</h2>
+    <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Sistem monitoring keamanan terpadu untuk perlindungan aset digital Radio Republik Indonesia.</p>
+</div>
+
 <!-- WAF Live Update Script -->
 <script>
 let currentDashboardTab = 'logs';
@@ -420,6 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchLiveDashboard() {
         try {
             const response = await fetch('waf/dashboard_live');
+            if (!response.ok) return;
             const result = await response.json();
             if (result.success && result.data) {
                 updateLogsTable(result.data.records);
@@ -453,4 +377,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
->>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915

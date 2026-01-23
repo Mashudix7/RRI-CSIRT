@@ -155,18 +155,6 @@ class Admin extends CI_Controller {
         $data['page'] = 'dashboard';
         $data['user'] = $this->_get_user_data();
 
-<<<<<<< HEAD
-        // Mock Data for Admin Dashboard
-        $data['stats'] = [
-            'total_users' => $this->User_model->count_all(),
-            'total_articles' => $this->Article_model->count_all(),
-            'total_team_members' => $this->Team_model->count_all(),
-            'uptime' => '99.9%'
-        ];
-        
-        $data['attack_stats'] = [];
-        $data['recent_threats'] = [];
-=======
         // Load WAF Model
         $this->load->model('Waf_model');
         
@@ -197,7 +185,6 @@ class Admin extends CI_Controller {
             log_message('debug', 'DEBUG: recent_events has ' . count($data['recent_events']) . ' items');
             file_put_contents(APPPATH . 'cache/admin_events_check.txt', 'Count: ' . count($data['recent_events']));
         }
->>>>>>> 6e338db9642a6ba50727bb53ceb4fb22bbcc0915
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
