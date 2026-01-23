@@ -92,7 +92,7 @@ class Landing extends CI_Controller {
         $data['title'] = 'Tim Kami';
         
         // Hapus data tim 'it' dan 'media_baru' jika ada (sesuai request)
-        $this->Team_model->delete_invalid_divisions();
+
 
         // Data tim dari database
         $all_teams = $this->Team_model->get_all();

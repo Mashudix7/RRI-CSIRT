@@ -50,9 +50,9 @@
                     <?php if (!empty($article['thumbnail'])): ?>
                         <?php 
                             $thumb = $article['thumbnail'];
-                            if (strpos($thumb, 'assets/') === false) $thumb = 'assets/uploads/articles/' . $thumb;
+                            if (strpos($thumb, 'assets/') === false) $thumb = 'assets/uploads/' . $thumb;
                         ?>
-                        <img src="<?= base_url($thumb) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="<?= base_url($thumb) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                     <?php else: ?>
                         <div class="absolute inset-0 flex items-center justify-center">
                             <svg class="w-16 h-16 text-white/20" fill="currentColor" viewBox="0 0 24 24">

@@ -149,7 +149,7 @@
                         <!-- Image Placeholder -->
                         <div class="relative <?= $index === 0 ? 'h-64 lg:h-80' : 'h-40' ?> bg-gradient-to-br from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-900 overflow-hidden">
                             <?php if (!empty($article['thumbnail'])): ?>
-                                <img src="<?= base_url($article['thumbnail']) ?>" alt="<?= $article['title'] ?>" class="w-full h-full object-cover">
+                                <img src="<?= base_url($article['thumbnail']) ?>" alt="<?= $article['title'] ?>" class="w-full h-full object-cover" loading="lazy">
                             <?php else: ?>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-white/40">
                                     <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

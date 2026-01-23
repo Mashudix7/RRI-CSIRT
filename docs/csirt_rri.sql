@@ -510,6 +510,19 @@ CREATE TABLE `knowledge_base` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `login_attempts`
+--
+
+CREATE TABLE `login_attempts` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `networks`
 --
 
@@ -538,6 +551,42 @@ INSERT INTO `networks` (`id`, `slug`, `name`, `cidr`, `range_start`, `range_end`
 (4, 'reserve1', 'Network Cadangan 1', '218.33.123.160/28', '218.33.123.160', '218.33.123.175', '255.255.255.240', 'Dapat digunakan untuk: IP Transit', 1, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
 (5, 'reserve2', 'Network Cadangan 2', '218.33.123.176/28', '218.33.123.176', '218.33.123.191', '255.255.255.240', 'Future DC / Event / Kebutuhan Dadakan', 1, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
 (6, 'depok', 'DC Depok', '218.33.123.192/26', '218.33.123.192', '218.33.123.255', '255.255.255.192', 'Data Center', 0, '2026-01-22 16:00:06', '2026-01-22 16:00:06');
+
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int NOT NULL,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text,
+  `setting_group` varchar(50) DEFAULT 'general',
+  `input_type` varchar(50) DEFAULT 'text',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `setting_group`, `input_type`, `updated_at`) VALUES
+(1, 'site_title', 'CSIRT RRI', 'general', 'text', '2026-01-22 20:00:00'),
+(2, 'site_description', 'Computer Security Incident Response Team LPP RRI', 'general', 'textarea', '2026-01-22 20:00:00'),
+(3, 'contact_email', 'csirt@rri.go.id', 'general', 'email', '2026-01-22 20:00:00'),
+(4, 'contact_phone', '+62 21 12345678', 'general', 'text', '2026-01-22 20:00:00'),
+(5, 'footer_text', '&copy; 2026 RRI CSIRT. All rights reserved.', 'general', 'text', '2026-01-22 20:00:00'),
+(6, 'enable_waf_stats', '1', 'security', 'toggle', '2026-01-22 20:00:00'),
+(7, 'waf_api_url', 'https://trial-waf.rri.go.id/api/commercial/record/export', 'security', 'text', '2026-01-22 20:00:00'),
+(8, 'waf_api_token', '', 'security', 'password', '2026-01-22 20:00:00'),
+(9, 'max_login_attempts', '5', 'security', 'number', '2026-01-22 20:00:00'),
+(10, 'maintenance_mode', '0', 'security', 'toggle', '2026-01-22 20:00:00'),
+(11, 'social_facebook', '#', 'social', 'text', '2026-01-22 20:00:00'),
+(12, 'social_twitter', '#', 'social', 'text', '2026-01-22 20:00:00'),
+(13, 'social_instagram', '#', 'social', 'text', '2026-01-22 20:00:00');
 
 -- --------------------------------------------------------
 
@@ -678,11 +727,24 @@ ALTER TABLE `knowledge_base`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `networks`
 --
 ALTER TABLE `networks`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`);
+
+--
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `setting_key` (`setting_key`);
 
 --
 -- Indexes for table `teams`
@@ -756,9 +818,21 @@ ALTER TABLE `knowledge_base`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `networks`
 --
 ALTER TABLE `networks`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --

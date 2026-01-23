@@ -25,34 +25,19 @@
                         <th class="px-6 py-4 w-48">Waktu</th>
                         <th class="px-6 py-4">Pengguna</th>
                         <th class="px-6 py-4 w-32">Role</th>
-                        <th class="px-6 py-4 w-40">Aksi</th>
                         <th class="px-6 py-4">Detail</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
                     <?php if(empty($logs)): ?>
                         <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                 Belum ada data log aktivitas.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach($logs as $log): ?>
                             <?php
-                                // Determine Action Color
-                                $actionLower = strtolower($log['action']);
-                                $actionColor = 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-300'; // Default
-                                
-                                if (strpos($actionLower, 'create') !== false || strpos($actionLower, 'add') !== false || strpos($actionLower, 'login') !== false) {
-                                    $actionColor = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
-                                } elseif (strpos($actionLower, 'update') !== false || strpos($actionLower, 'edit') !== false || strpos($actionLower, 'change') !== false) {
-                                    $actionColor = 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
-                                } elseif (strpos($actionLower, 'delete') !== false || strpos($actionLower, 'remove') !== false || strpos($actionLower, 'failed') !== false) {
-                                    $actionColor = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
-                                } elseif (strpos($actionLower, 'logout') !== false) {
-                                    $actionColor = 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-400';
-                                }
-
                                 // Role Color
                                 $role_colors = [
                                     'admin' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
@@ -63,16 +48,18 @@
                                 ];
                                 $userRole = $log['role'] ?? 'system';
                                 $roleColor = $role_colors[$userRole] ?? 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300';
+                                
+                                // displayName Logic
+                                $displayName = !empty($log['username']) ? $log['username'] : 'System/Guest';
+                                $displayRole = !empty($log['role']) ? $log['role'] : 'system';
                             ?>
                             <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                 <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">
-                                    <?= date('d M Y H:i:s', strtotime($log['created_at'])) ?>
+                                    <?php 
+                                        $timestamp = strtotime($log['created_at']);
+                                        echo ($timestamp && $timestamp > 0 && date('Y', $timestamp) > 1970) ? date('d M Y H:i:s', $timestamp) : '-';
+                                    ?>
                                 </td>
-                                <?php
-                                    // Use data from JOIN
-                                    $displayName = !empty($log['username']) ? $log['username'] : 'System/Guest';
-                                    $displayRole = !empty($log['role']) ? $log['role'] : 'system';
-                                ?>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($log['avatar']) || $log['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-100' ?>">
@@ -93,13 +80,12 @@
                                         <?= ucfirst($displayRole) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <?= $actionColor ?> border-opacity-20">
-                                        <?= ucwords(str_replace('_', ' ', strtolower($log['action']))) ?>
-                                    </span>
-                                </td>
                                 <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm max-w-md truncate" title="<?= htmlspecialchars($log['details']) ?>">
-                                    <?= htmlspecialchars($log['details']) ?>
+                                    <?php
+                                        // Clean details: Remove "ID: 123" pattern
+                                        $cleanDetails = preg_replace('/ID: \d+/', '', $log['details']);
+                                        echo htmlspecialchars(trim($cleanDetails));
+                                    ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

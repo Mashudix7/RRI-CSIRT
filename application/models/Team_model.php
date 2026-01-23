@@ -54,8 +54,5 @@ class Team_model extends CI_Model {
         
         return $this->db->get()->result_array();
     }
-    public function delete_invalid_divisions() {
-        $this->db->where_in('division', ['it', 'media_baru']);
-        $this->db->delete('teams');
-    }
+
 }

@@ -29,8 +29,8 @@ class Audit_model extends CI_Model {
             'module' => $module,
             'details' => $details,
             'ip_address' => $this->input->ip_address(),
-            'user_agent' => $this->input->user_agent(),
-            'created_at' => date('Y-m-d H:i:s')
+            'user_agent' => $this->input->user_agent()
+            // 'created_at' removed to use MySQL CURRENT_TIMESTAMP (Realtime)
         ];
 
         return $this->db->insert('audit_logs', $data);

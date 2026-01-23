@@ -74,7 +74,7 @@
                     $leader = null;
                     $staff = [];
                     foreach ($members as $m) {
-                        if (($m['level'] ?? '') === 'leader' && !$leader) {
+                        if (($m['role'] ?? '') === 'leader' && !$leader) {
                             $leader = $m;
                         } else {
                             $staff[] = $m;
@@ -95,7 +95,11 @@
                         <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border-2 border-blue-500 dark:border-blue-400 shadow-lg dark:shadow-none text-center w-56 hover-lift" data-aos="zoom-in">
                             <div class="w-20 h-20 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
                                 <?php if (!empty($leader['photo'])): ?>
-                                    <img src="<?= base_url($leader['photo']) ?>" class="w-full h-full object-cover">
+                                    <?php 
+                                        $photo = $leader['photo'];
+                                        if (strpos($photo, 'assets') === false) $photo = 'assets/uploads/' . $photo;
+                                    ?>
+                                    <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover">
                                 <?php else: ?>
                                     <span class="text-white font-bold text-2xl"><?= substr($leader['name'], 0, 1) ?></span>
                                 <?php endif; ?>
@@ -108,33 +112,51 @@
                     <?php endif; ?>
                     
                     <?php if (!empty($staff)): ?>
-                        <!-- Connector Lines (Visual Only) -->
-                        <div class="flex justify-center flex-col items-center">
+                        <!-- Connector from Leader -->
+                        <div class="flex justify-center hidden md:flex">
                             <div class="w-0.5 h-8 bg-blue-300 dark:bg-blue-600"></div>
-                            <div class="w-3/4 h-0.5 bg-blue-300 dark:bg-blue-600"></div>
-                            <div class="flex justify-between w-3/4">
-                                <?php for($i=0; $i<count($staff); $i++): ?>
-                                    <div class="relative flex justify-center w-full">
-                                        <div class="w-0.5 h-8 bg-blue-300 dark:bg-blue-600"></div>
-                                    </div>
-                                <?php endfor; ?>
-                            </div>
                         </div>
 
-                        <!-- Row 2: Staff -->
-                        <div class="flex justify-center gap-4 flex-wrap mt-[-2px]">
-                            <?php foreach ($staff as $index => $member): ?>
-                            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 shadow-md dark:shadow-none text-center w-32 hover-lift"
-                                 data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
-                                <div class="w-14 h-14 mx-auto mb-2 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center overflow-hidden">
-                                    <?php if (!empty($member['photo'])): ?>
-                                        <img src="<?= base_url($member['photo']) ?>" class="w-full h-full object-cover">
-                                    <?php else: ?>
-                                        <span class="text-gray-500 font-bold"><?= substr($member['name'], 0, 1) ?></span>
-                                    <?php endif; ?>
+                        <!-- Staff Container -->
+                        <div class="flex justify-center flex-wrap">
+                            <?php 
+                            $count = count($staff);
+                            foreach ($staff as $index => $member): 
+                                $isFirst = ($index === 0);
+                                $isLast = ($index === $count - 1);
+                            ?>
+                            <!-- Staff Item Wrapper -->
+                            <div class="relative px-2 pt-4 md:pt-8 text-center w-36 hover-lift" data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
+                                
+                                <!-- Vertical Line to Card (Desktop only) -->
+                                <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-8 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
+                                
+                                <!-- Horizontal Line Left (Connect to previous) (Desktop only) -->
+                                <?php if (!$isFirst): ?>
+                                    <div class="absolute top-0 right-1/2 w-1/2 h-0.5 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
+                                <?php endif; ?>
+
+                                <!-- Horizontal Line Right (Connect to next) (Desktop only) -->
+                                <?php if (!$isLast): ?>
+                                    <div class="absolute top-0 left-1/2 w-1/2 h-0.5 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
+                                <?php endif; ?>
+
+                                <!-- Card -->
+                                <div class="bg-white dark:bg-slate-800 rounded-xl p-3 border border-gray-200 dark:border-slate-700 shadow-md dark:shadow-none h-full relative z-10 mx-auto w-32">
+                                    <div class="w-14 h-14 mx-auto mb-2 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center overflow-hidden">
+                                        <?php if (!empty($member['photo'])): ?>
+                                            <?php 
+                                                $photo = $member['photo'];
+                                                if (strpos($photo, 'assets') === false) $photo = 'assets/uploads/' . $photo;
+                                            ?>
+                                            <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover" loading="lazy">
+                                        <?php else: ?>
+                                            <span class="text-gray-500 font-bold"><?= substr($member['name'], 0, 1) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white text-xs mb-1 line-clamp-1"><?= $member['name'] ?></h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-[10px] line-clamp-1"><?= $member['position'] ?? 'Staff' ?></p>
                                 </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white text-xs mb-1 line-clamp-1"><?= $member['name'] ?></h3>
-                                <p class="text-gray-500 dark:text-gray-400 text-[10px] line-clamp-1"><?= $member['position'] ?? 'Staff' ?></p>
                             </div>
                             <?php endforeach; ?>
                         </div>

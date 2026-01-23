@@ -85,7 +85,7 @@
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
                                 <?php if(!empty($member['photo'])): ?>
-                                    <img src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover">
+                                    <img src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover" loading="lazy">
                                 <?php else: ?>
                                     <span class="text-white font-semibold"><?= strtoupper(substr($member['name'], 0, 1)) ?></span>
                                 <?php endif; ?>
@@ -141,7 +141,7 @@
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center overflow-hidden">
                                 <?php if(!empty($member['photo'])): ?>
-                                    <img src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover">
+                                    <img src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover" loading="lazy">
                                 <?php else: ?>
                                     <span class="text-white font-semibold"><?= strtoupper(substr($member['name'], 0, 1)) ?></span>
                                 <?php endif; ?>
