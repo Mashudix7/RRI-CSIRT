@@ -39,6 +39,8 @@ class Dashboard extends CI_Controller {
         if (!$this->session->userdata('logged_in')) {
             redirect('auth/login');
         }
+
+        $this->load->database();
     }
 
     /**
@@ -61,25 +63,15 @@ class Dashboard extends CI_Controller {
             'role_name' => $this->session->userdata('role_name')
         ];
         
-        // Attack Data Stats
-        $data['stats'] = [
-            'total_attacks' => 1245,
-            'blocked_attacks' => 1240,
-            'active_threats' => 5,
-            'protection_level' => '99.6%'
-        ];
+        // Load WAF Model
+        $this->load->model('Waf_model');
         
-        // Attack Types Distribution
-        $data['attack_stats'] = [
-            'ddos' => 450,
-            'malware' => 230,
-            'phishing' => 320,
-            'intrusion' => 245
-        ];
-
-        // Recent Threats (Placeholder for API Data)
-        // Structure matches API response: data.data[]
-        $data['recent_threats'] = []; 
+        // Fetch Real-time Stats from Safeline WAF
+        $waf_data = $this->Waf_model->get_daily_stats();
+        
+        $data['stats'] = $waf_data['summary'];
+        $data['attack_stats'] = $waf_data['types'];
+        $data['recent_threats'] = $waf_data['recent'];
         
         /* 
         // Example Data Structure from API:

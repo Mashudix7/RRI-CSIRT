@@ -29,6 +29,7 @@ class Admin extends CI_Controller {
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('session');
+        $this->load->database();
         $this->load->library('form_validation'); // Make sure validation is loaded
         $this->load->model('Article_model');
         $this->load->model('Team_model');
