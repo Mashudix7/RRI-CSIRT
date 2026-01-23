@@ -30,6 +30,9 @@ class Admin_Controller extends MY_Controller {
         // Check login status
         if (!$this->session->userdata('user_id')) {
             redirect('auth/login');
+        } else {
+            // Update last activity
+            $this->User_model->update_activity($this->session->userdata('user_id'));
         }
     }
 

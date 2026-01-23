@@ -1,164 +1,88 @@
-<!-- =====================================================
-     Settings Page - Dark Mode Support
-     ===================================================== -->
-
-<!-- Header -->
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Pengaturan</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-1">Konfigurasi sistem dan preferensi</p>
-</div>
-
-<div class="grid lg:grid-cols-3 gap-6">
-    <!-- Main Settings -->
-    <div class="lg:col-span-2 space-y-6">
-        <!-- General Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pengaturan Umum</h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Aplikasi</label>
-                    <input type="text" value="CSIRT RRI" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Admin</label>
-                    <input type="email" value="csirt@rri.co.id" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Timezone</label>
-                    <select class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
-                        <option value="Asia/Jakarta" selected>Asia/Jakarta (WIB)</option>
-                        <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
-                        <option value="Asia/Jayapura">Asia/Jayapura (WIT)</option>
-                    </select>
-                </div>
-            </div>
+<main class="ml-64 p-8 pt-20" data-aos="fade-up">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Pengaturan Sistem</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Kelola konfigurasi aplikasi global.</p>
         </div>
-        
-        <!-- Notification Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Notifikasi</h3>
-            
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Email Notifikasi Insiden</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Kirim email saat ada insiden baru</p>
-                    </div>
-                    <button class="relative w-12 h-6 bg-blue-600 rounded-full transition-colors">
-                        <span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-                    </button>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Notifikasi Critical</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Notifikasi khusus untuk insiden critical</p>
-                    </div>
-                    <button class="relative w-12 h-6 bg-blue-600 rounded-full transition-colors">
-                        <span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-                    </button>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Daily Report</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Kirim laporan harian ke admin</p>
-                    </div>
-                    <button class="relative w-12 h-6 bg-gray-300 dark:bg-slate-600 rounded-full transition-colors">
-                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Security Settings -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-up" data-aos-delay="200">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Keamanan</h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Session Timeout (menit)</label>
-                    <input type="number" value="120" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Max Login Attempts</label>
-                    <input type="number" value="5" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Two-Factor Authentication</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Aktifkan 2FA untuk semua admin</p>
-                    </div>
-                    <button class="relative w-12 h-6 bg-gray-300 dark:bg-slate-600 rounded-full transition-colors">
-                        <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Save Button -->
-        <div class="flex justify-end">
-            <button class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-md transition-all">
+        <div>
+             <button type="submit" form="settingsForm" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                 Simpan Perubahan
             </button>
         </div>
     </div>
-    
-    <!-- Sidebar Info -->
-    <div class="space-y-6">
-        <!-- System Info -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-left" data-aos-delay="300">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informasi Sistem</h3>
-            
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">Versi Aplikasi</span>
-                    <span class="text-gray-900 dark:text-white font-medium">1.0.0</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">PHP Version</span>
-                    <span class="text-gray-900 dark:text-white font-medium"><?= phpversion() ?></span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">CodeIgniter</span>
-                    <span class="text-gray-900 dark:text-white font-medium">3.x</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">Server</span>
-                    <span class="text-gray-900 dark:text-white font-medium">Apache</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quick Links -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none" data-aos="fade-left" data-aos-delay="400">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Aksi Cepat</h3>
-            
-            <div class="space-y-2">
-                <button class="w-full px-4 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Clear Cache
-                </button>
-                <button class="w-full px-4 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                    </svg>
-                    Backup Database
-                </button>
-                <button class="w-full px-4 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    View Logs
-                </button>
-            </div>
-        </div>
+
+    <!-- Alert Messages -->
+    <?php if ($this->session->flashdata('success')): ?>
+    <div class="mb-6 p-4 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-xl flex items-center gap-3 text-green-700 dark:text-green-400" role="alert">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span><?= $this->session->flashdata('success') ?></span>
     </div>
-</div>
+    <?php endif; ?>
+
+    <form id="settingsForm" action="<?= base_url('admin/settings_update') ?>" method="POST">
+        <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Sidebar Navigation for Groups (Sticky) -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 sticky top-24">
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-4 px-2">Kategori</h3>
+                    <nav class="space-y-1">
+                        <?php 
+                        $groups = array_keys($settings_grouped);
+                        foreach($groups as $group): 
+                            $label = ucfirst($group);
+                            $icon = 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z';
+                            
+                            if ($group == 'general') $icon = 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6';
+                            if ($group == 'security') $icon = 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z';
+                            if ($group == 'social') $icon = 'M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z';
+                        ?>
+                        <a href="#group-<?= $group ?>" class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors group">
+                            <svg class="w-5 h-5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?= $icon ?>"/></svg>
+                            <span class="font-medium"><?= $label ?></span>
+                        </a>
+                        <?php endforeach; ?>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Forms -->
+            <div class="lg:col-span-2 space-y-8">
+                <?php foreach($settings_grouped as $group => $items): ?>
+                <div id="group-<?= $group ?>" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/30">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white capitalize"><?= $group ?> Settings</h3>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <?php foreach($items as $item): ?>
+                        <div class="form-group">
+                            <label for="<?= $item['setting_key'] ?>" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <?= ucwords(str_replace('_', ' ', $item['setting_key'])) ?>
+                            </label>
+                            
+                            <?php if ($item['input_type'] == 'textarea'): ?>
+                                <textarea name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" rows="3" class="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"><?= $item['setting_value'] ?></textarea>
+                            
+                            <?php elseif ($item['input_type'] == 'toggle' || $item['input_type'] == 'boolean'): ?>
+                                <select name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" class="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="1" <?= $item['setting_value'] == '1' ? 'selected' : '' ?>>Enabled</option>
+                                    <option value="0" <?= $item['setting_value'] == '0' ? 'selected' : '' ?>>Disabled</option>
+                                </select>
+                            
+                            <?php else: ?>
+                                <input type="<?= $item['input_type'] ?>" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" value="<?= $item['setting_value'] ?>" class="w-full rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <?php endif; ?>
+                            
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Key: <?= $item['setting_key'] ?></p>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </form>
+</main>

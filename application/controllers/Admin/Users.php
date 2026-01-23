@@ -14,7 +14,7 @@ class Users extends Admin_Controller {
     {
         $data['title'] = 'Manajemen Pengguna';
         $data['page'] = 'users';
-        $data['users'] = $this->User_model->get_all();
+        $data['users'] = $this->User_model->get_all_with_status();
         
         $this->render_admin('admin/users', $data);
     }

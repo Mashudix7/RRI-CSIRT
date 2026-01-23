@@ -52,4 +52,23 @@ class User_model extends CI_Model {
         $this->db->where('id', $user_id);
         $this->db->update('users', ['last_activity' => date('Y-m-d H:i:s')]);
     }
+
+    public function get_all_with_status() {
+        $users = $this->db->get('users')->result_array();
+        
+        // Define online threshold (e.g., 5 minutes)
+        $threshold = 5 * 60; // 5 minutes in seconds
+        $current_time = time();
+
+        foreach ($users as &$user) {
+            if (!empty($user['last_activity'])) {
+                $last_activity_time = strtotime($user['last_activity']);
+                $time_diff = $current_time - $last_activity_time;
+                $user['is_online'] = ($time_diff <= $threshold);
+            } else {
+                $user['is_online'] = false;
+            }
+        }
+        return $users;
+    }
 }

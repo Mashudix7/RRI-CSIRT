@@ -6,6 +6,7 @@ class Articles extends Admin_Controller {
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('Asia/Jakarta');
         $this->_check_role_access(['admin']);
         $this->load->model('Article_model');
         $this->load->library('upload');
@@ -30,9 +31,7 @@ class Articles extends Admin_Controller {
 
     public function store()
     {
-        // Debugging
-        $debug_path = FCPATH . 'debug_log.txt';
-        file_put_contents($debug_path, "Store called at " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
+        // Debugging removed
 
         $config['upload_path'] = './assets/uploads/articles/';
         $config['allowed_types'] = 'gif|jpg|png|jpeg|webp';
@@ -48,7 +47,8 @@ class Articles extends Admin_Controller {
              $upload_data = $this->upload->data();
              $thumbnail = 'assets/uploads/articles/' . $upload_data['file_name'];
         } else {
-             file_put_contents($debug_path, "Upload error: " . $this->upload->display_errors() . "\n", FILE_APPEND);
+             // Optional: log upload error
+             // log_message('error', $this->upload->display_errors()); 
         }
         
         $title = $this->input->post('title');
@@ -62,8 +62,7 @@ class Articles extends Admin_Controller {
 
         $author_id = $this->session->userdata('user_id');
         if (empty($author_id)) {
-            // Use NULL instead of 1 to avoid FK constraint fails if ID 1 doesn't exist
-            $author_id = NULL; 
+            $author_id = 1; // Default to Admin ID 1 if session is lost/empty
         }
 
         $published_at = ($this->input->post('status') === 'published') ? date('Y-m-d H:i:s') : null;
@@ -80,15 +79,15 @@ class Articles extends Admin_Controller {
             'published_at' => $published_at
         ];
 
-        file_put_contents($debug_path, "Data to insert: " . print_r($data, true) . "\n", FILE_APPEND);
+        // Ensure directory exists or is writable for debug log if needed, 
+        // but primarily we trust CodeIgniter logging.
         
         if ($this->Article_model->create($data)) {
-            file_put_contents($debug_path, "Success\n", FILE_APPEND);
             $this->session->set_flashdata('success', 'Artikel berhasil ditambahkan!');
         } else {
             $error = $this->db->error();
-            $msg = isset($error['message']) ? $error['message'] : 'Unknown Error';
-            file_put_contents($debug_path, "DB Error: " . $msg . "\n", FILE_APPEND);
+            $msg = isset($error['message']) ? $error['message'] : 'Unknown Database Error';
+            log_message('error', 'Article Create Error: ' . $msg);
             $this->session->set_flashdata('error', 'Gagal menambahkan artikel! Error: ' . $msg);
         }
         redirect('admin/articles');

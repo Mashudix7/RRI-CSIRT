@@ -119,40 +119,90 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
-                    <?php foreach ($recent_threats as $threat): ?>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
+                    <?php if (empty($recent_threats)): ?>
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+                                    <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                    <p class="text-sm italic">Belum ada data ancaman terbaru dari API.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($recent_threats as $threat): ?>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <?php
+                                    // Map module/attack_type to icon/color
+                                    $module = $threat['module'] ?? 'Unknown';
+                                    // Simple heuristic for icon based on module name
+                                    $icon_bg = 'bg-gray-100 dark:bg-gray-700';
+                                    $icon_text = 'text-gray-600 dark:text-gray-300';
+                                    
+                                    if (stripos($module, 'sql') !== false) {
+                                        $icon_bg = 'bg-orange-100 dark:bg-orange-500/20';
+                                        $icon_text = 'text-orange-600 dark:text-orange-400';
+                                    } elseif (stripos($module, 'xss') !== false || stripos($module, 'script') !== false) {
+                                        $icon_bg = 'bg-yellow-100 dark:bg-yellow-500/20';
+                                        $icon_text = 'text-yellow-600 dark:text-yellow-400';
+                                    } elseif (stripos($module, 'scan') !== false) {
+                                        $icon_bg = 'bg-blue-100 dark:bg-blue-500/20';
+                                        $icon_text = 'text-blue-600 dark:text-blue-400';
+                                    } elseif (stripos($module, 'php') !== false || stripos($module, 'code') !== false) {
+                                        $icon_bg = 'bg-red-100 dark:bg-red-500/20';
+                                        $icon_text = 'text-red-600 dark:text-red-400';
+                                    }
+                                    ?>
+                                    <div class="p-1.5 <?= $icon_bg ?> <?= $icon_text ?> rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="font-medium text-gray-900 dark:text-white text-sm truncate max-w-[150px]" title="<?= htmlspecialchars($module) ?>">
+                                        <?= htmlspecialchars(str_replace('_', ' ', ucfirst($module))) ?>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-mono text-gray-900 dark:text-white"><?= htmlspecialchars($threat['src_ip'] ?? '-') ?></div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    <?= htmlspecialchars($threat['city'] ?? '') ?>, <?= htmlspecialchars($threat['country'] ?? '') ?>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 dark:text-white truncate max-w-[200px]" title="<?= htmlspecialchars($threat['host'] ?? '') ?>">
+                                    <?= htmlspecialchars($threat['host'] ?? '-') ?>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]" title="<?= htmlspecialchars($threat['url_path'] ?? '') ?>">
+                                    <?= htmlspecialchars($threat['url_path'] ?? '') ?>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                <?= isset($threat['timestamp']) ? date('H:i:s', $threat['timestamp']) : '-' ?>
+                            </td>
+                            <td class="px-6 py-4 text-right">
                                 <?php
-                                $threat_icons = [
-                                    'DDoS Attack' => '<div class="p-1.5 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>',
-                                    'SQL Injection' => '<div class="p-1.5 bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg></div>',
-                                    'Malware Download' => '<div class="p-1.5 bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>',
-                                    'Port Scanning' => '<div class="p-1.5 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>',
-                                ];
-                                echo $threat_icons[$threat['type']] ?? '<div class="p-1.5 bg-gray-100 dark:bg-gray-700 text-gray-600 rounded">?</div>';
+                                $action_code = $threat['action'] ?? -1;
+                                // 0: Detected/Log (Blue), 1: Blocked (Green)? Assuming 0 based on log data
+                                // Adjust based on real API meaning.
+                                if ($action_code == 1) {
+                                    $status_label = 'Blocked';
+                                    $status_style = 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300';
+                                } else {
+                                    $status_label = 'Detected';
+                                    $status_style = 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300';
+                                }
                                 ?>
-                                <span class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($threat['type']) ?></span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-mono"><?= htmlspecialchars($threat['source']) ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400"><?= htmlspecialchars($threat['target']) ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400"><?= date('H:i:s', strtotime($threat['timestamp'])) ?></td>
-                        <td class="px-6 py-4 text-right">
-                            <?php
-                            $status_styles = [
-                                'blocked' => 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300',
-                                'quarantined' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300',
-                                'detected' => 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
-                            ];
-                            $style = $status_styles[$threat['status']] ?? 'bg-gray-100 text-gray-700';
-                            ?>
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full <?= $style ?>">
-                                <?= ucfirst($threat['status']) ?>
-                            </span>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
+                                <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full <?= $status_style ?>">
+                                    <?= $status_label ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

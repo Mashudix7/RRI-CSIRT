@@ -86,20 +86,27 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        <?php if ($u['status'] === 'active'): ?>
+                        <?php if ($u['is_online']): ?>
                             <span class="flex items-center gap-1.5 text-green-600 dark:text-green-400 text-sm">
-                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                Aktif
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                Online
                             </span>
                         <?php else: ?>
                             <span class="flex items-center gap-1.5 text-gray-400 text-sm">
                                 <span class="w-2 h-2 bg-gray-300 dark:bg-gray-500 rounded-full"></span>
-                                Nonaktif
+                                Offline
                             </span>
                         <?php endif; ?>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                        <?= !empty($u['last_login']) ? date('d M Y, H:i', strtotime($u['last_login'])) : '<span class="text-gray-400 italic">Belum login</span>' ?>
+                        <div>
+                            <?php if (!empty($u['last_login'])): ?>
+                                <div class="font-medium text-gray-900 dark:text-white"><?= date('d M Y, H:i', strtotime($u['last_login'])) ?> WIB</div>
+                                <div class="text-xs text-gray-400">Login Terakhir</div>
+                            <?php else: ?>
+                                <span class="text-gray-400 italic">Belum pernah login</span>
+                            <?php endif; ?>
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">

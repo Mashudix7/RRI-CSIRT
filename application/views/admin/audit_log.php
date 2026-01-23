@@ -23,45 +23,83 @@
                 <thead>
                     <tr class="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-200 dark:border-slate-700 text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">
                         <th class="px-6 py-4 w-48">Waktu</th>
-                        <th class="px-6 py-4 w-40">Pengguna</th>
+                        <th class="px-6 py-4">Pengguna</th>
                         <th class="px-6 py-4 w-32">Role</th>
                         <th class="px-6 py-4 w-40">Aksi</th>
                         <th class="px-6 py-4">Detail</th>
-                        <th class="px-6 py-4 w-32">IP Address</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
                     <?php if(empty($logs)): ?>
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                 Belum ada data log aktivitas.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach($logs as $log): ?>
+                            <?php
+                                // Determine Action Color
+                                $actionLower = strtolower($log['action']);
+                                $actionColor = 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-300'; // Default
+                                
+                                if (strpos($actionLower, 'create') !== false || strpos($actionLower, 'add') !== false || strpos($actionLower, 'login') !== false) {
+                                    $actionColor = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+                                } elseif (strpos($actionLower, 'update') !== false || strpos($actionLower, 'edit') !== false || strpos($actionLower, 'change') !== false) {
+                                    $actionColor = 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+                                } elseif (strpos($actionLower, 'delete') !== false || strpos($actionLower, 'remove') !== false || strpos($actionLower, 'failed') !== false) {
+                                    $actionColor = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+                                } elseif (strpos($actionLower, 'logout') !== false) {
+                                    $actionColor = 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-400';
+                                }
+
+                                // Role Color
+                                $role_colors = [
+                                    'admin' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+                                    'management' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+                                    'auditor' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+                                    'analyst' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
+                                    'system' => 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300'
+                                ];
+                                $userRole = $log['role'] ?? 'system';
+                                $roleColor = $role_colors[$userRole] ?? 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300';
+                            ?>
                             <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                 <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-400">
                                     <?= date('d M Y H:i:s', strtotime($log['created_at'])) ?>
                                 </td>
-                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                    <?= htmlspecialchars($log['username']) ?>
+                                <?php
+                                    // Use data from JOIN
+                                    $displayName = !empty($log['username']) ? $log['username'] : 'System/Guest';
+                                    $displayRole = !empty($log['role']) ? $log['role'] : 'system';
+                                ?>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($log['avatar']) || $log['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-100' ?>">
+                                            <?php if (!empty($log['avatar']) && $log['avatar'] !== 'default_avatar.png'): ?>
+                                                <img src="<?= base_url('uploads/avatars/' . $log['avatar']) ?>" alt="<?= htmlspecialchars($displayName) ?>" class="w-full h-full object-cover">
+                                            <?php else: ?>
+                                                <span class="text-white font-semibold"><?= strtoupper(substr($displayName, 0, 1)) ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($displayName) ?></div>
+                                            <!-- ID hidden for security -->
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
-                                        <?= $log['role'] == 'admin' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
-                                           ($log['role'] == 'management' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' : 
-                                           'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300') ?>">
-                                        <?= ucfirst($log['role']) ?>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= $roleColor ?>">
+                                        <?= ucfirst($displayRole) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">
-                                    <?= ucwords(str_replace('_', ' ', $log['action'])) ?>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <?= $actionColor ?> border-opacity-20">
+                                        <?= ucwords(str_replace('_', ' ', strtolower($log['action']))) ?>
+                                    </span>
                                 </td>
-                                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 max-w-md truncate" title="<?= htmlspecialchars($log['details']) ?>">
+                                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm max-w-md truncate" title="<?= htmlspecialchars($log['details']) ?>">
                                     <?= htmlspecialchars($log['details']) ?>
-                                </td>
-                                <td class="px-6 py-4 font-mono text-xs text-gray-400">
-                                    <?= $log['ip_address'] ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

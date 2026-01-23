@@ -77,45 +77,27 @@ class Dashboard extends CI_Controller {
             'intrusion' => 245
         ];
 
-        // Recent Threats
+        // Recent Threats (Placeholder for API Data)
+        // Structure matches API response: data.data[]
+        $data['recent_threats'] = []; 
+        
+        /* 
+        // Example Data Structure from API:
         $data['recent_threats'] = [
             [
-                'id' => 1,
-                'type' => 'DDoS Attack',
-                'source' => '192.168.1.105',
-                'target' => 'Web Server',
-                'status' => 'blocked',
-                'timestamp' => '2026-01-21 14:30:00',
-                'severity' => 'critical'
-            ],
-            [
-                'id' => 2,
-                'type' => 'SQL Injection',
-                'source' => '10.0.0.50',
-                'target' => 'Database',
-                'status' => 'blocked',
-                'timestamp' => '2026-01-21 13:15:00',
-                'severity' => 'high'
-            ],
-            [
-                'id' => 3,
-                'type' => 'Malware Download',
-                'source' => 'Internal PC',
-                'target' => 'Gateway',
-                'status' => 'quarantined',
-                'timestamp' => '2026-01-21 11:45:00',
-                'severity' => 'medium'
-            ],
-            [
-                'id' => 4,
-                'type' => 'Port Scanning',
-                'source' => 'Unknown',
-                'target' => 'Firewall',
-                'status' => 'detected',
-                'timestamp' => '2026-01-21 09:20:00',
-                'severity' => 'low'
+                "site_uuid" => "43",
+                "src_ip" => "180.243.39.165",
+                "host" => "jdih.rri.go.id",
+                "url_path" => "/common/dokumen/abs2022kp2090.pdf",
+                "country" => "ID",
+                "city" => "Sidoarjo",
+                "action" => 0, // 0: Detected/Log, 1: Block?
+                "module" => "m_php_unserialize",
+                "attack_type" => 6,
+                "timestamp" => 1769134553
             ]
         ];
+        */
         
         // Load views
         $this->load->view('admin/templates/header', $data);

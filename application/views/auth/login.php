@@ -196,12 +196,7 @@
                     </button>
                 </form>
                 
-                <!-- Demo Credentials Notice -->
-                <div class="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                    <p class="text-blue-300 text-xs text-center">
-                        <strong>Demo:</strong> Username: admin | Password: admin123
-                    </p>
-                </div>
+                <!-- Demo Credentials Notice Removed -->
             </div>
             
             <!-- Back to Home -->

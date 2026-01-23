@@ -23,6 +23,16 @@ class Dashboard extends Admin_Controller {
             'teams' => $this->Team_model->count_all()
         ];
 
+        // Placeholder for new API Data structure
+        $data['attack_stats'] = [
+            'total_attacks' => 0,
+            'blocked_attacks' => 0,
+            'active_threats' => 0,
+            'protection_level' => '100%'
+        ];
+        
+        $data['recent_threats'] = []; // Empty or populated via API call later
+
         // Render using parent helper
         $this->render_admin('admin/dashboard', $data);
     }

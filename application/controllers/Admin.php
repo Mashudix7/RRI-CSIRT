@@ -25,6 +25,7 @@ class Admin extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('Asia/Jakarta');
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('session');
@@ -142,6 +143,34 @@ class Admin extends CI_Controller {
         }
         
         redirect('admin/users');
+    }
+
+    /**
+     * Dashboard (Homepage)
+     */
+    public function index()
+    {
+        $data['title'] = 'Dashboard';
+        $data['page'] = 'dashboard';
+        $data['user'] = $this->_get_user_data();
+
+        // Load WAF Model
+        $this->load->model('Waf_model');
+        
+        // Fetch Real-time Stats from Safeline WAF
+        $waf_data = $this->Waf_model->get_daily_stats();
+        
+        $data['stats'] = $waf_data['summary'];
+        $data['recent_threats'] = $waf_data['recent'];
+        $data['attack_stats'] = $waf_data['types'];
+
+        // Add additional needed stats if not in WAF response
+        $data['stats']['uptime'] = '99.9%'; // Hardcode or fetch from server monitor
+
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/dashboard', $data);
+        $this->load->view('admin/templates/footer', $data);
     }
 
     public function user_edit($id)
@@ -294,11 +323,22 @@ class Admin extends CI_Controller {
                 // Handle form submission
                 $input = $this->input->post();
                 
+                // Explicitly validatable fields
+                $this->form_validation->set_rules('title', 'Judul', 'required');
+                $this->form_validation->set_rules('content', 'Konten', 'required');
+                
+                if ($this->form_validation->run() === FALSE) {
+                    $this->session->set_flashdata('error', validation_errors());
+                    redirect('admin/articles/create');
+                    return;
+                }
+
+                $thumbnail = null;
                 // Handle File Upload
                 if (!empty($_FILES['thumbnail']['name'])) {
                     $upload = $this->_upload_and_resize('thumbnail', 800, 600);
                     if ($upload['status']) {
-                        $input['thumbnail'] = $upload['file_name'];
+                        $thumbnail = 'assets/uploads/' . $upload['file_name'];
                     } else {
                         $this->session->set_flashdata('error', $upload['error']);
                         redirect('admin/articles/create');
@@ -306,15 +346,34 @@ class Admin extends CI_Controller {
                     }
                 }
                 
-                $input['slug'] = url_title($input['title'], '-', TRUE);
-                $input['author_id'] = $this->session->userdata('user_id');
-                $input['author'] = $this->session->userdata('username'); // Add author name
+                // Prepare Data for DB (EXPLICIT MAPPING)
+                $data = [
+                    'title' => $input['title'],
+                    'slug'  => url_title($input['title'], '-', TRUE),
+                    'category' => $input['category'],
+                    'content' => $input['content'],
+                    'status' => $input['status'],
+                    'author_id' => $this->session->userdata('user_id'),
+                    'thumbnail' => $thumbnail,
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
 
-                if ($this->Article_model->create($input)) {
+                // Handle Excerpt
+                $data['excerpt'] = !empty($input['excerpt']) ? $input['excerpt'] : substr(strip_tags($input['content']), 0, 150);
+                
+                // Handle Published Date
+                if ($input['status'] === 'published') {
+                    $data['published_at'] = date('Y-m-d H:i:s');
+                } else {
+                    $data['published_at'] = null;
+                }
+
+                if ($this->Article_model->create($data)) {
                     $this->Audit_model->log('create_article', 'Created article: ' . substr($input['title'], 0, 50));
                     $this->session->set_flashdata('success', 'Artikel berhasil ditambahkan');
                 } else {
-                    $this->session->set_flashdata('error', 'Gagal menambahkan artikel');
+                    $db_error = $this->db->error();
+                    $this->session->set_flashdata('error', 'Gagal menambahkan artikel: ' . ($db_error['message'] ?? 'Unknown Error'));
                 }
                 redirect('admin/articles');
                 break;
@@ -337,11 +396,24 @@ class Admin extends CI_Controller {
             case 'update':
                 $input = $this->input->post();
                 
+                // Prepare Data for DB (EXPLICIT MAPPING)
+                $data = [
+                    'title' => $input['title'],
+                    'category' => $input['category'],
+                    'content' => $input['content'],
+                    'status' => $input['status'],
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                if (isset($input['title'])) {
+                    $data['slug'] = url_title($input['title'], '-', TRUE);
+                }
+
                 // Handle File Upload
                 if (!empty($_FILES['thumbnail']['name'])) {
                     $upload = $this->_upload_and_resize('thumbnail', 800, 600);
                     if ($upload['status']) {
-                        $input['thumbnail'] = $upload['file_name'];
+                        $data['thumbnail'] = 'assets/uploads/' . $upload['file_name'];
                     } else {
                         $this->session->set_flashdata('error', $upload['error']);
                         redirect('admin/articles/edit/' . $id);
@@ -349,15 +421,24 @@ class Admin extends CI_Controller {
                     }
                 }
                 
-                if (isset($input['title'])) {
-                    $input['slug'] = url_title($input['title'], '-', TRUE);
+                // Handle Excerpt if user changed it? Or simple update logic
+                // If we want to auto-update excerpt when content changes unless explicitly set:
+                // For now, simpler:
+                if (!empty($input['excerpt'])) {
+                    $data['excerpt'] = $input['excerpt'];
                 }
 
-                if ($this->Article_model->update($id, $input)) {
+                // Handle Published Date Update
+                if ($input['status'] === 'published') {
+                    $data['published_at'] = date('Y-m-d H:i:s');
+                }
+
+                if ($this->Article_model->update($id, $data)) {
                     $this->Audit_model->log('update_article', 'Updated article ID: ' . $id);
                     $this->session->set_flashdata('success', 'Artikel berhasil diperbarui');
                 } else {
-                    $this->session->set_flashdata('error', 'Gagal memperbarui artikel');
+                    $db_error = $this->db->error();
+                    $this->session->set_flashdata('error', 'Gagal memperbarui artikel: ' . ($db_error['message'] ?? 'Unknown Error'));
                 }
                 redirect('admin/articles');
                 break;
@@ -453,20 +534,52 @@ class Admin extends CI_Controller {
     /**
      * Settings
      */
+    /**
+     * Settings
+     */
     public function settings()
     {
         if ($this->session->userdata('role') !== 'admin') {
              show_error('Unauthorized', 403);
         }
 
-        $data['title'] = 'Pengaturan';
+        $this->load->model('Settings_model');
+
+        $data['title'] = 'Pengaturan Sistem';
         $data['page'] = 'settings';
         $data['user'] = $this->_get_user_data();
+        $data['settings_grouped'] = $this->Settings_model->get_all_grouped();
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
         $this->load->view('admin/settings', $data);
         $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function settings_update()
+    {
+        if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        $this->load->model('Settings_model');
+        $input = $this->input->post();
+
+        if (!empty($input)) {
+            $updated_count = 0;
+            foreach ($input as $key => $value) {
+                // Ignore CSRF token if present
+                if ($key == $this->security->get_csrf_token_name()) continue;
+
+                if ($this->Settings_model->update($key, $value)) {
+                    $updated_count++;
+                }
+            }
+            
+            // Log Action
+            $this->Audit_model->log('update_settings', "Updated $updated_count settings");
+            $this->session->set_flashdata('success', 'Pengaturan berhasil disimpan.');
+        }
+
+        redirect('admin/settings');
     }
 
     /**
@@ -503,6 +616,7 @@ class Admin extends CI_Controller {
 
             case 'store':
                 $input = $this->input->post();
+                unset($input[$this->security->get_csrf_token_name()]); // Remove CSRF token
 
                 // Validation: Check for existing leader in division
                 if ($input['role'] === 'leader') {
@@ -549,6 +663,7 @@ class Admin extends CI_Controller {
                 
             case 'update':
                 $input = $this->input->post();
+                unset($input[$this->security->get_csrf_token_name()]); // Remove CSRF token
                 
                 // Validation: Check for existing leader (exclude self)
                 if ($input['role'] === 'leader') {
