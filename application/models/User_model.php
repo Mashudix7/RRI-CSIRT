@@ -71,4 +71,8 @@ class User_model extends CI_Model {
         }
         return $users;
     }
+
+    public function count_all() {
+        return $this->db->count_all('users');
+    }
 }

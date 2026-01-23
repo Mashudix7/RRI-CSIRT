@@ -32,8 +32,8 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Divisi</label>
                     <select name="division" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
-                        <option value="media_baru" <?= ($member['division'] == 'media_baru') ? 'selected' : '' ?>>Teknologi Media Baru</option>
-                        <option value="it" <?= ($member['division'] == 'it') ? 'selected' : '' ?>>Tim IT</option>
+                        <option value="Tim Teknologi Media Baru" <?= ($member['division'] == 'Tim Teknologi Media Baru') ? 'selected' : '' ?>>Teknologi Media Baru</option>
+                        <option value="Tim IT" <?= ($member['division'] == 'Tim IT') ? 'selected' : '' ?>>Tim IT</option>
                     </select>
                 </div>
 

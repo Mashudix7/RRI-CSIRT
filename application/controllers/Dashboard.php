@@ -55,7 +55,7 @@ class Dashboard extends CI_Controller {
         $data['title'] = 'Dashboard';
         $data['page'] = 'dashboard';
         
-        // Data user dari session
+        // Data user from session
         $data['user'] = [
             'id' => $this->session->userdata('user_id'),
             'username' => $this->session->userdata('username'),
@@ -63,33 +63,14 @@ class Dashboard extends CI_Controller {
             'role_name' => $this->session->userdata('role_name')
         ];
         
-        // Load WAF Model
-        $this->load->model('Waf_model');
-        
-        // Fetch Real-time Stats from Safeline WAF
-        $waf_data = $this->Waf_model->get_daily_stats();
-        
-        $data['stats'] = $waf_data['summary'];
-        $data['attack_stats'] = $waf_data['types'];
-        $data['recent_threats'] = $waf_data['recent'];
-        
-        /* 
-        // Example Data Structure from API:
-        $data['recent_threats'] = [
-            [
-                "site_uuid" => "43",
-                "src_ip" => "180.243.39.165",
-                "host" => "jdih.rri.go.id",
-                "url_path" => "/common/dokumen/abs2022kp2090.pdf",
-                "country" => "ID",
-                "city" => "Sidoarjo",
-                "action" => 0, // 0: Detected/Log, 1: Block?
-                "module" => "m_php_unserialize",
-                "attack_type" => 6,
-                "timestamp" => 1769134553
-            ]
+        // Mock data for dashboard overview
+        $data['stats'] = [
+            'total_incidents' => 0,
+            'resolved_incidents' => 0,
+            'pending_incidents' => 0
         ];
-        */
+        $data['attack_stats'] = [];
+        $data['recent_threats'] = [];
         
         // Load views
         $this->load->view('admin/templates/header', $data);

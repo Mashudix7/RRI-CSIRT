@@ -80,9 +80,6 @@ class Settings_model extends CI_Model {
             ['setting_key' => 'footer_text', 'setting_value' => '&copy; 2026 RRI CSIRT. All rights reserved.', 'setting_group' => 'general', 'input_type' => 'text'],
             
             // Security
-            ['setting_key' => 'enable_waf_stats', 'setting_value' => '1', 'setting_group' => 'security', 'input_type' => 'toggle'],
-            ['setting_key' => 'waf_api_url', 'setting_value' => 'https://trial-waf.rri.go.id/api/commercial/record/export', 'setting_group' => 'security', 'input_type' => 'text'],
-            ['setting_key' => 'waf_api_token', 'setting_value' => '', 'setting_group' => 'security', 'input_type' => 'password'],
             ['setting_key' => 'max_login_attempts', 'setting_value' => '5', 'setting_group' => 'security', 'input_type' => 'number'],
             ['setting_key' => 'maintenance_mode', 'setting_value' => '0', 'setting_group' => 'security', 'input_type' => 'toggle'],
 

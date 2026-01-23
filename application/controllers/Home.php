@@ -57,9 +57,9 @@ class Home extends MY_Controller {
 
         foreach ($grouped_teams as $div => &$members) {
             usort($members, function($a, $b) {
-                $level_order = ['leader' => 1, 'manager' => 2, 'staff' => 3];
-                $wa = $level_order[$a['level'] ?? 'staff'] ?? 99;
-                $wb = $level_order[$b['level'] ?? 'staff'] ?? 99;
+                $level_order = ['leader' => 1, 'member' => 2];
+                $wa = $level_order[$a['role'] ?? 'member'] ?? 99;
+                $wb = $level_order[$b['role'] ?? 'member'] ?? 99;
                 if ($wa != $wb) return $wa - $wb;
                 return strcmp($a['name'], $b['name']);
             });
