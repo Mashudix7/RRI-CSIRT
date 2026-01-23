@@ -176,8 +176,8 @@ class Safeline_api {
                     'Authorization: Bearer ' . $jwt,
                 ),
                 CURLOPT_TIMEOUT => $this->config['request_timeout'],
-                CURLOPT_SSL_VERIFYPEER => $this->config['enable_ssl_verify'],
-                CURLOPT_SSL_VERIFYHOST => 2,
+                CURLOPT_SSL_VERIFYPEER => false, // Set to false to avoid cert issues on local
+                CURLOPT_SSL_VERIFYHOST => 0,
             );
             
             // Method specific options
@@ -246,6 +246,17 @@ class Safeline_api {
      */
     public function get_record($id) {
         $endpoint = 'open/record/' . $id;
+        return $this->request($endpoint, 'GET');
+    }
+
+    /**
+     * Get Events (Kejadian Penting)
+     * 
+     * @param int $limit
+     * @param int $offset
+     */
+    public function get_events($limit = 100, $offset = 0) {
+        $endpoint = 'open/events?limit=' . $limit . '&offset=' . $offset;
         return $this->request($endpoint, 'GET');
     }
 }

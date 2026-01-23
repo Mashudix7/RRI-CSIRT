@@ -68,10 +68,12 @@ class Dashboard extends CI_Controller {
         
         // Fetch Real-time Stats from Safeline WAF
         $waf_data = $this->Waf_model->get_daily_stats();
+        $waf_events = $this->Waf_model->get_daily_events(30);
         
         $data['stats'] = $waf_data['summary'];
         $data['attack_stats'] = $waf_data['types'];
-        $data['recent_threats'] = $waf_data['recent'];
+        $data['recent_logs'] = $waf_data['recent'];
+        $data['recent_events'] = $waf_events;
         
         /* 
         // Example Data Structure from API:

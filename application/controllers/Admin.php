@@ -155,75 +155,36 @@ class Admin extends CI_Controller {
         $data['page'] = 'dashboard';
         $data['user'] = $this->_get_user_data();
 
-        // Hardcoded Mock Data (WAF Model removed)
-        $data['stats'] = [
-            'total_attacks' => 24593,
-            'blocked_attacks' => 24102,
-            'active_threats' => 12, 
-            'protection_level' => '99.8%',
-            'uptime' => '99.9%'
-        ];
+        // Load WAF Model
+        $this->load->model('Waf_model');
         
-        $data['attack_stats'] = [
-            'ddos' => 1250,
-            'phishing' => 840,
-            'malware' => 420,
-            'intrusion' => 150,
-            'other' => 50
-        ];
+        // Fetch Real-time Stats & Logs from Safeline WAF
+        $waf_data = $this->Waf_model->get_daily_stats();
+        
+        // Fetch Dedicated Events from Safeline API
+        $waf_events = $this->Waf_model->get_daily_events(30);
 
-        $data['recent_threats'] = [
-            [
-                'module' => 'SQL Injection',
-                'src_ip' => '192.168.1.105',
-                'city' => 'Jakarta',
-                'country' => 'ID',
-                'host' => 'trial-waf.rri.go.id',
-                'url_path' => '/admin/login',
-                'timestamp' => time() - 120,
-                'action' => 1 // Blocked
-            ],
-            [
-                'module' => 'XSS Attack',
-                'src_ip' => '103.20.15.4',
-                'city' => 'Surabaya',
-                'country' => 'ID',
-                'host' => 'rri.go.id',
-                'url_path' => '/news/search',
-                'timestamp' => time() - 900,
-                'action' => 1
-            ],
-            [
-                'module' => 'DDoS Attack',
-                'src_ip' => '45.12.33.11',
-                'city' => 'Beijing',
-                'country' => 'CN',
-                'host' => 'Gateway Utama',
-                'url_path' => '/',
-                'timestamp' => time() - 3600,
-                'action' => 1
-            ],
-             [
-                'module' => 'Malware Download',
-                'src_ip' => '172.16.50.2',
-                'city' => 'Bandung',
-                'country' => 'ID',
-                'host' => 'File Server',
-                'url_path' => '/uploads/shell.php',
-                'timestamp' => time() - 10800,
-                'action' => 0 // Detected
-            ],
-            [
-                'module' => 'Port Scanning',
-                'src_ip' => 'Unknown',
-                'city' => 'Unknown',
-                'country' => '-',
-                'host' => 'Port 22 (SSH)',
-                'url_path' => '-',
-                'timestamp' => time() - 18000,
-                'action' => 0
-            ]
-        ];
+        $data['stats'] = $waf_data['summary'];
+        $data['attack_stats'] = $waf_data['types'];
+        // logs = raw records (individual events)
+        $data['recent_logs'] = $waf_data['recent'] ?? []; 
+        
+        // events = grouped events from open/events api
+        $data['recent_events'] = $waf_events ?? [];
+
+        // Add additional needed stats if not in WAF response
+        $data['stats']['uptime'] = '99.9%'; 
+
+        // Debug Log
+        if (empty($data['recent_logs'])) {
+            log_message('error', 'DEBUG: recent_logs is EMPTY');
+        }
+        if (empty($data['recent_events'])) {
+            log_message('error', 'DEBUG: recent_events is EMPTY');
+        } else {
+            log_message('debug', 'DEBUG: recent_events has ' . count($data['recent_events']) . ' items');
+            file_put_contents(APPPATH . 'cache/admin_events_check.txt', 'Count: ' . count($data['recent_events']));
+        }
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);

@@ -191,6 +191,67 @@ class Waf extends CI_Controller {
     }
 
     /**
+     * POST /waf/events_paged
+     * For DataTables Server Side Events
+     */
+    public function events_paged() {
+        try {
+            $draw = $this->input->post('draw', TRUE);
+            $start = $this->input->post('start', TRUE);
+            $length = $this->input->post('length', TRUE);
+
+            $this->load->model('Waf_model');
+            $result = $this->Waf_model->get_paginated_events($length, $start);
+            
+            $response = array(
+                "draw" => intval($draw),
+                "recordsTotal" => intval($result['total']),
+                "recordsFiltered" => intval($result['total']),
+                "data" => $result['data']
+            );
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+                
+        } catch (Exception $e) {
+            log_message('error', 'WAF Controller Events Paged Error: ' . $e->getMessage());
+            return $this->_json_response(false, 'Error fetching paged events', null, 500);
+        }
+    }
+
+    /**
+     * GET /waf/dashboard_live
+     * Returns both active logs and events for dashboard
+     */
+    public function dashboard_live() {
+        try {
+            $this->load->model('Waf_model');
+            
+            // Get records (Logs)
+            $waf_data = $this->Waf_model->get_daily_stats();
+            
+            // Get events (Grouped Kejadian)
+            $waf_events = $this->Waf_model->get_daily_events(30);
+            
+            $response_data = array(
+                'records' => $waf_data['recent'] ?? [],
+                'events' => $waf_events ?? [],
+                'summary' => $waf_data['summary'] ?? null
+            );
+
+            // Debug Log
+            file_put_contents(APPPATH . 'cache/debug_dashboard_live.json', json_encode($response_data));
+            
+            return $this->_json_response(true, 'OK', $response_data, 200);
+
+        } catch (Exception $e) {
+            log_message('error', 'WAF Dashboard Live Error: ' . $e->getMessage());
+            return $this->_json_response(false, 'Error fetching live data', null, 500);
+        }
+    }
+
+    /**
      * Private: Return JSON response
      */
     private function _json_response($success, $message, $data = null, $http_code = 200) {
