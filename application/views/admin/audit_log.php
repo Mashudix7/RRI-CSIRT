@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between" data-aos="fade-up">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Audit Log</h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Rekam jejak aktivitas pengguna sistem</p>
@@ -17,7 +17,7 @@
         Filter controls here...
     </div> -->
 
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead>

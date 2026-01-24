@@ -50,6 +50,12 @@ class Admin extends CI_Controller {
             $this->session->sess_destroy();
             redirect('auth/login');
         }
+        
+        // Update user activity timestamp (untuk status online & last login)
+        $user_id = $this->session->userdata('user_id');
+        if ($user_id) {
+            $this->User_model->update_activity($user_id);
+        }
     }
 
     /**
@@ -66,7 +72,7 @@ class Admin extends CI_Controller {
         $data['page'] = 'users';
         $data['user'] = $this->_get_user_data();
         
-        $data['users'] = $this->User_model->get_all();
+        $data['users'] = $this->User_model->get_all_with_status();
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
@@ -95,12 +101,18 @@ class Admin extends CI_Controller {
     {
         if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
 
-        $this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]');
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]', [
+            'is_unique' => 'Username sudah digunakan! Silakan gunakan username lain.'
+        ]);
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]', [
+            'is_unique' => 'Email sudah terdaftar! Silakan gunakan email lain.'
+        ]);
         $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
         $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');
 
         if ($this->form_validation->run() === FALSE) {
+            // Set flashdata error dengan pesan validasi
+            $this->session->set_flashdata('error', strip_tags(validation_errors()));
             $this->user_create();
             return;
         }
@@ -215,6 +227,18 @@ class Admin extends CI_Controller {
     public function user_update($id)
     {
          if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
+
+        // SECURITY: Get current user ID and target user 
+        $current_user_id = $this->session->userdata('user_id');
+        $target_user = $this->User_model->get_by_id($id);
+        
+        // SECURITY: Prevent admin from changing their own role
+        $new_role = $this->input->post('role');
+        if ($id == $current_user_id && $new_role !== $target_user['role']) {
+            $this->session->set_flashdata('error', 'Anda tidak dapat mengubah role akun Anda sendiri!');
+            redirect('admin/users');
+            return;
+        }
 
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
         $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');

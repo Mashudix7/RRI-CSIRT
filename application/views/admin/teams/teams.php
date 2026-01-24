@@ -1,13 +1,19 @@
 <!-- =====================================================
      Team Management Page - Admin Panel
      ===================================================== -->
+<?php 
+// RBAC: Check if user can create/update/delete
+$role = $this->session->userdata('role');
+$can_crud = in_array($role, ['admin', 'management']);
+?>
 
 <!-- Header Actions -->
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manajemen Tim</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">Kelola anggota tim yang ditampilkan di landing page</p>
+        <p class="text-gray-500 dark:text-gray-400 mt-1"><?= $can_crud ? 'Kelola anggota tim yang ditampilkan di landing page' : 'Lihat daftar anggota tim' ?></p>
     </div>
+    <?php if ($can_crud): ?>
     <a href="<?= base_url('admin/teams/create') ?>" 
             class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-md transition-all flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,12 +21,13 @@
         </svg>
         Tambah Anggota
     </a>
+    <?php endif; ?>
 </div>
 
 
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
         <div class="text-2xl font-bold text-gray-900 dark:text-white"><?= count($team_media_baru) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Tim Media Baru</div>
@@ -40,7 +47,7 @@
 </div>
 
 <!-- Team Tabs -->
-<div x-data="{ activeTab: 'media-baru' }" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden">
+<div x-data="{ activeTab: 'media-baru' }" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
     <!-- Tab Buttons -->
     <div class="flex border-b border-gray-100 dark:border-slate-700">
         <button @click="activeTab = 'media-baru'" 
@@ -103,6 +110,7 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
+                            <?php if ($can_crud): ?>
                             <a href="<?= base_url('admin/teams/edit/' . $member['id']) ?>" class="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/20 rounded-lg transition-colors" title="Edit">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -113,6 +121,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </a>
+                            <?php else: ?>
+                            <span class="text-xs text-gray-400 dark:text-gray-500 italic">View only</span>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>   
@@ -159,6 +170,7 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
+                            <?php if ($can_crud): ?>
                             <a href="<?= base_url('admin/teams/edit/' . $member['id']) ?>" class="p-2 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 rounded-lg transition-colors" title="Edit">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -169,6 +181,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </a>
+                            <?php else: ?>
+                            <span class="text-xs text-gray-400 dark:text-gray-500 italic">View only</span>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>

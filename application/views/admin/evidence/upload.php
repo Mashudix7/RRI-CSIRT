@@ -14,12 +14,8 @@
         <strong>Security Notice:</strong> File akan dienkripsi namanya dan disimpan di folder terproteksi. Hash SHA-256 akan dihitung secara otomatis untuk integritas data.
     </div>
 
-    <?php if ($this->session->flashdata('error')): ?>
-    <div class="p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg flex items-center gap-3">
-        <span><?= $this->session->flashdata('error') ?></span>
-    </div>
-    <?php endif; ?>
 
+    
     <!-- Form -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
         <form action="<?= base_url('admin/evidence/store') ?>" method="POST" enctype="multipart/form-data" class="space-y-6">

@@ -1,3 +1,8 @@
+<?php 
+// RBAC: Check if user can edit
+$role = $this->session->userdata('role');
+$can_edit = in_array($role, ['admin', 'management']);
+?>
 <div class="space-y-6">
     <!-- Breadcrumb & Navigation -->
     <nav class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">
@@ -135,6 +140,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        <?php if ($can_edit): ?>
                                         <?php 
                                             // Secure link generation to avoid dot issues in URI segments
                                             $edit_url = base_url('admin/ip_edit');
@@ -150,6 +156,9 @@
                                            title="Edit IP">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         </a>
+                                        <?php else: ?>
+                                        <span class="text-xs text-gray-400 italic">-</span>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

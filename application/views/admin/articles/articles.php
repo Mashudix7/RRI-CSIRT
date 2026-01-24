@@ -1,13 +1,19 @@
 <!-- =====================================================
      Article Management Page - Dark Mode Support
      ===================================================== -->
+<?php 
+// RBAC: Check if user can create/update/delete
+$role = $this->session->userdata('role');
+$can_crud = in_array($role, ['admin', 'management']);
+?>
 
 <!-- Header Actions -->
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manajemen Artikel</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">Kelola artikel dan konten informasi</p>
+        <p class="text-gray-500 dark:text-gray-400 mt-1"><?= $can_crud ? 'Kelola artikel dan konten informasi' : 'Lihat daftar artikel dan konten informasi' ?></p>
     </div>
+    <?php if ($can_crud): ?>
     <button onclick="window.location.href='<?= base_url('admin/articles/create') ?>'" 
             class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-md transition-all flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,13 +21,14 @@
         </svg>
         Tulis Artikel
     </button>
+    <?php endif; ?>
 </div>
 
 
 
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
         <div class="text-2xl font-bold text-gray-900 dark:text-white"><?= count($articles) ?></div>
         <div class="text-sm text-gray-500 dark:text-gray-400">Total Artikel</div>
@@ -41,7 +48,7 @@
 </div>
 
 <!-- Articles Table -->
-<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden">
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
     <div class="overflow-x-auto">
         <table class="w-full">
             <thead class="bg-gray-50 dark:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700">
@@ -102,6 +109,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                 </svg>
                             </a>
+                            <?php if ($can_crud): ?>
                             <a href="<?= base_url('admin/articles/edit/' . $article['id']) ?>" class="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/20 rounded-lg transition-colors" title="Edit">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -112,6 +120,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </a>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>

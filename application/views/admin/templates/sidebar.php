@@ -244,15 +244,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?= base_url('admin/audit') ?>" 
-                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && $page === 'audit') ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-                            </svg>
-                            <span>Audit Log</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="<?= base_url('admin/settings') ?>" 
                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && $page === 'settings') ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,6 +251,24 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                             <span>Pengaturan</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <!-- Audit Log (Admin & Auditor) -->
+            <?php if (isset($user['role']) && in_array($user['role'], ['admin', 'auditor'])): ?>
+            <div class="mb-6">
+                <p class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Audit</p>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="<?= base_url('admin/audit') ?>" 
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors <?= (isset($page) && $page === 'audit_log') ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-400' : 'text-slate-300 hover:bg-white/5' ?>">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            <span>Audit Log</span>
                         </a>
                     </li>
                 </ul>

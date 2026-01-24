@@ -50,7 +50,10 @@ class User_model extends CI_Model {
 
     public function update_activity($user_id) {
         $this->db->where('id', $user_id);
-        $this->db->update('users', ['last_activity' => date('Y-m-d H:i:s')]);
+        $this->db->update('users', [
+            'last_activity' => date('Y-m-d H:i:s'),
+            'last_login' => date('Y-m-d H:i:s') // Keep last_login updated as well
+        ]);
     }
 
     public function get_all_with_status() {
