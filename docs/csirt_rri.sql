@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 23, 2026 at 01:35 AM
+-- Generation Time: Jan 24, 2026 at 04:28 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -64,6 +64,13 @@ CREATE TABLE `articles` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `articles`
+--
+
+INSERT INTO `articles` (`id`, `title`, `category`, `slug`, `content`, `excerpt`, `thumbnail`, `author_id`, `status`, `views`, `published_at`, `created_at`, `updated_at`) VALUES
+(10, 'qqqqqqqq', 'Berita', 'qqqqqqqq', 'qqqqqqqqqqqqqqqqq', 'qqqqqqqqqqqqqqqqq', 'assets/uploads/572899538_17875011393434796_3416572539650883626_n5.jpg', 3, 'published', 0, '2026-01-24 10:29:26', '2026-01-24 03:13:55', '2026-01-24 03:29:26');
+
 -- --------------------------------------------------------
 
 --
@@ -74,12 +81,134 @@ CREATE TABLE `audit_logs` (
   `id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `action` varchar(50) NOT NULL,
+  `request_method` varchar(10) DEFAULT NULL,
+  `request_uri` varchar(255) DEFAULT NULL,
   `module` varchar(50) NOT NULL,
   `details` text,
   `ip_address` varchar(45) DEFAULT NULL,
   `user_agent` text,
+  `response_code` int DEFAULT NULL,
+  `execution_time` float DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `audit_logs`
+--
+
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `request_method`, `request_uri`, `module`, `details`, `ip_address`, `user_agent`, `response_code`, `execution_time`, `created_at`) VALUES
+(1, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 02:29:13'),
+(2, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Bahlul', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 02:30:26'),
+(3, 3, 'create_article', NULL, NULL, 'article', 'Created article: Pak Pulici', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 02:33:20'),
+(4, 3, 'update_article', NULL, NULL, 'audit', 'Updated article ID: 5', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:04:53'),
+(5, 3, 'update_team', NULL, NULL, 'team', 'Updated team member ID: 18', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:07:17'),
+(6, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:23:19'),
+(7, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:44:34'),
+(8, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:44:54'),
+(9, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:45:09'),
+(10, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:45:17'),
+(11, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:45:28'),
+(12, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:45:40'),
+(13, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:45:52'),
+(14, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 03:46:05'),
+(15, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 04:19:27'),
+(16, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 04:43:52'),
+(18, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 06:15:18'),
+(19, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 06:16:29'),
+(20, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 06:44:55'),
+(21, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 12:45:24'),
+(22, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 5', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 13:03:11'),
+(23, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 13:41:53'),
+(24, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 13:42:57'),
+(25, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 15:25:32'),
+(26, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:23:35'),
+(27, 3, 'update_ip', NULL, NULL, 'ip', 'Updated IP: 218.33.123.128 (active)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:26:47'),
+(28, 3, 'update_ip', NULL, NULL, 'ip', 'Updated IP: 218.33.123.128 (inactive)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:27:00'),
+(29, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:33:37'),
+(30, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:56:30'),
+(31, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:56:56'),
+(32, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:57:49'),
+(33, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:57:53'),
+(34, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:57:57'),
+(35, 3, 'create_article', NULL, NULL, 'article', 'Created article: Pak pulici maem', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:59:01'),
+(36, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 17:59:42'),
+(37, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:01:29'),
+(38, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:01:45'),
+(39, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:09'),
+(40, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:16'),
+(41, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:21'),
+(42, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 6', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:32'),
+(43, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Pak pulici', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:35'),
+(44, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Pak Pulicii', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:03:38'),
+(45, 3, 'update_user', NULL, NULL, 'user', 'Updated user ID: 3', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:04:44'),
+(46, 3, 'update_user', NULL, NULL, 'user', 'Updated user ID: 3', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:04:48'),
+(47, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:04:54'),
+(48, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:19:04'),
+(49, 3, 'create_article', NULL, NULL, 'article', 'Created article: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:19:40'),
+(50, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 7', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:22:23'),
+(51, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Test Laporan Article 1769192776', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:40:35'),
+(52, 3, 'update_team', NULL, NULL, 'team', 'Updated team member ID: 23', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:46:54'),
+(53, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 7', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:48:02'),
+(54, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:53:55'),
+(55, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:54:01'),
+(56, 3, 'create_article', NULL, NULL, 'article', 'Created article: Test', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:54:34'),
+(57, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:54:40'),
+(58, 3, 'create_team', NULL, NULL, 'team', 'Added team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:55:10'),
+(59, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:55:33'),
+(60, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 18:56:43'),
+(61, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:08:38'),
+(62, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:08:44'),
+(63, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Tes', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:08:48'),
+(64, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 9', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:08:55'),
+(65, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:09:00'),
+(66, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:11:55'),
+(67, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:12:36'),
+(68, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 9', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:13:03'),
+(69, 3, 'delete_article', NULL, NULL, 'article', 'Deleted article: Cekcscs', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:13:06'),
+(70, 3, 'update_team', NULL, NULL, 'team', 'Updated team member ID: 23', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:13:12'),
+(71, 3, 'update_user', NULL, NULL, 'user', 'Updated user ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-23 19:14:04'),
+(73, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 02:58:50'),
+(74, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:11:58'),
+(75, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:13:41'),
+(76, 3, 'create_article', NULL, NULL, 'article', 'Created article: qqqqqqqqqqqqqqqq', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:13:55'),
+(77, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 10', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:19:32'),
+(78, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 10', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:19:47'),
+(79, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:24:42'),
+(80, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:24:45'),
+(81, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:24:47'),
+(82, 3, 'delete_team', NULL, NULL, 'team', 'Deleted team member: Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:24:53'),
+(83, 3, 'update_article', NULL, NULL, 'article', 'Updated article ID: 10', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:29:26'),
+(84, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:34:38'),
+(85, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:34:46'),
+(86, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:34:51'),
+(87, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:35:04'),
+(88, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:39:42'),
+(89, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:40:01'),
+(90, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:40:06'),
+(91, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:40:27'),
+(92, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:41:27'),
+(93, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:41:35'),
+(94, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:42:35'),
+(95, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:42:42'),
+(96, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:42:42'),
+(97, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:46:47'),
+(98, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:46:51'),
+(99, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:48:55'),
+(100, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:49:00'),
+(101, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:54:03'),
+(102, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 03:54:12'),
+(103, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:02:32'),
+(104, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:02:38'),
+(105, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:05:40'),
+(106, 5, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:05:52'),
+(107, 5, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:06:35'),
+(109, 5, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:06:50'),
+(110, 5, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:08:12'),
+(111, 4, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:08:23'),
+(112, 4, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:17:26'),
+(113, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:17:32'),
+(114, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:26:14'),
+(115, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:26:29');
 
 -- --------------------------------------------------------
 
@@ -99,9 +228,14 @@ CREATE TABLE `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
+('01bo3miltlk0vaupug2fu52tqf1rs5g3', '::1', 1769228818, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393232383539363b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393232383235323b6c6173745f61637469766974797c693a313736393232383235323b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b),
+('f0rsvi98toknjd22c9khk6b1b83rhnqj', '::1', 1769188600, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393138383539353b),
 ('h6bbgrq19o0911rnu299a9oos2u6t2kn', '::1', 1769058071, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037313b),
 ('ktrkj6tgpmk8lnk2nr4tcori8mf8ahkt', '::1', 1769058070, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037303b),
 ('m4pu8lq2hvo5v7dr9b5kmp482p5e0tpc', '::1', 1769058679, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383436333b),
+('pibmtel5jg4l1op7lhc7fqcmvusj68iq', '::1', 1769188930, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393138383932343b),
+('prho8rfrqk0aeur8ke5chp7chgo1vr62', '::1', 1769195666, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393139353535363b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393139353535363b6c6173745f61637469766974797c693a313736393139353535363b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b),
+('tfe90an6247h51j6vqpal6vk41t7jmgj', '::1', 1769226162, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393232363136323b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393232363136323b6c6173745f61637469766974797c693a313736393232363136323b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b746f6173745f737563636573737c733a33393a224c6f67696e20626572686173696c212053656c616d617420646174616e672c204d617368756469223b5f5f63695f766172737c613a313a7b733a31333a22746f6173745f73756363657373223b733a333a226e6577223b7d),
 ('thcmjt58636dt5oo2dbqab57oo3l85qs', '::1', 1769058462, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383436323b),
 ('umqdf1halq1dvej8sevlu9bip4865oec', '::1', 1769058070, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037303b);
 
@@ -487,7 +621,8 @@ INSERT INTO `ip_addresses` (`id`, `name`, `ip_address`, `type`, `region`, `descr
 (280, '', '218.33.123.210', 'public', NULL, 'IP LB My-Presensi Terbaru (PT. TKM)', 'active', 'available', NULL, '2026-01-22 16:02:09', '2026-01-22 16:02:09', 6),
 (281, '', '218.33.123.211', 'public', NULL, 'IP MinIO My-Presensi Terbaru (PT. TKM)', 'active', 'available', NULL, '2026-01-22 16:02:09', '2026-01-22 16:02:09', 6),
 (282, '', '218.33.123.212', 'public', NULL, 'IP Aplikasi Presensi Mobile API Node JS', 'active', 'available', NULL, '2026-01-22 16:02:09', '2026-01-22 16:02:09', 6),
-(283, '', '218.33.123.0', 'public', NULL, '', 'inactive', 'available', NULL, '2026-01-22 12:17:05', '2026-01-22 18:24:46', 1);
+(283, '', '218.33.123.0', 'public', NULL, '', 'inactive', 'available', NULL, '2026-01-22 12:17:05', '2026-01-22 18:24:46', 1),
+(284, '', '218.33.123.128', 'public', NULL, '', 'inactive', 'available', NULL, '2026-01-23 17:26:47', '2026-01-23 17:27:00', 3);
 
 -- --------------------------------------------------------
 
@@ -510,15 +645,55 @@ CREATE TABLE `knowledge_base` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_attempts`
+-- Table structure for table `login_history`
 --
 
-CREATE TABLE `login_attempts` (
-  `id` int(11) UNSIGNED NOT NULL,
+CREATE TABLE `login_history` (
+  `id` int UNSIGNED NOT NULL,
+  `username` varchar(100) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
-  `login` varchar(100) NOT NULL,
-  `time` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  `user_agent` text,
+  `attempt_time` datetime NOT NULL,
+  `success` tinyint(1) NOT NULL DEFAULT '0',
+  `failure_reason` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `login_history`
+--
+
+INSERT INTO `login_history` (`id`, `username`, `ip_address`, `user_agent`, `attempt_time`, `success`, `failure_reason`) VALUES
+(1, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 18:23:35', 1, ''),
+(2, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 18:56:30', 1, ''),
+(3, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 18:57:49', 1, ''),
+(4, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 18:57:57', 1, ''),
+(5, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:01:29', 1, ''),
+(6, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:03:09', 1, ''),
+(7, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:03:21', 1, ''),
+(8, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:19:04', 1, ''),
+(9, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:54:01', 1, ''),
+(10, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 19:56:43', 1, ''),
+(11, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 20:08:44', 1, ''),
+(12, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-23 20:12:36', 1, ''),
+(13, 'admin', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 03:58:42', 0, 'Invalid credentials'),
+(14, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 03:58:50', 1, ''),
+(15, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:13:41', 1, ''),
+(16, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:34:46', 1, ''),
+(17, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:35:04', 1, ''),
+(18, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:40:01', 1, ''),
+(19, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:40:27', 1, ''),
+(20, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:41:35', 1, ''),
+(21, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:42:42', 1, ''),
+(22, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:42:42', 1, ''),
+(23, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:46:51', 1, ''),
+(24, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:49:00', 1, ''),
+(25, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 04:54:12', 1, ''),
+(26, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:02:38', 1, ''),
+(27, 'Nur', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:05:52', 1, ''),
+(28, 'Nur', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:06:40', 0, 'Invalid credentials'),
+(29, 'Nur', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:06:50', 1, ''),
+(30, 'Fahri', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:08:23', 1, ''),
+(31, 'Mashudi', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-01-24 05:17:32', 1, '');
 
 -- --------------------------------------------------------
 
@@ -545,14 +720,12 @@ CREATE TABLE `networks` (
 --
 
 INSERT INTO `networks` (`id`, `slug`, `name`, `cidr`, `range_start`, `range_end`, `subnet_mask`, `description`, `is_reserve`, `created_at`, `updated_at`) VALUES
-(1, 'jakarta', 'Data Center Jakarta', '218.33.123.0/26', '218.33.123.0', '218.33.123.63', '255.255.255.192', 'Core Network', 0, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
+(1, 'jakarta', 'Data Center JKT', '218.33.123.0/26', '218.33.123.0', '218.33.123.63', '255.255.255.192', 'Core Network', 0, '2026-01-22 16:00:06', '2026-01-23 03:23:18'),
 (2, 'serpong', 'DC PDN Serpong', '218.33.123.64/26', '218.33.123.64', '218.33.123.127', '255.255.255.192', 'Disaster Recovery (DRC)', 0, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
 (3, 'pusat', 'DC Kantor Pusat', '218.33.123.128/27', '218.33.123.128', '218.33.123.159', '255.255.255.224', 'Headquarters', 0, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
-(4, 'reserve1', 'Network Cadangan 1', '218.33.123.160/28', '218.33.123.160', '218.33.123.175', '255.255.255.240', 'Dapat digunakan untuk: IP Transit', 1, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
+(4, 'reserve1', 'Network Cadangan 1', '218.33.123.160/28', '218.33.123.160', '218.33.123.175', '255.255.255.240', 'Dapat digunakan untuk: IP Transit', 1, '2026-01-22 16:00:06', '2026-01-24 04:26:29'),
 (5, 'reserve2', 'Network Cadangan 2', '218.33.123.176/28', '218.33.123.176', '218.33.123.191', '255.255.255.240', 'Future DC / Event / Kebutuhan Dadakan', 1, '2026-01-22 16:00:06', '2026-01-22 16:00:06'),
 (6, 'depok', 'DC Depok', '218.33.123.192/26', '218.33.123.192', '218.33.123.255', '255.255.255.192', 'Data Center', 0, '2026-01-22 16:00:06', '2026-01-22 16:00:06');
-
--- --------------------------------------------------------
 
 -- --------------------------------------------------------
 
@@ -574,19 +747,28 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `setting_group`, `input_type`, `updated_at`) VALUES
-(1, 'site_title', 'CSIRT RRI', 'general', 'text', '2026-01-22 20:00:00'),
-(2, 'site_description', 'Computer Security Incident Response Team LPP RRI', 'general', 'textarea', '2026-01-22 20:00:00'),
-(3, 'contact_email', 'csirt@rri.go.id', 'general', 'email', '2026-01-22 20:00:00'),
-(4, 'contact_phone', '+62 21 12345678', 'general', 'text', '2026-01-22 20:00:00'),
-(5, 'footer_text', '&copy; 2026 RRI CSIRT. All rights reserved.', 'general', 'text', '2026-01-22 20:00:00'),
-(6, 'enable_waf_stats', '1', 'security', 'toggle', '2026-01-22 20:00:00'),
-(7, 'waf_api_url', 'https://trial-waf.rri.go.id/api/commercial/record/export', 'security', 'text', '2026-01-22 20:00:00'),
-(8, 'waf_api_token', '', 'security', 'password', '2026-01-22 20:00:00'),
-(9, 'max_login_attempts', '5', 'security', 'number', '2026-01-22 20:00:00'),
-(10, 'maintenance_mode', '0', 'security', 'toggle', '2026-01-22 20:00:00'),
-(11, 'social_facebook', '#', 'social', 'text', '2026-01-22 20:00:00'),
-(12, 'social_twitter', '#', 'social', 'text', '2026-01-22 20:00:00'),
-(13, 'social_instagram', '#', 'social', 'text', '2026-01-22 20:00:00');
+(1, 'site_title', 'CSIRT RRI', 'general', 'text', '2026-01-23 08:41:36'),
+(2, 'site_description', 'Computer Security Incident Response Team LPP RRI', 'general', 'textarea', '2026-01-23 08:41:36'),
+(3, 'contact_email', 'csirt@rri.go.id', 'general', 'email', '2026-01-23 08:41:36'),
+(4, 'contact_phone', '+62 21 12345678', 'general', 'text', '2026-01-23 08:41:36'),
+(5, 'footer_text', '&copy; 2026 RRI CSIRT. All rights reserved.', 'general', 'text', '2026-01-23 08:41:36'),
+(6, 'enable_waf_stats', '1', 'security', 'toggle', '2026-01-23 08:41:36'),
+(7, 'waf_api_url', 'https://trial-waf.rri.go.id/api/commercial/record/export', 'security', 'text', '2026-01-23 08:41:36'),
+(8, 'waf_api_token', '', 'security', 'password', '2026-01-23 08:41:36'),
+(9, 'max_login_attempts', '5', 'security', 'number', '2026-01-23 08:41:36'),
+(10, 'maintenance_mode', '0', 'security', 'toggle', '2026-01-23 08:41:36'),
+(11, 'social_facebook', '#', 'social', 'text', '2026-01-23 08:41:36'),
+(12, 'social_twitter', '#', 'social', 'text', '2026-01-23 08:41:36'),
+(13, 'social_instagram', '#', 'social', 'text', '2026-01-23 08:41:36'),
+(14, 'waf_api_username', 'admin', 'api', 'text', '2026-01-23 13:44:55'),
+(15, 'waf_api_password', '', 'api', 'password', '2026-01-23 13:44:55'),
+(16, 'session_timeout', '7200', 'security', 'number', '2026-01-23 23:55:37'),
+(17, 'login_lockout_duration', '900', 'security', 'number', '2026-01-23 23:55:37'),
+(18, 'enable_2fa', '0', 'security', 'toggle', '2026-01-23 23:55:37'),
+(19, 'password_min_length', '8', 'security', 'number', '2026-01-23 23:55:37'),
+(20, 'password_require_uppercase', '1', 'security', 'toggle', '2026-01-23 23:55:37'),
+(21, 'password_require_number', '1', 'security', 'toggle', '2026-01-23 23:55:37'),
+(22, 'password_require_special', '1', 'security', 'toggle', '2026-01-23 23:55:37');
 
 -- --------------------------------------------------------
 
@@ -613,12 +795,9 @@ CREATE TABLE `teams` (
 --
 
 INSERT INTO `teams` (`id`, `name`, `position`, `division`, `photo`, `email`, `phone`, `role`, `display_order`, `is_active`, `created_at`) VALUES
-(1, 'Mashudi', 'Direktur Utama', 'Tim IT', 'assets/uploads/teams/e20b1d884809d15970f7cc645f4cd326.jpg', 'masssshudiiii@gmail.com', '089199189927', 'leader', 0, 1, '2026-01-21 09:37:19'),
-(2, 'Fahri', 'Direktur Utama', 'Tim Teknologi Media Baru', 'assets/uploads/teams/70d538dd2344d483a83232f30831443b.png', NULL, '089199189927', 'member', 0, 1, '2026-01-21 10:01:41'),
-(6, 'Mashudi', 'Anak Magang', 'Tim Teknologi Media Baru', 'assets/uploads/teams/87ed1ef4d5733a016236e00efb4abf3c.jpg', 'mashudi@cloudify.com', NULL, 'member', 0, 1, '2026-01-21 10:29:47'),
-(18, 'Mashudi', 'Direktur Utama', 'media_baru', '541399459_17955360609005469_3276091029063881069_n3.jpg', NULL, NULL, 'leader', 0, 1, '2026-01-22 19:28:59'),
-(19, 'Farly', 'Anak Magang', 'media_baru', '541399459_17955360609005469_3276091029063881069_n4.jpg', NULL, NULL, 'member', 0, 1, '2026-01-22 19:29:19'),
-(20, 'Fahri', 'Direktur Utama', 'it', '572899538_17875011393434796_3416572539650883626_n.jpg', NULL, NULL, 'leader', 0, 1, '2026-01-22 19:30:49');
+(21, 'Mashudi', 'Direktur Utama', 'Tim Teknologi Media Baru', '541399459_17955360609005469_3276091029063881069_n7.jpg', NULL, NULL, 'leader', 0, 1, '2026-01-23 03:44:34'),
+(22, 'Mashudi', 'Direktur Utama', 'Tim IT', '541399459_17955360609005469_3276091029063881069_n8.jpg', NULL, NULL, 'leader', 0, 1, '2026-01-23 03:44:54'),
+(26, 'Mashudi', 'Anak Magang', 'Tim IT', NULL, NULL, NULL, 'member', 0, 1, '2026-01-23 03:45:40');
 
 -- --------------------------------------------------------
 
@@ -637,6 +816,9 @@ CREATE TABLE `users` (
   `is_active` tinyint(1) DEFAULT '1',
   `last_login` datetime DEFAULT NULL,
   `last_activity` datetime DEFAULT NULL,
+  `failed_login_attempts` int DEFAULT '0',
+  `account_locked_until` datetime DEFAULT NULL,
+  `login_ip` varchar(45) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `avatar` varchar(255) DEFAULT NULL,
@@ -647,10 +829,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`, `phone`, `is_active`, `last_login`, `created_at`, `updated_at`, `avatar`, `status`) VALUES
-(3, 'Mashudi', 'masssshudiiii@gmail.com', '$2y$10$K4imEYKACSx3J5SoB.9ffektXd0MMJXpQJzgKfsK.HsE8kSFDIY6S', 'admin', NULL, NULL, 1, '2026-01-23 02:30:11', '2026-01-22 20:28:01', '2026-01-23 01:30:11', 'avatar_1769110081.jpg', 'active'),
-(4, 'Fahri', 'fahri@gmail.com', '$2y$10$J/WitlNyub/WtSHZVas0s.BzcY0OomhuISMzuTTegfoeAtBKPvSh6', 'management', NULL, NULL, 1, NULL, '2026-01-22 20:31:51', '2026-01-22 19:31:51', 'avatar_1769110311.jpg', 'active'),
-(5, 'Nur', 'nur@gmail.com', '$2y$10$yh1gPBrUipgIarz7ToUA3OoMUXWFN.9mGgEHIITKwD0iVpsj74GLG', 'auditor', NULL, NULL, 1, '2026-01-23 02:29:48', '2026-01-22 20:32:15', '2026-01-23 01:29:48', 'avatar_1769110335.jpg', 'active');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`, `phone`, `is_active`, `last_login`, `last_activity`, `failed_login_attempts`, `account_locked_until`, `login_ip`, `created_at`, `updated_at`, `avatar`, `status`) VALUES
+(3, 'Mashudi', 'masssshudiiii@gmail.com', '$2y$10$K4imEYKACSx3J5SoB.9ffektXd0MMJXpQJzgKfsK.HsE8kSFDIY6S', 'admin', NULL, NULL, 1, '2026-01-24 11:26:45', '2026-01-24 11:26:45', 0, NULL, '::1', '2026-01-22 20:28:01', '2026-01-24 04:26:45', 'avatar_1769110081.jpg', 'active'),
+(4, 'Fahri', 'fahri@gmail.com', '$2y$10$J/WitlNyub/WtSHZVas0s.BzcY0OomhuISMzuTTegfoeAtBKPvSh6', 'auditor', NULL, NULL, 1, '2026-01-24 11:17:21', '2026-01-24 11:17:21', 0, NULL, '::1', '2026-01-22 20:31:51', '2026-01-24 04:17:21', 'avatar_1769110311.jpg', 'active'),
+(5, 'Nur', 'nur@gmail.com', '$2y$10$yh1gPBrUipgIarz7ToUA3OoMUXWFN.9mGgEHIITKwD0iVpsj74GLG', 'auditor', NULL, NULL, 1, '2026-01-24 11:08:08', '2026-01-24 11:08:08', 0, NULL, '::1', '2026-01-22 20:32:15', '2026-01-24 04:08:08', 'avatar_1769110335.jpg', 'active');
 
 --
 -- Indexes for dumped tables
@@ -668,21 +850,26 @@ ALTER TABLE `api_keys`
 ALTER TABLE `articles`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `author_id` (`author_id`);
+  ADD KEY `idx_status_published` (`status`,`published_at`),
+  ADD KEY `idx_category` (`category`),
+  ADD KEY `idx_author` (`author_id`);
 
 --
 -- Indexes for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `idx_created_user` (`created_at`,`user_id`),
+  ADD KEY `idx_action` (`action`);
 
 --
 -- Indexes for table `ci_sessions`
 --
 ALTER TABLE `ci_sessions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `timestamp` (`timestamp`);
+  ADD KEY `timestamp` (`timestamp`),
+  ADD KEY `idx_timestamp` (`timestamp`);
 
 --
 -- Indexes for table `evidence`
@@ -727,10 +914,13 @@ ALTER TABLE `knowledge_base`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `login_attempts`
+-- Indexes for table `login_history`
 --
-ALTER TABLE `login_attempts`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `login_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_username_time` (`username`,`attempt_time`),
+  ADD KEY `idx_ip_time` (`ip_address`,`attempt_time`),
+  ADD KEY `idx_attempt_time` (`attempt_time`);
 
 --
 -- Indexes for table `networks`
@@ -750,14 +940,17 @@ ALTER TABLE `settings`
 -- Indexes for table `teams`
 --
 ALTER TABLE `teams`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_division_active` (`division`,`is_active`),
+  ADD KEY `idx_display_order` (`display_order`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idx_username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -773,13 +966,13 @@ ALTER TABLE `api_keys`
 -- AUTO_INCREMENT for table `articles`
 --
 ALTER TABLE `articles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT for table `evidence`
@@ -809,7 +1002,7 @@ ALTER TABLE `incident_notes`
 -- AUTO_INCREMENT for table `ip_addresses`
 --
 ALTER TABLE `ip_addresses`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=284;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
 
 --
 -- AUTO_INCREMENT for table `knowledge_base`
@@ -818,10 +1011,10 @@ ALTER TABLE `knowledge_base`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `login_attempts`
+-- AUTO_INCREMENT for table `login_history`
 --
-ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `login_history`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `networks`
@@ -833,13 +1026,13 @@ ALTER TABLE `networks`
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `teams`
 --
 ALTER TABLE `teams`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `users`
