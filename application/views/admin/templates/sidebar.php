@@ -8,7 +8,7 @@
         <!-- Logo -->
         <div class="h-16 flex items-center gap-3 px-5 border-b border-white/10">
             <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-lg overflow-hidden">
-                <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo RRI" class="w-full h-full object-contain p-1">
+                <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo RRI" class="w-full h-full object-contain p-1" loading="lazy">
             </div>
             <div>
                 <span class="text-lg font-bold text-white">CSIRT</span>
@@ -272,7 +272,7 @@
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($user['avatar']) || $user['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-800' ?>">
                     <?php if (!empty($user['avatar']) && $user['avatar'] !== 'default_avatar.png'): ?>
-                        <img src="<?= base_url('uploads/avatars/' . $user['avatar']) ?>" alt="User Avatar" class="w-full h-full object-cover">
+                        <img src="<?= base_url('uploads/avatars/' . $user['avatar']) ?>" alt="User Avatar" class="w-full h-full object-cover" loading="lazy">
                     <?php else: ?>
                         <span class="text-white font-semibold"><?= strtoupper(substr($user['username'] ?? 'U', 0, 1)) ?></span>
                     <?php endif; ?>

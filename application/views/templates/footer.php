@@ -7,10 +7,8 @@
                 <!-- Brand -->
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                            </svg>
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+                            <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo CSIRT RRI" class="w-full h-full object-contain p-1" loading="lazy">
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">CSIRT RRI</h3>

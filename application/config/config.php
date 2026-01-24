@@ -383,14 +383,14 @@ $config['encryption_key'] = 'csirt_rri_secure_key_2026';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ci_session';
-$config['sess_samesite'] = 'Lax';
-$config['sess_expiration'] = 900;
-$config['sess_save_path'] = sys_get_temp_dir();
-$config['sess_match_ip'] = FALSE;
-$config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+$config['sess_driver'] = 'database';
+$config['sess_cookie_name'] = 'csirt_rri_session';
+$config['sess_samesite'] = 'Lax'; // Relaxed for development
+$config['sess_expiration'] = 7200; // 2 hours
+$config['sess_save_path'] = 'ci_sessions';
+$config['sess_match_ip'] = FALSE; // Relaxed for local dev to prevent issues
+$config['sess_time_to_update'] = 300; // Regenerate every 5 minutes
+$config['sess_regenerate_destroy'] = TRUE; // Destroy old session data
 
 /*
 |--------------------------------------------------------------------------
@@ -411,9 +411,9 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix'] = '';
 $config['cookie_domain'] = '';
 $config['cookie_path'] = '/';
-$config['cookie_secure'] = FALSE;
-$config['cookie_httponly'] = FALSE;
-$config['cookie_samesite'] = 'Lax';
+$config['cookie_secure'] = FALSE; // Set to TRUE in production with HTTPS
+$config['cookie_httponly'] = TRUE; // Prevent JavaScript access
+$config['cookie_samesite'] = 'Strict'; // Enhanced CSRF protection
 
 /*
 |--------------------------------------------------------------------------

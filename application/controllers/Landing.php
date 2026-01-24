@@ -41,6 +41,9 @@ class Landing extends CI_Controller {
      */
     public function index()
     {
+        // Cache removed to support dynamic session state in navbar
+        // $this->output->cache(60);
+
         $data['title'] = 'Beranda';
         
         // Get latest 3 articles for news section
@@ -75,6 +78,9 @@ class Landing extends CI_Controller {
      */
     public function tentang()
     {
+        // Cache removed to support dynamic session state in navbar
+        // $this->output->cache(60);
+
         $data['title'] = 'Tentang CSIRT';
         
         $this->load->view('templates/header', $data);
@@ -89,6 +95,9 @@ class Landing extends CI_Controller {
      */
     public function tim()
     {
+        // Cache removed to support dynamic session state in navbar
+        // $this->output->cache(60);
+
         $data['title'] = 'Tim Kami';
         
         // Data tim dari database
@@ -131,6 +140,9 @@ class Landing extends CI_Controller {
      */
     public function kontak()
     {
+        // Cache output for 60 minutes
+        $this->output->cache(60);
+
         $data['title'] = 'Kontak';
         
         $this->load->view('templates/header', $data);

@@ -52,7 +52,7 @@
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 bg-gray-200 rounded-full overflow-hidden relative">
                             <?php if (!empty($member['photo'])): ?>
-                                <img id="preview-photo" src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover">
+                                <img id="preview-photo" src="<?= base_url('assets/uploads/' . $member['photo']) ?>" class="w-full h-full object-cover" loading="lazy">
                             <?php else: ?>
                                 <img id="preview-photo" class="w-full h-full object-cover hidden">
                                 <div id="placeholder-text" class="w-full h-full flex items-center justify-center text-gray-500 text-xl font-bold">

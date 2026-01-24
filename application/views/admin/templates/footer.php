@@ -4,17 +4,38 @@
 
 <?php $this->load->view('admin/templates/modal_confirm'); ?>
 <?php $this->load->view('admin/templates/modal_flash'); ?>
+<?php $this->load->view('admin/templates/session_monitor'); ?>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init({
-        once: true,
-        duration: 500, // Slightly faster AOS
-        offset: 30,    // Trigger sooner
-        disable: 'mobile' 
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Init AOS with "Once per session per page" logic
+        const pagePath = window.location.pathname;
+        const seenKey = 'aos_seen_' + pagePath;
+        
+        let aosConfig = {
+            once: true,
+            duration: 1000, // Smooth 1s duration
+            offset: 50,
+            easing: 'ease-out-quart', // Premium smooth easing
+            mirror: false,
+            disable: 'mobile' 
+        };
 
-    // Number Counting Animation
+        // Check if we've seen this page's animation in this session
+        if (sessionStorage.getItem(seenKey)) {
+            // Already seen: Disable animation to keep it static/prevent re-run
+            // Setting disable: true in AOS removes the aos-init/aos-animate classes immediately
+            aosConfig.disable = true;
+        } else {
+            // First time: Mark as seen
+            sessionStorage.setItem(seenKey, 'true');
+        }
+
+        AOS.init(aosConfig);
+        
+        animateCounters();
+    });
     function animateCounters() {
         const counters = document.querySelectorAll('[data-count-up]');
         const speed = 2000; // The lower the slower
@@ -48,9 +69,6 @@
 
         counters.forEach(counter => observer.observe(counter));
     }
-
-    // Initialize counters on load
-    document.addEventListener('DOMContentLoaded', animateCounters);
 </script>
 </body>
 </html>

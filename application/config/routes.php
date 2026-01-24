@@ -77,6 +77,8 @@ $route['kontak'] = 'landing/kontak';
 // Article Routes (Public)
 // =====================================================
 $route['artikel'] = 'artikel/index';
+$route['artikel/kategori/(:any)'] = 'artikel/index/$1';
+$route['artikel/detail/(:num)'] = 'artikel/detail/$1';
 $route['artikel/(:num)'] = 'artikel/detail/$1';
 
 // =====================================================

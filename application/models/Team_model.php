@@ -9,6 +9,9 @@ class Team_model extends CI_Model {
     }
 
     public function get_all() {
+        $this->db->where('is_active', 1);
+        $this->db->order_by('display_order', 'ASC');
+        $this->db->order_by('name', 'ASC');
         return $this->db->get('teams')->result_array();
     }
 

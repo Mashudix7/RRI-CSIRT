@@ -90,7 +90,7 @@
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Artikel Lainnya</h2>
             <div class="grid md:grid-cols-3 gap-6">
                 <?php foreach ($related_articles as $rel): ?>
-                    <a href="<?= base_url('artikel/' . $rel['slug']) ?>" class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
+                    <a href="<?= base_url('artikel/' . $rel['id']) ?>" class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
                         <span class="text-xs text-blue-600 dark:text-blue-400 font-medium"><?= htmlspecialchars($rel['category']) ?></span>
                         <h3 class="font-semibold text-gray-900 dark:text-white mt-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             <?= htmlspecialchars($rel['title']) ?>

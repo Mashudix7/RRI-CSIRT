@@ -3,7 +3,7 @@
      ===================================================== -->
 
 <!-- Welcome Banner -->
-<div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 text-white relative overflow-hidden" data-aos="fade-down">
+<div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 text-white relative overflow-hidden" data-aos="fade-up">
     <div class="absolute inset-0 opacity-20">
         <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -136,7 +136,7 @@
     <!-- Right Sidebar -->
     <div class="space-y-6">
         <!-- Attack Types -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Jenis Serangan</h3>
             
             <div class="space-y-4">
@@ -169,7 +169,7 @@
         </div>
         
         <!-- Quick Actions -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="100">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up" data-aos-delay="100">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kontrol Keamanan</h3>
             
             <div class="space-y-3">
@@ -200,7 +200,7 @@
         </div>
         
         <!-- System Status -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-left" data-aos-delay="200">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up" data-aos-delay="200">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status Agen</h3>
             
             <div class="space-y-3">

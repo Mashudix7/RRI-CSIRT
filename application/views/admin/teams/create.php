@@ -51,7 +51,7 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto Profil</label>
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 bg-gray-200 rounded-full overflow-hidden relative">
-                            <img id="preview-photo" class="w-full h-full object-cover hidden">
+                            <img id="preview-photo" class="w-full h-full object-cover hidden" loading="lazy">
                             <div id="placeholder-text" class="w-full h-full flex items-center justify-center text-gray-500 text-xs text-center">
                                 Preview
                             </div>

@@ -21,6 +21,16 @@ class Teams extends Admin_Controller {
         $data['all_teams'] = $all_teams;
         $data['divisions'] = array_unique(array_column($all_teams, 'division'));
         
+        // Filter teams by division for the view (support multiple naming formats)
+        $data['team_media_baru'] = array_filter($all_teams, function($t) { 
+            $div = strtolower($t['division'] ?? '');
+            return $div == 'tim teknologi media baru' || $div == 'media_baru' || strpos($div, 'media') !== false; 
+        });
+        $data['team_it'] = array_filter($all_teams, function($t) { 
+            $div = strtolower($t['division'] ?? '');
+            return $div == 'tim it' || $div == 'it' || (strpos($div, 'it') !== false && strpos($div, 'media') === false); 
+        });
+        
         $this->render_admin('admin/teams/teams', $data); 
     }
 

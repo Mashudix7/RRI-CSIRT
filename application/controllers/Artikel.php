@@ -27,22 +27,21 @@ class Artikel extends CI_Controller {
     /**
      * Daftar Artikel
      */
-    public function index()
+    public function index($kategori = null)
     {
+        // Disable cache to ensure fresh articles are shown
+        // $this->output->cache(30);
+
         $data['title'] = 'Artikel';
         
-        // Filter kategori dari query string
-        $data['kategori'] = $this->input->get('kategori');
-        
-        // Get articles from database
-        $data['articles'] = $this->Article_model->get_all();
-        
-        // Filter by kategori if provided
-        if ($data['kategori']) {
-            $data['articles'] = array_filter($data['articles'], function($article) use ($data) {
-                return strtolower($article['category']) === strtolower($data['kategori']);
-            });
+        // Filter kategori dari URL segment (artikel/kategori/xxx) atau query string
+        if (empty($kategori)) {
+            $kategori = $this->input->get('kategori', TRUE); // Fallback to query string
         }
+        $data['kategori'] = $kategori ? strtolower(urldecode($kategori)) : '';
+        
+        // Get published articles from database (filtered by status and optional category)
+        $data['articles'] = $this->Article_model->get_published(null, $data['kategori']);
         
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar', $data);
@@ -55,6 +54,9 @@ class Artikel extends CI_Controller {
      */
     public function detail($id)
     {
+        // Disable cache for fresh content
+        // $this->output->cache(60);
+
         // Find article by ID
         $article = $this->Article_model->get_by_id($id);
         
@@ -65,14 +67,12 @@ class Artikel extends CI_Controller {
         $data['title'] = $article['title'];
         $data['article'] = $article;
         
-        // Related articles (latest 3 except current)
-        // Ideally DB should support 'exclude' or we filter here.
-        // For simplicity, just get all and slice, or get recent.
-        $all_articles = $this->Article_model->get_all(4); // Get 4, hopefully containing or not containing current.
-        $data['related'] = array_filter($all_articles, function($a) use ($id) {
+        // Related articles (latest 3 published, except current)
+        $all_articles = $this->Article_model->get_published(4);
+        $data['related_articles'] = array_filter($all_articles, function($a) use ($id) {
             return $a['id'] != $id;
         });
-        $data['related'] = array_slice($data['related'], 0, 3);
+        $data['related_articles'] = array_slice($data['related_articles'], 0, 3);
         
         $this->load->view('templates/header', $data);
         $this->load->view('templates/navbar', $data);

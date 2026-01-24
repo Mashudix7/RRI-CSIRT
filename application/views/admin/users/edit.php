@@ -50,7 +50,7 @@
                         <div id="preview-container" class="w-20 h-20 rounded-full overflow-hidden border border-gray-200 dark:border-slate-700">
                             <!-- Display existing avatar or default -->
                             <?php $avatar_url = isset($user_edit['avatar']) && $user_edit['avatar'] ? base_url('uploads/avatars/' . $user_edit['avatar']) : base_url('assets/img/default_avatar.png'); ?>
-                            <img id="preview" src="<?= $avatar_url ?>" alt="Preview" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=<?= $user_edit['username'] ?>'">
+                            <img id="preview" src="<?= $avatar_url ?>" alt="Preview" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=<?= $user_edit['username'] ?>'" loading="lazy">
                         </div>
                         <label class="cursor-pointer">
                             <span class="px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors">

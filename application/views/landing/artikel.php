@@ -12,29 +12,34 @@
         
         <!-- Category Filter -->
         <div class="flex flex-wrap gap-2 mb-8">
+            <?php 
+                // Fungsi helper untuk menentukan class aktif
+                $activeClass = 'btn-gradient text-white';
+                $inactiveClass = 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300';
+            ?>
             <a href="<?= base_url('artikel') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
-                      <?= !$kategori ? 'btn-gradient text-white' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300' ?>">
+                      <?= empty($kategori) ? $activeClass : $inactiveClass ?>">
                 Semua
             </a>
-            <a href="<?= base_url('artikel?kategori=keamanan') ?>" 
+            <a href="<?= base_url('artikel/kategori/keamanan') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
-                      <?= $kategori == 'keamanan' ? 'btn-gradient text-white' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300' ?>">
+                      <?= $kategori === 'keamanan' ? $activeClass : $inactiveClass ?>">
                 Keamanan
             </a>
-            <a href="<?= base_url('artikel?kategori=panduan') ?>" 
+            <a href="<?= base_url('artikel/kategori/panduan') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
-                      <?= $kategori == 'panduan' ? 'btn-gradient text-white' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300' ?>">
+                      <?= $kategori === 'panduan' ? $activeClass : $inactiveClass ?>">
                 Panduan
             </a>
-            <a href="<?= base_url('artikel?kategori=pengumuman') ?>" 
+            <a href="<?= base_url('artikel/kategori/pengumuman') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
-                      <?= $kategori == 'pengumuman' ? 'btn-gradient text-white' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300' ?>">
+                      <?= $kategori === 'pengumuman' ? $activeClass : $inactiveClass ?>">
                 Pengumuman
             </a>
-            <a href="<?= base_url('artikel?kategori=laporan') ?>" 
+            <a href="<?= base_url('artikel/kategori/laporan') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
-                      <?= $kategori == 'laporan' ? 'btn-gradient text-white' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300' ?>">
+                      <?= $kategori === 'laporan' ? $activeClass : $inactiveClass ?>">
                 Laporan
             </a>
         </div>

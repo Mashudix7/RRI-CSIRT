@@ -6,13 +6,24 @@ class MY_Controller extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        // Security Headers
+        // Comprehensive Security Headers
         $this->output->set_header('X-Frame-Options: SAMEORIGIN');
         $this->output->set_header('X-Content-Type-Options: nosniff');
         $this->output->set_header('X-XSS-Protection: 1; mode=block');
         $this->output->set_header('Referrer-Policy: strict-origin-when-cross-origin');
-        // HSTS (Enable in production with valid SSL)
-        // $this->output->set_header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        $this->output->set_header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+        
+        // Content Security Policy
+        $csp = "default-src 'self'; ";
+        $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net unpkg.com; ";
+        $csp .= "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; ";
+        $csp .= "font-src 'self' fonts.gstatic.com; ";
+        $csp .= "img-src 'self' data: https: ui-avatars.com; ";
+        $csp .= "connect-src 'self' https://trial-waf.rri.go.id https://data.bmkg.go.id;";
+        $this->output->set_header("Content-Security-Policy: {$csp}");
+        
+        // HSTS - Enable in production with valid SSL
+        // $this->output->set_header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
     }
 }
 
@@ -31,7 +42,21 @@ class Admin_Controller extends MY_Controller {
         if (!$this->session->userdata('user_id')) {
             redirect('auth/login');
         } else {
-            // Update last activity
+            // Check session timeout (2 hours = 7200 seconds)
+            $last_activity = $this->session->userdata('last_activity');
+            $current_time = time();
+            
+            if ($last_activity && ($current_time - $last_activity) > 7200) {
+                // Session expired
+                $this->session->sess_destroy();
+                $this->session->set_flashdata('error', 'Sesi Anda telah berakhir. Silakan login kembali.');
+                redirect('auth/login');
+            }
+            
+            // Update last activity timestamp
+            $this->session->set_userdata('last_activity', $current_time);
+            
+            // Update user last activity in database
             $this->User_model->update_activity($this->session->userdata('user_id'));
         }
     }

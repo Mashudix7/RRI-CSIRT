@@ -55,7 +55,7 @@
                 <div class="flex items-start gap-4">
                     <div class="w-32 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 relative">
                         <?php if (!empty($article['thumbnail'])): ?>
-                            <img id="preview-image" src="<?= base_url($article['thumbnail']) ?>" class="w-full h-full object-cover">
+                            <img id="preview-image" src="<?= base_url($article['thumbnail']) ?>" class="w-full h-full object-cover" loading="lazy">
                         <?php else: ?>
                             <img id="preview-image" class="w-full h-full object-cover hidden">
                             <div id="placeholder-image" class="w-full h-full flex items-center justify-center text-gray-500 text-sm">

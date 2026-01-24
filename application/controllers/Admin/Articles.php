@@ -18,7 +18,7 @@ class Articles extends Admin_Controller {
         $data['page'] = 'articles';
         $data['articles'] = $this->Article_model->get_all();
         
-        $this->render_admin('admin/artikle/articles', $data);
+        $this->render_admin('admin/articles/articles', $data);
     }
 
     public function create()
@@ -26,7 +26,7 @@ class Articles extends Admin_Controller {
         $data['title'] = 'Tambah Artikel';
         $data['page'] = 'articles';
         
-        $this->render_admin('admin/artikle/create', $data);
+        $this->render_admin('admin/articles/create', $data);
     }
 
     public function store()
@@ -101,7 +101,7 @@ class Articles extends Admin_Controller {
         
         if (!$data['article']) show_404();
         
-        $this->render_admin('admin/artikle/edit', $data);
+        $this->render_admin('admin/articles/edit', $data);
     }
 
     public function update($id)

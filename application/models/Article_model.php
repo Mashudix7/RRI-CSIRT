@@ -42,4 +42,30 @@ class Article_model extends CI_Model {
     public function count_all() {
         return $this->db->count_all('articles');
     }
+    
+    /**
+     * Get published articles with optional category filter
+     * @param int|null $limit - Max number of articles
+     * @param string|null $category - Category to filter (case-insensitive)
+     * @return array
+     */
+    public function get_published($limit = null, $category = null) {
+        $this->db->select('articles.*, users.username as author');
+        $this->db->from('articles');
+        $this->db->join('users', 'users.id = articles.author_id', 'left');
+        $this->db->where('articles.status', 'published');
+        
+        // Filter by category if provided (case-insensitive)
+        if (!empty($category)) {
+            $this->db->where('LOWER(articles.category)', strtolower($category));
+        }
+        
+        $this->db->order_by('articles.created_at', 'DESC');
+        
+        if ($limit) {
+            $this->db->limit($limit);
+        }
+        
+        return $this->db->get()->result_array();
+    }
 }

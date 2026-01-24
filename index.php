@@ -55,6 +55,11 @@
  */
 	define('ENVIRONMENT', 'production');
 
+	// Force clear opcache to ensure core class patches are loaded
+	if (function_exists('opcache_reset')) {
+		opcache_reset();
+	}
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -66,7 +71,7 @@
 switch (ENVIRONMENT)
 {
 	case 'development':
-		error_reporting(-1);
+		error_reporting(E_ALL & ~E_DEPRECATED);
 		ini_set('display_errors', 1);
 	break;
 

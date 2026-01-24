@@ -334,7 +334,7 @@ class Admin extends CI_Controller {
                 $data['page'] = 'articles';
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/artikle/create', $data);
+                $this->load->view('admin/articles/create', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
 
@@ -408,7 +408,7 @@ class Admin extends CI_Controller {
 
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/artikle/edit', $data);
+                $this->load->view('admin/articles/edit', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
                 
@@ -481,7 +481,7 @@ class Admin extends CI_Controller {
                 
                 $this->load->view('admin/templates/header', $data);
                 $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/artikle/articles', $data);
+                $this->load->view('admin/articles/articles', $data);
                 $this->load->view('admin/templates/footer', $data);
                 break;
         }
@@ -532,15 +532,30 @@ class Admin extends CI_Controller {
      */
     public function reports()
     {
-        $data['title'] = 'Laporan';
+        $data['title'] = 'Laporan & St atistik Keamanan';
         $data['page'] = 'reports';
         $data['user'] = $this->_get_user_data();
         
-        // Stats for reports
+        // Security Statistics  
         $data['stats'] = [
-            'incidents_this_month' => 0,
-            'uptime' => '99.9%'
+            'total_users' => $this->db->count_all('users'),
+            'successful_logins' => $this->db->where('success', 1)
+                ->where('attempt_time >=', date('Y-m-d H:i:s', strtotime('-30 days')))
+                ->count_all_results('login_history'),
+            'failed_logins' => $this->db->where('success', 0)
+                ->where('attempt_time >=', date('Y-m-d H:i:s', strtotime('-30 days')))
+                ->count_all_results('login_history'),
+            'active_sessions' => $this->db->where('timestamp >=', time() - 7200)
+                ->count_all_results('ci_sessions')
         ];
+        
+        // Recent Activity (last 10 audit logs)
+        $this->db->select('audit_logs.*, users.username');
+        $this->db->from('audit_logs');
+        $this->db->join('users', 'users.id = audit_logs.user_id', 'left');
+        $this->db->order_by('audit_logs.created_at', 'DESC');
+        $this->db->limit(10);
+        $data['recent_activity'] = $this->db->get()->result_array();
         
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);

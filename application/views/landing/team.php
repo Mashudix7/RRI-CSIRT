@@ -99,7 +99,7 @@
                                         $photo = $leader['photo'];
                                         if (strpos($photo, 'assets') === false) $photo = 'assets/uploads/' . $photo;
                                     ?>
-                                    <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover">
+                                    <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover" loading="lazy">
                                 <?php else: ?>
                                     <span class="text-white font-bold text-2xl"><?= substr($leader['name'], 0, 1) ?></span>
                                 <?php endif; ?>

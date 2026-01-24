@@ -13,7 +13,7 @@
                 <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Tim Investigasi</h3>
                 <div class="space-y-4">
                     <div class="flex items-start gap-3">
-                        <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=random" class="w-10 h-10 rounded-full" alt="PIC">
+                        <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=random" class="w-10 h-10 rounded-full" alt="PIC" loading="lazy">
                         <div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Budi Santoso</p>
                             <p class="text-xs text-blue-600 dark:text-blue-400">Incident Handler (PIC)</p>

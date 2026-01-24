@@ -56,6 +56,9 @@ class Auth extends CI_Controller {
      */
     public function authenticate()
     {
+        // Load security manager
+        $this->load->library('Security_manager');
+        
         // Validasi
         $this->load->library('form_validation');
         
@@ -67,21 +70,52 @@ class Auth extends CI_Controller {
         ]);
 
         if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('error', validation_errors('<li>', '</li>')); // Capture specific errors
+            $this->session->set_flashdata('error', validation_errors('<li>', '</li>'));
             redirect('auth/login');
             return;
         }
 
         $username = $this->input->post('username', TRUE);
         $password = $this->input->post('password');
+        $ip_address = $this->input->ip_address();
+
+        // Check rate limiting by IP
+        if (!$this->security_manager->check_rate_limit($ip_address, 'ip')) {
+            $this->security_manager->log_login_attempt($username, false, 'Rate limit exceeded (IP)');
+            $this->session->set_flashdata('error', 'Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.');
+            redirect('auth/login');
+            return;
+        }
+
+        // Check rate limiting by username
+        if (!$this->security_manager->check_rate_limit($username, 'username')) {
+            $this->security_manager->log_login_attempt($username, false, 'Rate limit exceeded (Username)');
+            $this->session->set_flashdata('error', 'Terlalu banyak percobaan login untuk username ini. Silakan coba lagi dalam 15 menit.');
+            redirect('auth/login');
+            return;
+        }
 
         // Check Login
         $user = $this->User_model->login($username, $password);
 
         if ($user) {
-             // Block access if inactive? (If status column exists. For now assuming all users in DB are active)
+            // Check if account is locked
+            if ($this->security_manager->is_account_locked($user['id'])) {
+                $this->security_manager->log_login_attempt($username, false, 'Account locked');
+                $this->session->set_flashdata('error', 'Akun Anda dikunci karena terlalu banyak percobaan login yang gagal. Silakan hubungi administrator.');
+                redirect('auth/login');
+                return;
+            }
             
-            // Regenerate session
+            // Check if account is active
+            if (isset($user['status']) && $user['status'] !== 'active') {
+                $this->security_manager->log_login_attempt($username, false, 'Account inactive');
+                $this->session->set_flashdata('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+                redirect('auth/login');
+                return;
+            }
+            
+            // Regenerate session for security
             $this->session->sess_regenerate(TRUE);
             
             // Set session data
@@ -89,21 +123,48 @@ class Auth extends CI_Controller {
                 'user_id' => $user['id'],
                 'username' => $user['username'],
                 'role' => $user['role'],
-                'role_name' => ucfirst($user['role']), // Display nicety
+                'role_name' => ucfirst($user['role']),
                 'logged_in' => TRUE,
                 'login_time' => time(),
+                'last_activity' => time(), // Initialize activity tracking
+                'login_ip' => $ip_address,
                 'avatar' => $user['avatar'] ?? 'default_avatar.png'
             ];
             $this->session->set_userdata($sess_data);
 
-            // Audit Log
+            // Update user login info
+            $this->db->where('id', $user['id']);
+            $this->db->update('users', [
+                'last_login' => date('Y-m-d H:i:s'),
+                'login_ip' => $ip_address
+            ]);
+
+            // Reset failed attempts
+            $this->security_manager->reset_failed_attempts($user['id']);
+
+            // Audit Log (Success)
             $this->Audit_model->log('login', 'User logged in successfully', $user['id']);
+            
+            // Security Log (Success)
+            $this->security_manager->log_login_attempt($username, true);
 
             redirect('dashboard');
         } else {
+            // Get user ID for failed attempt tracking
+            $this->db->select('id');
+            $this->db->where('username', $username);
+            $user_data = $this->db->get('users')->row();
+            
+            if ($user_data) {
+                // Increment failed attempts
+                $this->security_manager->increment_failed_attempts($user_data->id);
+            }
+            
             // Audit Log (Failed)
-            // Need to log without ID or with '0'
-            $this->Audit_model->log('login_failed', "Failed login attempt for username: $username", 0);
+            $this->Audit_model->log('login_failed', "Failed login attempt for username: $username from IP: $ip_address", 0);
+            
+            // Security Log (Failed)
+            $this->security_manager->log_login_attempt($username, false, 'Invalid credentials');
 
             $this->session->set_flashdata('error', 'Username atau password salah.');
             redirect('auth/login');

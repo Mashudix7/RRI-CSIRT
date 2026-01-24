@@ -64,7 +64,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden <?= (empty($log['avatar']) || $log['avatar'] === 'default_avatar.png') ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gray-100' ?>">
                                             <?php if (!empty($log['avatar']) && $log['avatar'] !== 'default_avatar.png'): ?>
-                                                <img src="<?= base_url('uploads/avatars/' . $log['avatar']) ?>" alt="<?= htmlspecialchars($displayName) ?>" class="w-full h-full object-cover">
+                                                <img src="<?= base_url('uploads/avatars/' . $log['avatar']) ?>" alt="<?= htmlspecialchars($displayName) ?>" class="w-full h-full object-cover" loading="lazy">
                                             <?php else: ?>
                                                 <span class="text-white font-semibold"><?= strtoupper(substr($displayName, 0, 1)) ?></span>
                                             <?php endif; ?>
