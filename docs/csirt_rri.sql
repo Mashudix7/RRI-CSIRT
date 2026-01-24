@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 24, 2026 at 04:28 AM
+-- Generation Time: Jan 24, 2026 at 04:31 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -208,7 +208,9 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `request_method`, `request_
 (112, 4, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:17:26'),
 (113, 3, 'login', NULL, NULL, 'system', 'User logged in successfully', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:17:32'),
 (114, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:26:14'),
-(115, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:26:29');
+(115, 3, 'update_network', NULL, NULL, 'network', 'Updated network ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:26:29'),
+(116, 3, 'update_user', NULL, NULL, 'user', 'Updated user ID: 4', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:31:17'),
+(117, 3, 'logout', NULL, NULL, 'system', 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', NULL, NULL, '2026-01-24 04:31:25');
 
 -- --------------------------------------------------------
 
@@ -228,7 +230,6 @@ CREATE TABLE `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
-('01bo3miltlk0vaupug2fu52tqf1rs5g3', '::1', 1769228818, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393232383539363b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393232383235323b6c6173745f61637469766974797c693a313736393232383235323b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b),
 ('f0rsvi98toknjd22c9khk6b1b83rhnqj', '::1', 1769188600, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393138383539353b),
 ('h6bbgrq19o0911rnu299a9oos2u6t2kn', '::1', 1769058071, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037313b),
 ('ktrkj6tgpmk8lnk2nr4tcori8mf8ahkt', '::1', 1769058070, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037303b),
@@ -237,6 +238,7 @@ INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
 ('prho8rfrqk0aeur8ke5chp7chgo1vr62', '::1', 1769195666, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393139353535363b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393139353535363b6c6173745f61637469766974797c693a313736393139353535363b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b),
 ('tfe90an6247h51j6vqpal6vk41t7jmgj', '::1', 1769226162, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393232363136323b757365725f69647c733a313a2233223b757365726e616d657c733a373a224d617368756469223b726f6c657c733a353a2261646d696e223b726f6c655f6e616d657c733a353a2241646d696e223b6c6f676765645f696e7c623a313b6c6f67696e5f74696d657c693a313736393232363136323b6c6173745f61637469766974797c693a313736393232363136323b6c6f67696e5f69707c733a333a223a3a31223b6176617461727c733a32313a226176617461725f313736393131303038312e6a7067223b746f6173745f737563636573737c733a33393a224c6f67696e20626572686173696c212053656c616d617420646174616e672c204d617368756469223b5f5f63695f766172737c613a313a7b733a31333a22746f6173745f73756363657373223b733a333a226e6577223b7d),
 ('thcmjt58636dt5oo2dbqab57oo3l85qs', '::1', 1769058462, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383436323b),
+('uhrarkmaa489bj1dgg1o7pdei35ckr5d', '::1', 1769229086, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393232393038353b),
 ('umqdf1halq1dvej8sevlu9bip4865oec', '::1', 1769058070, 0x5f5f63695f6c6173745f726567656e65726174657c693a313736393035383037303b);
 
 -- --------------------------------------------------------
@@ -830,8 +832,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`, `phone`, `is_active`, `last_login`, `last_activity`, `failed_login_attempts`, `account_locked_until`, `login_ip`, `created_at`, `updated_at`, `avatar`, `status`) VALUES
-(3, 'Mashudi', 'masssshudiiii@gmail.com', '$2y$10$K4imEYKACSx3J5SoB.9ffektXd0MMJXpQJzgKfsK.HsE8kSFDIY6S', 'admin', NULL, NULL, 1, '2026-01-24 11:26:45', '2026-01-24 11:26:45', 0, NULL, '::1', '2026-01-22 20:28:01', '2026-01-24 04:26:45', 'avatar_1769110081.jpg', 'active'),
-(4, 'Fahri', 'fahri@gmail.com', '$2y$10$J/WitlNyub/WtSHZVas0s.BzcY0OomhuISMzuTTegfoeAtBKPvSh6', 'auditor', NULL, NULL, 1, '2026-01-24 11:17:21', '2026-01-24 11:17:21', 0, NULL, '::1', '2026-01-22 20:31:51', '2026-01-24 04:17:21', 'avatar_1769110311.jpg', 'active'),
+(3, 'Mashudi', 'masssshudiiii@gmail.com', '$2y$10$K4imEYKACSx3J5SoB.9ffektXd0MMJXpQJzgKfsK.HsE8kSFDIY6S', 'admin', NULL, NULL, 1, '2026-01-24 11:31:22', '2026-01-24 11:31:22', 0, NULL, '::1', '2026-01-22 20:28:01', '2026-01-24 04:31:22', 'avatar_1769110081.jpg', 'active'),
+(4, 'Fahri', 'fahri@gmail.com', '$2y$10$J/WitlNyub/WtSHZVas0s.BzcY0OomhuISMzuTTegfoeAtBKPvSh6', 'admin', NULL, NULL, 1, '2026-01-24 11:17:21', '2026-01-24 11:17:21', 0, NULL, '::1', '2026-01-22 20:31:51', '2026-01-24 04:31:17', 'avatar_1769110311.jpg', 'active'),
 (5, 'Nur', 'nur@gmail.com', '$2y$10$yh1gPBrUipgIarz7ToUA3OoMUXWFN.9mGgEHIITKwD0iVpsj74GLG', 'auditor', NULL, NULL, 1, '2026-01-24 11:08:08', '2026-01-24 11:08:08', 0, NULL, '::1', '2026-01-22 20:32:15', '2026-01-24 04:08:08', 'avatar_1769110335.jpg', 'active');
 
 --
@@ -972,7 +974,7 @@ ALTER TABLE `articles`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- AUTO_INCREMENT for table `evidence`
