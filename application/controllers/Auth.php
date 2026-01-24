@@ -148,6 +148,9 @@ class Auth extends CI_Controller {
             // Security Log (Success)
             $this->security_manager->log_login_attempt($username, true);
 
+            // Set flash for toast notification
+            $this->session->set_flashdata('toast_success', 'Login berhasil! Selamat datang, ' . $user['username']);
+
             redirect('dashboard');
         } else {
             // Get user ID for failed attempt tracking
@@ -184,6 +187,7 @@ class Auth extends CI_Controller {
         // Destroy session
         $this->session->sess_destroy();
         
-        redirect('auth/login');
+        // Redirect with query string to signal logout (flashdata doesn't survive sess_destroy)
+        redirect('auth/login?logout=success');
     }
 }

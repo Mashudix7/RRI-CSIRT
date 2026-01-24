@@ -5,27 +5,27 @@
 <?php $this->load->view('admin/templates/modal_confirm'); ?>
 <?php $this->load->view('admin/templates/modal_flash'); ?>
 <?php $this->load->view('admin/templates/session_monitor'); ?>
+<?php $this->load->view('admin/templates/toast_notification'); ?>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Init AOS with "Once per session per page" logic
+        // Init AOS with "Once per session per page" logic - Same config as landing
         const pagePath = window.location.pathname;
         const seenKey = 'aos_seen_' + pagePath;
         
         let aosConfig = {
             once: true,
-            duration: 1000, // Smooth 1s duration
-            offset: 50,
-            easing: 'ease-out-quart', // Premium smooth easing
+            duration: 800, // Same as landing page
+            offset: 100,   // Same as landing page
+            easing: 'ease-out-cubic', // Smooth easing
             mirror: false,
-            disable: 'mobile' 
+            anchorPlacement: 'top-bottom'
         };
 
         // Check if we've seen this page's animation in this session
         if (sessionStorage.getItem(seenKey)) {
             // Already seen: Disable animation to keep it static/prevent re-run
-            // Setting disable: true in AOS removes the aos-init/aos-animate classes immediately
             aosConfig.disable = true;
         } else {
             // First time: Mark as seen

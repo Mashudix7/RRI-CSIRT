@@ -234,5 +234,51 @@
             }
         }
     </script>
+    
+    <!-- Alpine.js for Toast -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Toast Notification for Login Page - Centered & Themed -->
+    <?php 
+        $is_logout = $this->input->get('logout') === 'success';
+    ?>
+    <?php if ($is_logout): ?>
+    <div x-data="{ show: false }" 
+         x-init="
+            // Clear all AOS session storage keys on logout
+            Object.keys(sessionStorage).forEach(key => {
+                if (key.startsWith('aos_seen_')) {
+                    sessionStorage.removeItem(key);
+                }
+            });
+            
+            // Show toast
+            setTimeout(() => { show = true }, 300);
+            setTimeout(() => { show = false }, 5000);
+         "
+         x-show="show"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0 transform -translate-y-8"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform -translate-y-8"
+         class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 px-6 py-4 bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white rounded-2xl shadow-2xl shadow-slate-500/30 w-full max-w-lg border border-slate-600/30 mx-4">
+        <div class="flex-shrink-0 w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-base">Logout Berhasil</p>
+            <p class="text-slate-300 text-sm">Anda telah berhasil keluar dari sistem.</p>
+        </div>
+        <button @click="show = false" class="flex-shrink-0 text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
