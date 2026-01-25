@@ -72,11 +72,16 @@
     </button>
     
     <script>
-        // Initialize AOS Animation
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100
+        // Initialize AOS Animation - Optimized for performance
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 600,  // Reduced from 800ms for snappier feel
+                    once: true,     // Only animate once
+                    offset: 50,     // Reduced from 100px  
+                    easing: 'ease-out-cubic'
+                });
+            }
         });
 
         // Navbar Scroll Effect & Scroll-to-Top Button
@@ -111,5 +116,6 @@
             }
         }
     </script>
+    </div><!-- End #page-wrapper -->
 </body>
 </html>

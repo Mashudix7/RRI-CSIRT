@@ -320,8 +320,15 @@ class Admin extends CI_Controller {
         $data['title'] = 'Audit Log';
         $data['page'] = 'audit_log';
         $data['user'] = $this->_get_user_data();
+
+        // Date Filter Logic
+        $date = $this->input->get('date');
+        if (empty($date)) {
+            $date = date('Y-m-d'); // Default to today
+        }
+        $data['selected_date'] = $date;
         
-        $data['logs'] = $this->Audit_model->get_all(100); 
+        $data['logs'] = $this->Audit_model->get_by_date($date); 
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);

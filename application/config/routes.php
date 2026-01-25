@@ -119,7 +119,8 @@ $route['admin/ip-management/(:any)'] = 'admin/ip_management/$1';
 $route['admin/ip-private'] = 'admin/ip_private';
 $route['admin/vpn-management'] = 'admin/vpn_management';
 $route['admin/reports'] = 'admin/reports';
-$route['admin/audit'] = 'admin/audit';
+$route['admin/audit'] = 'admin/audit_log';
+$route['admin/audit-log'] = 'admin/audit_log';
 $route['admin/settings'] = 'admin/settings';
 
 // =====================================================

@@ -7,35 +7,23 @@
 <?php $this->load->view('admin/templates/session_monitor'); ?>
 <?php $this->load->view('admin/templates/toast_notification'); ?>
 
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Init AOS with "Once per session per page" logic - Same config as landing
-        const pagePath = window.location.pathname;
-        const seenKey = 'aos_seen_' + pagePath;
-        
-        let aosConfig = {
-            once: true,
-            duration: 800, // Same as landing page
-            offset: 100,   // Same as landing page
-            easing: 'ease-out-cubic', // Smooth easing
+        // Init AOS - Runs on every page load
+        AOS.init({
+            once: true, // Animation happens once - while scrolling down
+            duration: 800, 
+            offset: 100,
+            easing: 'ease-out-cubic',
             mirror: false,
             anchorPlacement: 'top-bottom'
-        };
-
-        // Check if we've seen this page's animation in this session
-        if (sessionStorage.getItem(seenKey)) {
-            // Already seen: Disable animation to keep it static/prevent re-run
-            aosConfig.disable = true;
-        } else {
-            // First time: Mark as seen
-            sessionStorage.setItem(seenKey, 'true');
-        }
-
-        AOS.init(aosConfig);
+        });
         
         animateCounters();
     });
+
     function animateCounters() {
         const counters = document.querySelectorAll('[data-count-up]');
         const speed = 2000; // The lower the slower

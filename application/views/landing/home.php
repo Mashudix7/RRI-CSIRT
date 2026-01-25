@@ -83,7 +83,7 @@
             
             <!-- Hero Image/Illustration - Right Side -->
             <div class="order-1 lg:order-2 flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-                <div class="relative w-72 h-72 sm:w-96 sm:h-96 lg:w-[450px] lg:h-[450px]">
+                <div class="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-[450px] lg:h-[450px]">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/20 dark:to-slate-800/50 backdrop-blur-sm rounded-[3rem] border border-blue-200 dark:border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                         <!-- Simulated Cyber Shield Interface -->
                         <div class="relative w-full h-full flex items-center justify-center">
@@ -104,7 +104,7 @@
     </div>
     
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-10 inset-x-0 z-20 flex justify-center" data-aos="fade-up" data-aos-delay="800">
+    <div class="absolute bottom-10 inset-x-0 z-20 hidden md:flex justify-center" data-aos="fade-up" data-aos-delay="800">
         <a href="#articles" class="flex flex-col items-center gap-2 text-blue-500 dark:text-white/60 hover:text-blue-600 dark:hover:text-white transition-colors group">
             <span class="text-sm font-medium tracking-wide">Scroll ke bawah</span>
             <div class="animate-bounce">

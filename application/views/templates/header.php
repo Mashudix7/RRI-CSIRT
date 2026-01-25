@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CSIRT RRI - Tim Tanggap Insiden Keamanan Siber Radio Republik Indonesia">
     <title><?= isset($title) ? $title . ' | ' : '' ?>CSIRT RRI</title>
+    <link rel="preload" as="image" href="<?= base_url('assets/img/favicon.png') ?>">
     <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
+    
+    <!-- DNS Prefetch & Preconnect for Performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- CRITICAL: Apply dark mode IMMEDIATELY to prevent flash - Default to DARK -->
     <script>
@@ -56,9 +66,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- AOS Animation Library -->
+    <!-- AOS Animation Library - Deferred for performance -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script defer src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
     <!-- Custom Styles -->
     <style>
@@ -68,7 +78,35 @@
          * Dark: Navy + Blue Glow
          * ===================================================== */
         
-        html { scroll-behavior: smooth; }
+        html { 
+            scroll-behavior: smooth; 
+            overflow-y: scroll; /* Fix layout jumping */
+            overflow-x: hidden; /* Fix horizontal scroll */
+        }
+        body {
+            overflow-x: hidden; /* Double protection */
+            width: 100%;
+        }
+        
+        /* Alpine.js cloak - hide elements until Alpine loads */
+        [x-cloak] { 
+            display: none !important; 
+        }
+        
+        /* Prevent navbar layout shift on load */
+        #navbar {
+            min-height: 64px; /* h-16 = 64px */
+        }
+        
+        /* Performance: GPU acceleration for animations */
+        [data-aos] {
+            will-change: transform, opacity;
+        }
+        
+        /* Performance: Contain layout for isolated sections */
+        section {
+            contain: layout style;
+        }
         
         /* Gradient Text */
         .gradient-text {
@@ -172,3 +210,6 @@
 <body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
       x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) })"
       class="font-sans antialiased bg-white dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300">
+    
+    <!-- Page Wrapper - Prevents horizontal overflow -->
+    <div id="page-wrapper" class="w-full max-w-full overflow-x-hidden">

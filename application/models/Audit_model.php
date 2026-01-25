@@ -47,4 +47,17 @@ class Audit_model extends CI_Model {
         $this->db->order_by('audit_logs.created_at', 'DESC');
         return $this->db->get('audit_logs', $limit, $offset)->result_array();
     }
+
+    /**
+     * Get logs by date
+     * 
+     * @param string $date YYYY-MM-DD
+     */
+    public function get_by_date($date) {
+        $this->db->select('audit_logs.*, users.username, users.role, users.avatar, users.email');
+        $this->db->join('users', 'users.id = audit_logs.user_id', 'left');
+        $this->db->where('DATE(audit_logs.created_at)', $date);
+        $this->db->order_by('audit_logs.created_at', 'DESC');
+        return $this->db->get('audit_logs')->result_array();
+    }
 }

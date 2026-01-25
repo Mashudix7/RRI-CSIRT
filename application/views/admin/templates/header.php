@@ -85,6 +85,70 @@
         /* Page Transition & AOS Defaults */
         body { opacity: 0; transition: opacity 0.15s ease-out; }
         body.loaded { opacity: 1; }
+
+        /* Modern Sidebar Animations - Smart Animate Style */
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-12px) scale(0.95); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        .nav-item {
+            position: relative;
+            /* Smooth 'Spring' easing for organic feel */
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center left;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 4px;
+            background: #60a5fa; /* blue-400 */
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            
+            /* Animate properties */
+            opacity: 0;
+            transform: scaleY(0.5) translateX(-4px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Active State */
+        .nav-item-active {
+            background: linear-gradient(90deg, rgba(37,99,235,0.12) 0%, rgba(37,99,235,0.02) 100%);
+            color: #60a5fa !important; /* blue-400 */
+            animation: slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        .nav-item-active::before {
+            opacity: 1;
+            transform: scaleY(1) translateX(0);
+        }
+
+        /* Hover State - Smooth float */
+        .nav-item:hover:not(.nav-item-active) {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(6px);
+            color: #f8fafc; /* slate-50 */
+        }
+
+        /* Press Effect - Tactile Feedback */
+        .nav-item:active {
+            transform: scale(0.97) translateX(4px);
+            transition-duration: 0.1s; /* Fast response for click */
+        }
+
+        /* Reusable Generic Button Press Effect */
+        .btn-press-anim {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Springy return */
+        }
+        .btn-press-anim:active {
+            transform: scale(0.96);
+            transition-duration: 0.1s; /* Snappy press */
+        }
     </style>
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">

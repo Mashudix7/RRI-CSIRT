@@ -33,12 +33,12 @@
 </section>
 
 <!-- Contact Info & Form -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900">
+<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12">
+        <div class="grid lg:grid-cols-2 gap-12 min-w-0">
             <!-- Contact Info -->
-            <div data-aos="fade-right">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Informasi Kontak</h2>
+            <div data-aos="fade-up" class="min-w-0">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 break-words">Informasi Kontak</h2>
                 
                 <div class="space-y-4">
                     <!-- Email -->
@@ -48,7 +48,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <div>
+                        <div class="min-w-0 break-words">
                             <h4 class="font-semibold text-gray-900 dark:text-white">Email</h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Untuk pertanyaan umum dan koordinasi</p>
                             <a href="mailto:csirt@rri.co.id" class="text-blue-600 dark:text-blue-400 font-medium">csirt@rri.co.id</a>
@@ -86,10 +86,10 @@
             </div>
             
             <!-- Contact Form -->
-            <div data-aos="fade-left">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Kirim Pesan</h2>
+            <div data-aos="fade-up" data-aos-delay="100" class="min-w-0">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 break-words">Kirim Pesan</h2>
                 
-                <form class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none space-y-4">
+                <form class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none space-y-4 min-w-0">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Lengkap</label>
                         <input type="text" placeholder="Masukkan nama lengkap" 

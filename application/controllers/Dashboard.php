@@ -34,6 +34,7 @@ class Dashboard extends CI_Controller {
         parent::__construct();
         $this->load->helper('url');
         $this->load->library('session');
+        date_default_timezone_set('Asia/Jakarta');
         
         // Proteksi: Cek apakah user sudah login
         if (!$this->session->userdata('logged_in')) {
