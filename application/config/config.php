@@ -357,7 +357,7 @@ $config['encryption_key'] = 'csirt_rri_secure_key_2026';
 |	For the 'database' driver, it's a table name.
 |	Please read up the manual for the format with other session drivers.
 |
-|	IMPORTANT: You are REQUIRED to set a valid save path!
+|	IMPORTANT: You are REQUIRED to set a valid save path
 |
 | 'sess_match_ip'
 |
