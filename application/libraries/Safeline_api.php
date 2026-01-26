@@ -105,7 +105,7 @@ class Safeline_api {
             'username' => $this->config['username'],
             'password' => $this->config['password_hash'],
             'csrf_token' => $csrf_token,
-            'callback_address' => 'https://trial-waf.rri.go.id',
+            'callback_address' => $this->config['callback_url'] ?? 'https://trial-waf.rri.go.id',
             'test' => false,
         ));
         

@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /RRI-CSIRT-1/
+    RewriteBase /RRI-CSIRT/
     
     # Check if file or directory exists
     RewriteCond %{REQUEST_FILENAME} !-f
