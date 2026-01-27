@@ -7,7 +7,9 @@ class Waf_model extends CI_Model {
     private $api_url = '';
     private $api_token = '';
     private $cache_file = APPPATH . 'cache/waf_stats_v3.json';
+    private $geoip_cache_file = APPPATH . 'cache/geoip_cache.json';
     private $cache_duration = 300; // 5 minutes
+    private $geoip_data = null;
 
     public function __construct()
     {
@@ -177,7 +179,8 @@ class Waf_model extends CI_Model {
                 'count' => $r['count'] ?? ($r['attack_count'] ?? (($r['deny_count'] ?? 0) + ($r['pass_count'] ?? 0) ?: 1)),
                 'duration' => $r['duration'] ?? '1m',
                 'timestamp' => $ts,
-                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Event')
+                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Event'),
+                'coords' => $this->_resolve_geoip($r['src_ip'] ?? ($r['ip'] ?? null))
             ];
         }
         return $parsed;
@@ -336,7 +339,8 @@ class Waf_model extends CI_Model {
                 'timestamp' => $ts,
                 'action' => (isset($r['deny_count']) && $r['deny_count'] > 0) ? 1 : ($r['action'] ?? 0),
                 'count' => $ip_counts[$ip],
-                'duration' => ($diff < 60) ? '1m' : ceil($diff / 60) . 'm'
+                'duration' => ($diff < 60) ? '1m' : ceil($diff / 60) . 'm',
+                'coords' => $this->_resolve_geoip($ip)
             );
         }
 
@@ -405,5 +409,75 @@ class Waf_model extends CI_Model {
                 'other' => 500
             )
         );
+    }
+
+    /**
+     * Resolve IP to Geo Coordinates with local caching
+     */
+    private function _resolve_geoip($ip)
+    {
+        if (!$ip || $ip == 'Unknown' || $ip == '-' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
+            return null;
+        }
+
+        // 1. Load cache from file if not loaded
+        if ($this->geoip_data === null) {
+            if (file_exists($this->geoip_cache_file)) {
+                $this->geoip_data = json_decode(file_get_contents($this->geoip_cache_file), true) ?: [];
+            } else {
+                $this->geoip_data = [];
+            }
+        }
+
+        // 2. Check if already in cache
+        if (isset($this->geoip_data[$ip])) {
+            return $this->geoip_data[$ip];
+        }
+
+        // 3. Fetch from Tracking API if not in cache
+        // Limit to max 10 new fetches per request to prevent lag
+        static $new_fetches = 0;
+        if ($new_fetches >= 10) return null;
+
+        $new_fetches++;
+        
+        try {
+            // Use ip-api.com (HTTP is more reliable for free tier in some environments)
+            $url = "http://ip-api.com/json/" . $ip;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+            $response = curl_exec($ch);
+            
+            if (curl_errno($ch)) {
+                log_message('error', 'GeoIP CURL Error: ' . curl_error($ch));
+                curl_close($ch);
+                return null;
+            }
+            curl_close($ch);
+
+            if ($response) {
+                $data = json_decode($response, true);
+                if (isset($data['lat']) && isset($data['lon'])) {
+                    $coords = [
+                        'lat' => (float)$data['lat'],
+                        'lon' => (float)$data['lon'],
+                        'city' => $data['city'] ?? '',
+                        'region' => $data['regionName'] ?? ''
+                    ];
+                    
+                    // Update cache
+                    $this->geoip_data[$ip] = $coords;
+                    file_put_contents($this->geoip_cache_file, json_encode($this->geoip_data));
+                    
+                    return $coords;
+                }
+            }
+        } catch (Exception $e) {
+            log_message('error', 'GeoIP resolving error: ' . $e->getMessage());
+        }
+
+        return null;
     }
 }

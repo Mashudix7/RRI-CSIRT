@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             return `
                                 <div class="font-bold border-b border-gray-600 pb-1 mb-1">Attack Detected</div>
                                 <div class="text-xs">
-                                    <span class="text-red-400">Src:</span> ${data.fromName} <span class="text-gray-400">(${data.ip})</span><br/>
+                                    <span class="text-red-400">Src:</span> ${data.fromName}${data.location ? ', ' + data.location : ''} <span class="text-gray-400">(${data.ip})</span><br/>
                                     <span class="text-green-400">Dst:</span> ${data.toName}<br/>
                                     <span class="text-blue-400">Type:</span> ${data.type}
                                 </div>
@@ -386,14 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="text-xs text-gray-300">Location: Jakarta, ID</div>
                                 `;
                             } else {
-                                return `<div class="font-bold text-red-400">${data.name}</div><div class="text-xs text-gray-300">Attacker Source</div>`;
+                                return `<div class="font-bold text-red-400">${data.name}</div><div class="text-xs text-gray-300">${data.location || 'Attacker Source'}</div>`;
                             }
                         }
                     }
                 },
                 geo: {
                     map: 'world',
-                    roam: true, // Enable Roaming (Pan & Zoom)
+                    roam: 'scale', // Only Zoom allowed (No Panning/Dragging)
                     silent: true,
                     label: {
                         emphasis: { show: false }
@@ -516,14 +516,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Or just animate 1-by-1 in the list.
         const recent = records.slice(0, 20);
 
-        // Helper to add random jitter to coordinates to prevent overlapping
-        function jitter(coord) {
-            // Jitter between -3.0 and +3.0 degrees for better separation
-            const offsetLat = (Math.random() - 0.5) * 6; 
-            const offsetLng = (Math.random() - 0.5) * 6;
-            return [coord[0] + offsetLng, coord[1] + offsetLat];
-        }
-
         recent.forEach((record, idx) => {
             const country = record.country || 'Unknown';
             const src_ip = record.src_ip || 'Unknown';
@@ -531,8 +523,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const target_host = record.host || 'RRI Server';
             
             let startCoords = null;
+            let locationName = '';
             
-            if (COUNTRY_COORDS[country]) {
+            // PRIORITY 1: Use precise coordinates from tracking API (provided by backend)
+            if (record.coords && record.coords.lon && record.coords.lat) {
+                startCoords = [record.coords.lon, record.coords.lat];
+                locationName = (record.coords.city ? record.coords.city + ', ' : '') + (record.coords.region || '');
+            } 
+            // PRIORITY 2: Fallback to country centers
+            else if (COUNTRY_COORDS[country]) {
                 startCoords = COUNTRY_COORDS[country];
             } else {
                 const upper = country.toUpperCase();
@@ -551,19 +550,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!startCoords) return;
 
-            // Apply Jitter to Source (so they don't stack)
-            const jitteredStart = jitter(startCoords);
-
             // Create Line: Source -> Target Host
-            // One-by-One Animation: Use 'delay' in line style is not sufficient for 'effect'.
-            // The 'lines' series 'effect' supports a function for delay since ECharts 5.
-            
             lineData.push({
                 fromName: country,
                 toName: target_host,
-                coords: [jitteredStart, JAKARTA_COORDS],
+                coords: [startCoords, JAKARTA_COORDS],
                 type: module,
                 ip: src_ip,
+                location: locationName,
                 // Custom property for delay calculation
                 index: idx 
             });
@@ -571,7 +565,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create Scatter for Source
             scatterData.push({
                 name: country,
-                value: [...jitteredStart, 10], 
+                location: locationName,
+                value: [...startCoords, 10], 
             });
         });
 
