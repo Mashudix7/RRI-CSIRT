@@ -91,15 +91,17 @@
             </div>
         </div>
 
-        <!-- Placeholder Box -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Data Tambahan</h3>
-                <span class="text-xs text-gray-400 dark:text-gray-500">Placeholder</span>
+        <!-- Attack Map Box (Replaces Placeholder) -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Live Attack Map</h3>
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">Real-time</span>
+                </div>
             </div>
-            <div class="h-24 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-600 rounded-lg">
-                <p class="text-gray-400 dark:text-gray-500 text-sm">Area untuk konten tambahan</p>
-            </div>
+            <!-- Map Container -->
+            <div id="attack-map" class="w-full h-[400px]"></div>
         </div>
 
         <!-- WAF Activity Card with Link -->
@@ -269,29 +271,384 @@
     <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Sistem monitoring keamanan terpadu untuk perlindungan aset digital Radio Republik Indonesia.</p>
 </div>
 
-<!-- Dashboard Stats Refresh Script -->
+<!-- ECharts & Map Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Optional: Auto-refresh dashboard stats every 60 seconds
+    // -----------------------------------------------------
+    // Configuration
+    // -----------------------------------------------------
+    const JAKARTA_COORDS = [106.8456, -6.2088]; // Target Location (RRI)
+    
+    // Expanded Country Coordinates to ensure matches
+    const COUNTRY_COORDS = {
+        // Move ID/Indonesia to Central Indonesia (Kalimantan) so domestic lines to Jakarta are visible
+        'Indonesia': [113.9213, -0.7893], 'ID': [113.9213, -0.7893],
+        'United States': [-95.7, 37.1], 'US': [-95.7, 37.1], 'USA': [-95.7, 37.1],
+
+        'China': [104.2, 35.9], 'CN': [104.2, 35.9],
+        'Russia': [105.3, 61.5], 'RU': [105.3, 61.5],
+        'Brazil': [-51.9, -14.2], 'BR': [-51.9, -14.2],
+        'India': [78.9, 20.6], 'IN': [78.9, 20.6],
+        'Germany': [10.4, 51.2], 'DE': [10.4, 51.2],
+        'United Kingdom': [-3.4, 55.4], 'UK': [-3.4, 55.4], 'GB': [-3.4, 55.4],
+        'France': [2.2, 46.2], 'FR': [2.2, 46.2],
+        'Italy': [12.6, 41.9], 'IT': [12.6, 41.9],
+        'Canada': [-106.3, 56.1], 'CA': [-106.3, 56.1],
+        'Australia': [133.8, -25.3], 'AU': [133.8, -25.3],
+        'Japan': [138.3, 36.2], 'JP': [138.3, 36.2],
+        'South Korea': [127.8, 35.9], 'KR': [127.8, 35.9],
+        'Netherlands': [5.3, 52.1], 'NL': [5.3, 52.1],
+        'Singapore': [103.8, 1.4], 'SG': [103.8, 1.4],
+        'Malaysia': [102.0, 4.2], 'MY': [102.0, 4.2],
+        'Vietnam': [108.3, 14.1], 'VN': [108.3, 14.1],
+        'Thailand': [101.0, 15.9], 'TH': [101.0, 15.9],
+        'Taiwan': [121.0, 23.7], 'TW': [121.0, 23.7],
+        'Hong Kong': [114.2, 22.3], 'HK': [114.2, 22.3],
+        'Ukraine': [31.2, 48.4], 'UA': [31.2, 48.4],
+        'Iran': [53.7, 32.4], 'IR': [53.7, 32.4],
+        'Turkey': [35.2, 39.0], 'TR': [35.2, 39.0],
+        'Israel': [34.9, 31.0], 'IL': [34.9, 31.0],
+        'Poland': [19.1, 51.9], 'PL': [19.1, 51.9],
+        'Sweden': [18.6, 60.1], 'SE': [18.6, 60.1],
+        'Spain': [-3.7, 40.5], 'ES': [-3.7, 40.5],
+        'Mexico': [-102.6, 23.6], 'MX': [-102.6, 23.6],
+        'Argentina': [-63.6, -38.4], 'AR': [-63.6, -38.4],
+        'South Africa': [22.9, -30.6], 'ZA': [22.9, -30.6],
+        'Egypt': [30.8, 26.8], 'EG': [30.8, 26.8],
+        'Saudi Arabia': [45.1, 23.9], 'SA': [45.1, 23.9],
+        'Pakistan': [69.3, 30.4], 'PK': [69.3, 30.4],
+        'Bangladesh': [90.4, 23.7], 'BD': [90.4, 23.7],
+        'Philippines': [121.8, 12.9], 'PH': [121.8, 12.9],
+        'New Zealand': [174.9, -40.9], 'NZ': [174.9, -40.9],
+        'Switzerland': [8.2, 46.8], 'CH': [8.2, 46.8],
+        'Belgium': [4.5, 50.5], 'BE': [4.5, 50.5],
+        'Austria': [14.6, 47.5], 'AT': [14.6, 47.5],
+        'Norway': [8.5, 60.5], 'NO': [8.5, 60.5],
+        'Denmark': [9.5, 56.3], 'DK': [9.5, 56.3],
+        'Finland': [25.7, 61.9], 'FI': [25.7, 61.9],
+        'Ireland': [-8.2, 53.4], 'IE': [-8.2, 53.4],
+        'Portugal': [-8.2, 39.4], 'PT': [-8.2, 39.4],
+        'Greece': [21.8, 39.1], 'GR': [21.8, 39.1],
+        'Romania': [25.0, 45.9], 'RO': [25.0, 45.9],
+        'Hungary': [19.5, 47.2], 'HU': [19.5, 47.2],
+        'Czech Republic': [15.5, 49.8], 'CZ': [15.5, 49.8],
+        'Mauritius': [57.5, -20.3], 'MU': [57.5, -20.3],
+        'Lebanon': [35.5, 33.9], 'LB': [35.5, 33.9],
+    };
+
+    let chartInstance = null;
+    let isMapLoaded = false;
+
+    // -----------------------------------------------------
+    // Map Initialization
+    // -----------------------------------------------------
+    function initMap() {
+        const dom = document.getElementById('attack-map');
+        if (!dom) return;
+
+        chartInstance = echarts.init(dom, 'dark', {
+            renderer: 'canvas',
+            useDirtyRect: false
+        });
+
+        // Load World Map JSON
+        $.getJSON('https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json', function (data) {
+            echarts.registerMap('world', data);
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)', // Slate-900 transparent
+                    borderColor: '#334155',
+                    textStyle: { color: '#f8fafc' },
+                    formatter: function(params) {
+                        // FIX: Check if it's a line or a point
+                        if (params.seriesType === 'lines') {
+                            const data = params.data;
+                            return `
+                                <div class="font-bold border-b border-gray-600 pb-1 mb-1">Attack Detected</div>
+                                <div class="text-xs">
+                                    <span class="text-red-400">Src:</span> ${data.fromName} <span class="text-gray-400">(${data.ip})</span><br/>
+                                    <span class="text-green-400">Dst:</span> ${data.toName}<br/>
+                                    <span class="text-blue-400">Type:</span> ${data.type}
+                                </div>
+                            `;
+                        } else if (params.seriesType === 'effectScatter') {
+                            const data = params.data;
+                            // Custom tooltip for RRI Server vs Attacker Node
+                            if (data.name === 'RRI Server') {
+                                return `
+                                    <div class="font-bold text-green-400">RRI Server (Protected)</div>
+                                    <div class="text-xs text-gray-300">Location: Jakarta, ID</div>
+                                `;
+                            } else {
+                                return `<div class="font-bold text-red-400">${data.name}</div><div class="text-xs text-gray-300">Attacker Source</div>`;
+                            }
+                        }
+                    }
+                },
+                geo: {
+                    map: 'world',
+                    roam: true, // Enable Roaming (Pan & Zoom)
+                    silent: true,
+                    label: {
+                        emphasis: { show: false }
+                    },
+                    itemStyle: {
+                        normal: {
+                            areaColor: '#1e293b', 
+                            borderColor: '#0f172a',
+                            borderWidth: 1
+                        },
+                        emphasis: {
+                            areaColor: '#334155'
+                        }
+                    },
+                    zoom: 4, // Default Zoom In
+                    center: [115, -2] // Focus on Indonesia
+                },
+                series: [
+                    {
+                        name: 'Attack Lines',
+                        type: 'lines',
+                        zlevel: 1,
+                        effect: {
+                            show: true,
+                            period: 2, // Faster animation
+                            trailLength: 0.2, // Shorter trail for cleaner look
+                            color: '#fb7185', // Rose-400
+                            symbolSize: 4
+                        },
+                        lineStyle: {
+                            normal: {
+                                color: '#f43f5e', // Rose-500
+                                width: 0.5,
+                                opacity: 0.1, // Faint tracer
+                                curveness: 0.3
+                            }
+                        },
+                        data: [] 
+                    },
+                    {
+                        name: 'Attack Points',
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        zlevel: 2,
+                        rippleEffect: {
+                            brushType: 'fill',
+                            scale: 4
+                        },
+                        symbolSize: 6,
+                        itemStyle: {
+                            normal: { color: '#ef4444' }
+                        },
+                        data: []
+                    },
+                    {
+                        name: 'Target Point',
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        zlevel: 3,
+                        rippleEffect: {
+                            brushType: 'stroke',
+                            period: 4,
+                            scale: 6
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                formatter: '{b}',
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: '#4ade80',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                padding: [4, 8],
+                                borderRadius: 4
+                            }
+                        },
+                        symbolSize: 15,
+                        symbol: 'diamond',
+                        itemStyle: {
+                            normal: {
+                                color: '#22c55e',
+                                shadowBlur: 10,
+                                shadowColor: '#22c55e'
+                            }
+                        },
+                        data: [{
+                            name: 'RRI Server',
+                            value: [...JAKARTA_COORDS, 100],
+                        }]
+                    }
+                ]
+            };
+
+            chartInstance.setOption(option);
+            isMapLoaded = true;
+            
+            // Resize handler
+            window.addEventListener('resize', function() {
+                chartInstance.resize();
+            });
+        });
+    }
+
+    // -----------------------------------------------------
+    // Data Processing & Updates
+    // -----------------------------------------------------
+    function updateMapData(records) {
+        if (!isMapLoaded || !chartInstance) return;
+
+        console.log("Updating Map Data with:", records.length, "records");
+
+        const lineData = [];
+        const scatterData = [];
+
+        // Limit to recent 20 for visual clarity and effectiveness of animation
+        // Sort by timestamp if available to animate chronologically? 
+        // Or just take the list as is (usually latest first). 
+        // Let's reverse it so the "oldest" of the recent batch starts first? 
+        // Or just animate 1-by-1 in the list.
+        const recent = records.slice(0, 20);
+
+        // Helper to add random jitter to coordinates to prevent overlapping
+        function jitter(coord) {
+            // Jitter between -3.0 and +3.0 degrees for better separation
+            const offsetLat = (Math.random() - 0.5) * 6; 
+            const offsetLng = (Math.random() - 0.5) * 6;
+            return [coord[0] + offsetLng, coord[1] + offsetLat];
+        }
+
+        recent.forEach((record, idx) => {
+            const country = record.country || 'Unknown';
+            const src_ip = record.src_ip || 'Unknown';
+            const module = record.module || 'Web Detection';
+            const target_host = record.host || 'RRI Server';
+            
+            let startCoords = null;
+            
+            if (COUNTRY_COORDS[country]) {
+                startCoords = COUNTRY_COORDS[country];
+            } else {
+                const upper = country.toUpperCase();
+                const foundKey = Object.keys(COUNTRY_COORDS).find(k => 
+                    k.toUpperCase() === upper || 
+                    k.toUpperCase().includes(upper) || 
+                    upper.includes(k.toUpperCase())
+                );
+                
+                if (foundKey) {
+                    startCoords = COUNTRY_COORDS[foundKey];
+                } else {
+                     startCoords = [0, 0]; 
+                }
+            }
+
+            if (!startCoords) return;
+
+            // Apply Jitter to Source (so they don't stack)
+            const jitteredStart = jitter(startCoords);
+
+            // Create Line: Source -> Target Host
+            // One-by-One Animation: Use 'delay' in line style is not sufficient for 'effect'.
+            // The 'lines' series 'effect' supports a function for delay since ECharts 5.
+            
+            lineData.push({
+                fromName: country,
+                toName: target_host,
+                coords: [jitteredStart, JAKARTA_COORDS],
+                type: module,
+                ip: src_ip,
+                // Custom property for delay calculation
+                index: idx 
+            });
+
+            // Create Scatter for Source
+            scatterData.push({
+                name: country,
+                value: [...jitteredStart, 10], 
+            });
+        });
+
+        chartInstance.setOption({
+            series: [
+                { 
+                    name: 'Attack Lines',
+                    type: 'lines',
+                    zlevel: 1,
+                    effect: {
+                        show: true,
+                        period: 4, 
+                        trailLength: 0.5, // Longer trail
+                        color: '#fb7185', 
+                        symbolSize: 4,
+                        // One by One Animation Logic
+                        // Delay based on index: 500ms separation
+                        delay: function (idx) {
+                            return idx * 1000;
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            color: '#f43f5e', 
+                            width: 0.2, // Thinner lines to reduce clutter
+                            opacity: 0.1, 
+                            curveness: 0.3
+                        }
+                    },
+                    data: lineData 
+                }, 
+                { 
+                    data: scatterData 
+                }, 
+                { 
+                     data: [{
+                        name: 'RRI Server',
+                        value: [...JAKARTA_COORDS, 100],
+                    }]
+                } 
+            ]
+        });
+    }
+
+    // -----------------------------------------------------
+    // Data Fetching
+    // -----------------------------------------------------
     async function refreshDashboardStats() {
         try {
-            const response = await fetch('<?= base_url("waf/dashboard_live") ?>');
+            const response = await fetch('<?= base_url("waf/dashboard_live") ?>?t=' + new Date().getTime());
             if (!response.ok) return;
             const result = await response.json();
-            if (result.success && result.data && result.data.summary) {
-                const totalElem = document.getElementById('stat-total-attacks');
-                const blockedElem = document.getElementById('stat-blocked-attacks');
+            
+            if (result.success && result.data) {
+                if (result.data.summary) {
+                    const totalElem = document.getElementById('stat-total-attacks');
+                    const blockedElem = document.getElementById('stat-blocked-attacks');
+                    // Stats update logic here if needed...
+                }
+
+                const events = result.data.events || [];
+                const records = result.data.records || [];
+                const attacks = [...events, ...records]; 
                 
-                if (totalElem) totalElem.textContent = new Intl.NumberFormat().format(result.data.summary.total_attacks);
-                if (blockedElem) blockedElem.textContent = new Intl.NumberFormat().format(result.data.summary.blocked_attacks);
+                updateMapData(attacks);
             }
         } catch (error) {
-            console.log('Stats refresh skipped');
+            console.log('Stats refresh skipped', error);
         }
     }
 
-    // Initial refresh after 5 seconds, then every 60 seconds
-    setTimeout(refreshDashboardStats, 5000);
-    setInterval(refreshDashboardStats, 60000);
+    // Initialize
+    initMap();
+    
+    // Initial fetch after 1s
+    setTimeout(refreshDashboardStats, 1000);
+    // Poll every 10s (Slower poll to allow animations to play out)
+    setInterval(refreshDashboardStats, 10000);
 });
 </script>

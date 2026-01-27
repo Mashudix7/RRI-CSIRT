@@ -170,11 +170,14 @@ class Waf_model extends CI_Model {
 
             $parsed[] = [
                 'src_ip' => $r['src_ip'] ?? ($r['ip'] ?? '-'),
+                'country' => $r['country'] ?? ($r['src_country'] ?? ($r['geoip_country_name'] ?? 'Unknown')),
+                'city' => $r['city'] ?? ($r['src_city'] ?? ($r['geoip_city_name'] ?? '-')),
                 'host' => $r['host'] ?? ($r['target'] ?? '-'),
                 // Some events use pass_count or deny_count
                 'count' => $r['count'] ?? ($r['attack_count'] ?? (($r['deny_count'] ?? 0) + ($r['pass_count'] ?? 0) ?: 1)),
                 'duration' => $r['duration'] ?? '1m',
-                'timestamp' => $ts
+                'timestamp' => $ts,
+                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Event')
             ];
         }
         return $parsed;
