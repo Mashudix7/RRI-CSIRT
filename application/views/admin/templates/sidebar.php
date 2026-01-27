@@ -176,6 +176,12 @@
                         </button>
                         <ul x-show="open" x-transition class="pl-11 pr-3 mt-1 space-y-1">
                             <li>
+                                <a href="<?= base_url('admin/security-waf-activity') ?>" 
+                                   class="block px-3 py-2 rounded-lg text-sm nav-item <?= (isset($page) && $page === 'security_waf_activity') ? 'nav-item-active' : 'text-slate-300' ?>">
+                                    Aktivitas Serangan WAF
+                                </a>
+                            </li>
+                            <li>
                                 <a href="<?= base_url('admin/security-fortigate') ?>" 
                                    class="block px-3 py-2 rounded-lg text-sm nav-item <?= (isset($page) && $page === 'security_fortigate') ? 'nav-item-active' : 'text-slate-300' ?>">
                                     Fortigate

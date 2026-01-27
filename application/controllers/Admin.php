@@ -1523,6 +1523,30 @@ class Admin extends CI_Controller {
     // Infrastructure - Security
     // =====================================================
 
+    public function security_waf_activity()
+    {
+        $data['user'] = $this->_get_user_data();
+        $data['title'] = 'Aktivitas Serangan WAF';
+        $data['page'] = 'security_waf_activity';
+        
+        // Load WAF Model
+        $this->load->model('Waf_model');
+        
+        // Fetch Real-time Stats from Safeline WAF
+        $waf_data = $this->Waf_model->get_daily_stats();
+        $waf_events = $this->Waf_model->get_daily_events(30);
+        
+        $data['stats'] = $waf_data['summary'];
+        $data['attack_stats'] = $waf_data['types'];
+        $data['recent_logs'] = $waf_data['recent'];
+        $data['recent_events'] = $waf_events;
+        
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/security/waf_activity', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
     public function security_fortigate()
     {
         $data['user'] = $this->_get_user_data();

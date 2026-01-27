@@ -185,3 +185,134 @@
         </div>
     </div>
 </section>
+
+<!-- Location Map Section -->
+<section class="py-20 bg-gradient-to-b from-white to-blue-50 dark:from-slate-900 dark:to-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12" data-aos="fade-up">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">Lokasi Kami</h2>
+            <p class="text-gray-500 dark:text-gray-400">Kantor Pusat Radio Republik Indonesia</p>
+        </div>
+        
+        <div class="grid lg:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
+            <!-- Map Container -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-2 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none overflow-hidden">
+                    <div id="rri-map" class="w-full h-80 md:h-96 rounded-xl"></div>
+                </div>
+            </div>
+            
+            <!-- Address Info -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none h-full">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Alamat</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Jl. Medan Merdeka Barat No.4-5 2, RT.2/RW.3, Gambir, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10110
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Kantor</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Radio Republik Indonesia (RRI) - Kantor Pusat
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <a href="https://www.google.com/maps/place/-6.172985755294164,106.8223659235306" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-2 w-full justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                        Buka di Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // RRI HQ Coordinates
+    const lat = -6.172985755294164;
+    const lng = 106.8223659235306;
+    
+    // Initialize map (no attribution bar)
+    const map = L.map('rri-map', {
+        scrollWheelZoom: false,
+        attributionControl: false
+    }).setView([lat, lng], 16);
+    
+    // Light tile layer only
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+    
+    // Custom marker icon
+    const markerIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="width:40px;height:40px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(37,99,235,0.4);border:4px solid white;">
+                   <svg style="width:20px;height:20px;color:white;" fill="currentColor" viewBox="0 0 20 20">
+                       <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                   </svg>
+               </div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+    });
+    
+    // Add marker with popup
+    const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(map);
+    marker.bindPopup(`
+        <div style="text-align:center;padding:8px;">
+            <strong style="color:#2563eb;font-size:14px;">RRI Kantor Pusat</strong><br>
+            <span style="font-size:13px;color:#4b5563;">Jl. Medan Merdeka Barat No.4-5</span>
+        </div>
+    `, {
+        closeButton: true,
+        autoClose: false,
+        closeOnClick: false
+    }).openPopup(); // Auto open popup on load
+});
+</script>
+
+<style>
+.custom-marker {
+    background: transparent;
+    border: none;
+}
+
+#rri-map {
+    z-index: 1;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.leaflet-popup-content {
+    margin: 8px 12px;
+}
+</style>

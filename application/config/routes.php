@@ -135,6 +135,7 @@ $route['admin/datacenter-resource-server'] = 'admin/datacenter_resource_server';
 $route['admin/datacenter-traffic-vm'] = 'admin/datacenter_traffic_vm';
 
 // Security
+$route['admin/security-waf-activity'] = 'admin/security_waf_activity';
 $route['admin/security-fortigate'] = 'admin/security_fortigate';
 $route['admin/security-safeline'] = 'admin/security_safeline';
 

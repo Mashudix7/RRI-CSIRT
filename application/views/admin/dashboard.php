@@ -26,110 +26,151 @@
 
 <!-- Main Content Grid -->
 <div class="grid lg:grid-cols-3 gap-6">
-    <!-- Attack Activity Table (Main Column) -->
-    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700" data-aos="fade-up">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aktivitas Serangan WAF</h2>
-            
-            <div class="flex items-center bg-gray-100 dark:bg-slate-700 p-1 rounded-lg">
-                <button onclick="switchTab('logs')" id="tab-logs-btn" class="px-4 py-1.5 text-xs font-medium rounded-md transition-all bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-sm">
-                    Log Serangan
-                </button>
-                <button onclick="switchTab('events')" id="tab-events-btn" class="px-4 py-1.5 text-xs font-medium rounded-md transition-all text-gray-500 dark:text-gray-400">
-                    Kejadian (Events)
-                </button>
+    <!-- Security Overview Cards (Main Column) -->
+    <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
+        <!-- Quick Stats Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Total Attacks Today -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-red-100 dark:bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-total-attacks"><?= number_format($stats['total_attacks'] ?? 0) ?></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Serangan Hari Ini</p>
+                    </div>
+                </div>
             </div>
 
-            <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium flex items-center gap-2" id="live-view-btn">
-                Live View <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
-            </button>
-        </div>
-        
-        <!-- Logs Table -->
-        <div id="table-logs-container" class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-gray-50 dark:bg-slate-700/50">
-                    <tr>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Action</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">URL</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Attack Type</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">IP Addr</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">Time</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700" id="logs-table-body">
-                    <?php if (empty($recent_logs)): ?>
-                        <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400 italic">Menunggu data...</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($recent_logs as $log): ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <?php if ($log['action'] == 1 || $log['action'] == 'block'): ?>
-                                    <span class="px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400 rounded-full text-[10px] uppercase font-bold">Blocked</span>
-                                <?php else: ?>
-                                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 dark:bg-slate-600 dark:text-gray-400 rounded-full text-[10px] uppercase font-bold">Log</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 dark:text-white truncate max-w-[200px]" title="<?= htmlspecialchars($log['url_path']) ?>"><?= htmlspecialchars($log['url_path']) ?></div>
-                                <div class="text-[10px] text-gray-400"><?= htmlspecialchars($log['host']) ?></div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($log['module']) ?></span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="font-mono text-sm text-gray-900 dark:text-white"><?= htmlspecialchars($log['src_ip']) ?></div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="text-xs text-gray-900 dark:text-white"><?= date('H:i:s', $log['timestamp']) ?></div>
-                                <div class="text-[10px] text-gray-500"><?= date('Y-m-d', $log['timestamp']) ?></div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <!-- Blocked Attacks -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-blocked-attacks"><?= number_format($stats['blocked_attacks'] ?? 0) ?></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Diblokir</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protected Sites -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['protected_sites'] ?? 12 ?></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Situs Dilindungi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uptime -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">99.9%</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Uptime WAF</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Events Table (Hidden by default) -->
-        <div id="table-events-container" class="overflow-x-auto hidden">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-gray-50 dark:bg-slate-700/50">
-                    <tr>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">IP Addr</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Applications</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-center">Attack Count</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-center">Duration</th>
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">Start At</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700" id="events-table-body">
-                    <?php if (empty($recent_events)): ?>
-                        <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400 italic">Tidak ada kejadian penting hari ini.</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($recent_events as $event): ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="font-mono text-sm text-gray-900 dark:text-white"><?= htmlspecialchars($event['src_ip'] ?? '-') ?></div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 dark:text-white"><?= htmlspecialchars($event['host'] ?? '-') ?></div>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="px-2 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded text-xs"><?= $event['count'] ?? '1' ?></span>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="text-xs text-gray-600 dark:text-gray-400"><?= $event['duration'] ?? '1m' ?></span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="text-xs text-gray-900 dark:text-white"><?= date('H:i:s', $event['timestamp'] ?? time()) ?></div>
-                                <div class="text-[10px] text-gray-500"><?= date('Y-m-d', $event['timestamp'] ?? time()) ?></div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <!-- Placeholder Box -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Data Tambahan</h3>
+                <span class="text-xs text-gray-400 dark:text-gray-500">Placeholder</span>
+            </div>
+            <div class="h-24 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-600 rounded-lg">
+                <p class="text-gray-400 dark:text-gray-500 text-sm">Area untuk konten tambahan</p>
+            </div>
+        </div>
+
+        <!-- WAF Activity Card with Link -->
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 rounded-xl shadow-lg p-6 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="waf-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="white" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#waf-pattern)"/>
+                </svg>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Aktivitas Serangan WAF</h3>
+                        <p class="text-blue-100 text-sm mb-4">Lihat log serangan dan kejadian keamanan secara real-time dari Safeline WAF.</p>
+                        
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                <span class="text-sm text-blue-100">WAF Active</span>
+                            </div>
+                            <span class="text-blue-200 text-sm">•</span>
+                            <span class="text-sm text-blue-100"><?= count($recent_logs ?? []) ?> log terbaru</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <a href="<?= base_url('admin/security-waf-activity') ?>" 
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Lihat Detail Serangan
+                </a>
+            </div>
+            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
+        </div>
+
+        <!-- Placeholder for Future Content -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Ringkasan Infrastruktur</h3>
+                <span class="text-xs text-gray-400 dark:text-gray-500">Coming Soon</span>
+            </div>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">4</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Data Center</p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">68</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Satker VPN</p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">254</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">IP Terkelola</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -228,152 +269,29 @@
     <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Sistem monitoring keamanan terpadu untuk perlindungan aset digital Radio Republik Indonesia.</p>
 </div>
 
-<!-- WAF Live Update Script -->
+<!-- Dashboard Stats Refresh Script -->
 <script>
-let currentDashboardTab = 'logs';
-
-function switchTab(tab) {
-    currentDashboardTab = tab;
-    
-    // Update buttons
-    const logsBtn = document.getElementById('tab-logs-btn');
-    const eventsBtn = document.getElementById('tab-events-btn');
-    const logsContainer = document.getElementById('table-logs-container');
-    const eventsContainer = document.getElementById('table-events-container');
-
-    if (tab === 'logs') {
-        logsBtn.classList.add('bg-white', 'dark:bg-slate-600', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
-        logsBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
-        eventsBtn.classList.remove('bg-white', 'dark:bg-slate-600', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
-        eventsBtn.classList.add('text-gray-500', 'dark:text-gray-400');
-        
-        logsContainer.classList.remove('hidden');
-        eventsContainer.classList.add('hidden');
-    } else {
-        eventsBtn.classList.add('bg-white', 'dark:bg-slate-600', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
-        eventsBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
-        logsBtn.classList.remove('bg-white', 'dark:bg-slate-600', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
-        logsBtn.classList.add('text-gray-500', 'dark:text-gray-400');
-        
-        eventsContainer.classList.remove('hidden');
-        logsContainer.classList.add('hidden');
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    const liveViewBtn = document.getElementById('live-view-btn');
-    const logsTableBody = document.getElementById('logs-table-body');
-    const eventsTableBody = document.getElementById('events-table-body');
-    let liveInterval = null;
-    let isLive = false;
-
-    function formatTime(timestamp) {
-        if (!timestamp) return '-';
-        const date = new Date(timestamp * 1000);
-        return date.getHours().toString().padStart(2, '0') + ':' + 
-               date.getMinutes().toString().padStart(2, '0') + ':' + 
-               date.getSeconds().toString().padStart(2, '0');
-    }
-
-    function formatDate(timestamp) {
-        if (!timestamp) return '-';
-        const date = new Date(timestamp * 1000);
-        return date.getFullYear() + '-' + 
-               (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-               date.getDate().toString().padStart(2, '0');
-    }
-
-    function updateLogsTable(records) {
-        if (!records || records.length === 0) return;
-        let html = '';
-        records.forEach(log => {
-            const actionBadge = (log.action == 1 || log.action == 'block') 
-                ? `<span class="px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400 rounded-full text-[10px] uppercase font-bold">Blocked</span>`
-                : `<span class="px-2 py-0.5 bg-gray-100 text-gray-600 dark:bg-slate-600 dark:text-gray-400 rounded-full text-[10px] uppercase font-bold">Log</span>`;
-            
-            html += `
-            <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                <td class="px-6 py-4">${actionBadge}</td>
-                <td class="px-6 py-4">
-                    <div class="text-sm text-gray-900 dark:text-white truncate max-w-[200px]" title="${log.url_path || ''}">${log.url_path || ''}</div>
-                    <div class="text-[10px] text-gray-400">${log.host || ''}</div>
-                </td>
-                <td class="px-6 py-4">
-                    <span class="text-xs font-medium text-gray-700 dark:text-gray-300">${log.module || ''}</span>
-                </td>
-                <td class="px-6 py-4">
-                    <div class="font-mono text-sm text-gray-900 dark:text-white">${log.src_ip || ''}</div>
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <div class="text-xs text-gray-900 dark:text-white">${formatTime(log.timestamp)}</div>
-                    <div class="text-[10px] text-gray-500">${formatDate(log.timestamp)}</div>
-                </td>
-            </tr>`;
-        });
-        logsTableBody.innerHTML = html;
-    }
-
-    function updateEventsTable(events) {
-        if (!events || events.length === 0) return;
-        let html = '';
-        events.forEach(event => {
-            html += `
-            <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                <td class="px-6 py-4">
-                    <div class="font-mono text-sm text-gray-900 dark:text-white">${event.src_ip || '-'}</div>
-                </td>
-                <td class="px-6 py-4">
-                    <div class="text-sm text-gray-900 dark:text-white">${event.host || '-'}</div>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="px-2 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded text-xs">${event.count || '1'}</span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="text-xs text-gray-600 dark:text-gray-400">${event.duration || '1m'}</span>
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <div class="text-xs text-gray-900 dark:text-white">${formatTime(event.timestamp)}</div>
-                    <div class="text-[10px] text-gray-500">${formatDate(event.timestamp)}</div>
-                </td>
-            </tr>`;
-        });
-        eventsTableBody.innerHTML = html;
-    }
-
-    async function fetchLiveDashboard() {
+    // Optional: Auto-refresh dashboard stats every 60 seconds
+    async function refreshDashboardStats() {
         try {
-            const response = await fetch('waf/dashboard_live');
+            const response = await fetch('<?= base_url("waf/dashboard_live") ?>');
             if (!response.ok) return;
             const result = await response.json();
-            if (result.success && result.data) {
-                updateLogsTable(result.data.records);
-                updateEventsTable(result.data.events);
+            if (result.success && result.data && result.data.summary) {
+                const totalElem = document.getElementById('stat-total-attacks');
+                const blockedElem = document.getElementById('stat-blocked-attacks');
                 
-                if (result.data.summary) {
-                    const totalElem = document.getElementById('stat-total-attacks');
-                    const blockedElem = document.getElementById('stat-blocked-attacks');
-                    
-                    if (totalElem) totalElem.textContent = new Intl.NumberFormat().format(result.data.summary.total_attacks);
-                    if (blockedElem) blockedElem.textContent = new Intl.NumberFormat().format(result.data.summary.blocked_attacks);
-                }
+                if (totalElem) totalElem.textContent = new Intl.NumberFormat().format(result.data.summary.total_attacks);
+                if (blockedElem) blockedElem.textContent = new Intl.NumberFormat().format(result.data.summary.blocked_attacks);
             }
         } catch (error) {
-            console.error('Failed to fetch WAF live data:', error);
+            console.log('Stats refresh skipped');
         }
     }
 
-    if (liveViewBtn) {
-        liveViewBtn.addEventListener('click', function() {
-            isLive = !isLive;
-            if (isLive) {
-                liveViewBtn.classList.add('bg-blue-50', 'text-blue-700');
-                fetchLiveDashboard();
-                liveInterval = setInterval(fetchLiveDashboard, 30000); // 30s
-            } else {
-                liveViewBtn.classList.remove('bg-blue-50', 'text-blue-700');
-                clearInterval(liveInterval);
-            }
-        });
-    }
+    // Initial refresh after 5 seconds, then every 60 seconds
+    setTimeout(refreshDashboardStats, 5000);
+    setInterval(refreshDashboardStats, 60000);
 });
 </script>

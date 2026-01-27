@@ -114,22 +114,22 @@
                     <?php if (!empty($staff)): ?>
                         <!-- Connector from Leader -->
                         <div class="flex justify-center hidden md:flex">
-                            <div class="w-0.5 h-8 bg-blue-300 dark:bg-blue-600"></div>
+                            <div class="w-0.5 h-6 bg-blue-300 dark:bg-blue-600"></div>
                         </div>
 
-                        <!-- Staff Container -->
-                        <div class="flex justify-center flex-wrap">
+                        <!-- Staff Container with Connectors -->
+                        <div class="flex justify-center flex-wrap max-w-6xl mx-auto">
                             <?php 
                             $count = count($staff);
                             foreach ($staff as $index => $member): 
                                 $isFirst = ($index === 0);
                                 $isLast = ($index === $count - 1);
                             ?>
-                            <!-- Staff Item Wrapper -->
-                            <div class="relative px-2 pt-4 md:pt-8 text-center w-36 hover-lift" data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
+                            <!-- Staff Item Wrapper - Smaller -->
+                            <div class="relative px-1 pt-3 md:pt-6 text-center w-24 md:w-28" data-aos="fade-up" data-aos-delay="<?= min($index * 30, 200) ?>">
                                 
                                 <!-- Vertical Line to Card (Desktop only) -->
-                                <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-8 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
+                                <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-6 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
                                 
                                 <!-- Horizontal Line Left (Connect to previous) (Desktop only) -->
                                 <?php if (!$isFirst): ?>
@@ -141,9 +141,9 @@
                                     <div class="absolute top-0 left-1/2 w-1/2 h-0.5 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
                                 <?php endif; ?>
 
-                                <!-- Card -->
-                                <div class="bg-white dark:bg-slate-800 rounded-xl p-3 border border-gray-200 dark:border-slate-700 shadow-md dark:shadow-none h-full relative z-10 mx-auto w-32">
-                                    <div class="w-14 h-14 mx-auto mb-2 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center overflow-hidden">
+                                <!-- Card - Compact -->
+                                <div class="bg-white dark:bg-slate-800 rounded-lg p-2 border border-gray-200 dark:border-slate-700 shadow-sm dark:shadow-none h-full relative z-10 mx-auto hover-lift">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 mx-auto mb-1.5 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center overflow-hidden">
                                         <?php if (!empty($member['photo'])): ?>
                                             <?php 
                                                 $photo = $member['photo'];
@@ -151,11 +151,11 @@
                                             ?>
                                             <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover" loading="lazy">
                                         <?php else: ?>
-                                            <span class="text-gray-500 font-bold"><?= substr($member['name'], 0, 1) ?></span>
+                                            <span class="text-gray-500 font-bold text-sm"><?= substr($member['name'], 0, 1) ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <h3 class="font-semibold text-gray-900 dark:text-white text-xs mb-1 line-clamp-1"><?= $member['name'] ?></h3>
-                                    <p class="text-gray-500 dark:text-gray-400 text-[10px] line-clamp-1"><?= $member['position'] ?? 'Staff' ?></p>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white text-[10px] md:text-xs mb-0.5 line-clamp-1"><?= $member['name'] ?></h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-[8px] md:text-[10px] line-clamp-1"><?= $member['position'] ?? 'Anggota' ?></p>
                                 </div>
                             </div>
                             <?php endforeach; ?>
