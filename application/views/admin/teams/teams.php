@@ -29,11 +29,11 @@ $can_crud = in_array($role, ['admin', 'management']);
 <!-- Stats Cards -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-gray-900 dark:text-white"><?= count($team_media_baru) ?>/8</div>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white"><?= count($team_media_baru) ?></div>
         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tim Media Baru</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400"><?= count($team_it) ?>/8</div>
+        <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400"><?= count($team_it) ?></div>
         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tim IT</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
@@ -41,7 +41,7 @@ $can_crud = in_array($role, ['admin', 'management']);
         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Kepala Direktur</div>
     </div>
     <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-gray-100 dark:border-slate-700 shadow-sm dark:shadow-none">
-        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400"><?= count(array_filter($all_teams, function($t){ return $t['role'] == 'leader'; })) ?>/2</div>
+        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400"><?= count(array_filter($all_teams, function($t){ return $t['role'] == 'leader'; })) ?></div>
         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Ketua Tim</div>
     </div>
 </div>

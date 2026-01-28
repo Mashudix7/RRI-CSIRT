@@ -74,12 +74,12 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Level 2 & 3: Divisions Layout -->
+                <!-- Level 2 & 3: Divisions Layout -->
             <div class="relative">
                 <!-- Horizontal Connecting Line (Desktop) -->
-                <div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-blue-300 dark:bg-blue-700 hidden lg:block"></div>
+                <div class="absolute -top-8 left-[25%] right-[25%] h-0.5 bg-blue-500 hidden lg:block shadow-sm"></div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                     
                     <?php 
                     $divisions = ['Tim Teknologi Media Baru', 'Tim IT'];
@@ -93,18 +93,18 @@
                         }
                     ?>
                     <!-- Division Column -->
-                    <div class="relative space-y-12">
-                        <!-- Vertical line from horizontal line to leader -->
-                        <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-12 bg-blue-300 dark:bg-blue-700 hidden lg:block"></div>
+                    <div class="relative flex flex-col items-center">
+                        <!-- Vertical line from connector to leader -->
+                        <div class="absolute -top-8 left-1/2 -ml-0.5 w-0.5 h-8 bg-blue-500 hidden lg:block shadow-sm"></div>
 
                         <!-- Division Leader -->
-                        <div class="flex justify-center pt-8 md:pt-12" data-aos="fade-up" data-aos-delay="<?= $divIdx * 100 ?>">
+                        <div class="z-10 mb-2" data-aos="fade-up" data-aos-delay="<?= $divIdx * 100 ?>">
                             <?php if ($leader): ?>
-                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border-2 border-blue-400 dark:border-blue-900/50 shadow-xl text-center w-56 transform transition-all hover:scale-105 relative">
-                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[9px] font-black uppercase rounded-full border border-blue-200 dark:border-blue-800/50">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border-2 border-blue-500/20 dark:border-blue-400/30 shadow-xl text-center w-56 transform transition-all hover:scale-105 relative">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-[10px] font-bold uppercase rounded-full shadow-md">
                                     Ketua <?= ($divIdx == 0) ? 'TMB' : 'IT' ?>
                                 </div>
-                                <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden ring-4 ring-blue-50 dark:ring-blue-900/20">
+                                <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-100 dark:border-blue-900/50">
                                     <?php if (!empty($leader['photo'])): ?>
                                         <img src="<?= base_url(strpos($leader['photo'], 'assets') !== false ? $leader['photo'] : 'assets/uploads/' . $leader['photo']) ?>" class="w-full h-full object-cover">
                                     <?php else: ?>
@@ -117,36 +117,53 @@
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium mt-1"><?= htmlspecialchars($leader['position']) ?></p>
                             </div>
                             <?php else: ?>
-                            <div class="w-48 h-20 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl flex items-center justify-center text-gray-400 text-xs italic">
+                            <div class="w-48 h-20 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-xl flex items-center justify-center text-gray-400 text-xs italic">
                                 Ketua Belum Ditentukan
                             </div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Division Staff Grid -->
-                        <div class="bg-blue-50/30 dark:bg-slate-800/30 rounded-3xl p-6 md:p-8" data-aos="fade-up" data-aos-delay="<?= $divIdx * 150 + 100 ?>">
-                            <div class="text-center mb-6">
-                                <h5 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Anggota Tim <?= ($divIdx == 0) ? 'TMB' : 'IT' ?></h5>
-                                <div class="w-8 h-1 bg-blue-500/20 mx-auto mt-2 rounded-full"></div>
+                        <!-- Line and Capsule to Members -->
+                        <?php if (!empty($staff)): ?>
+                        <div class="relative flex flex-col items-center w-full z-10">
+                            <!-- Line connecting Leader to Members -->
+                            <div class="h-8 w-0.5 bg-blue-500 shadow-sm"></div>
+                            
+                            <!-- Capsule Badge (Solid Blue Background) -->
+                            <div class="-mb-3 z-20">
+                                <span class="px-5 py-1.5 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-full border-4 border-gray-50 dark:border-slate-900 shadow-md">
+                                    Anggota Tim <?= ($divIdx == 0) ? 'TMB' : 'IT' ?>
+                                </span>
                             </div>
+                        </div>
+                        <?php endif; ?>
 
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <!-- Division Staff Grid (Compact & Centered) -->
+                        <div class="inline-block max-w-[90%] md:max-w-3xl bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-blue-100 dark:border-slate-700 relative mt-0" data-aos="fade-up" data-aos-delay="<?= $divIdx * 150 + 100 ?>">
+                            <!-- Top subtle highlight -->
+                            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+                            
+                            <!-- Grid container for 4 items per row -->
+                            <div class="grid grid-cols-4 gap-3 pt-3 justify-items-center">
                                 <?php if (empty($staff)): ?>
-                                    <div class="col-span-full py-4 text-center text-xs text-gray-400 italic">Belum ada anggota</div>
+                                    <div class="col-span-4 py-2 text-center text-[10px] text-gray-400 italic">Belum ada anggota</div>
                                 <?php else: ?>
                                     <?php foreach ($staff as $sIdx => $s): ?>
-                                    <div class="text-center group">
-                                        <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 rounded-2xl overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400 dark:group-hover:ring-blue-500 transition-all shadow-sm">
+                                    <div class="w-20 md:w-24 bg-white dark:bg-slate-800 rounded-lg p-2 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all duration-300 text-center group relative overflow-hidden flex-shrink-0">
+                                        <!-- Top Accent -->
+                                        <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 opacity-80"></div>
+                                        
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-slate-700 group-hover:ring-blue-400 dark:group-hover:ring-blue-500 transition-all">
                                             <?php if (!empty($s['photo'])): ?>
                                                 <img src="<?= base_url(strpos($s['photo'], 'assets') !== false ? $s['photo'] : 'assets/uploads/' . $s['photo']) ?>" class="w-full h-full object-cover">
                                             <?php else: ?>
-                                                <div class="w-full h-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-gray-400 dark:text-gray-500 text-lg font-bold">
+                                                <div class="w-full h-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs font-bold">
                                                     <?= substr($s['name'], 0, 1) ?>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
-                                        <h6 class="text-[10px] md:text-xs font-bold text-gray-800 dark:text-gray-200 line-clamp-1 h-3.5"><?= htmlspecialchars($s['name']) ?></h6>
-                                        <p class="text-[8px] md:text-[9px] text-gray-500 dark:text-gray-500 line-clamp-1"><?= htmlspecialchars($s['position']) ?></p>
+                                        <h6 class="text-[9px] font-bold text-gray-900 dark:text-white line-clamp-2 h-6 leading-tight flex items-center justify-center"><?= htmlspecialchars($s['name']) ?></h6>
+                                        <p class="text-[7px] text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5"><?= htmlspecialchars($s['position']) ?></p>
                                     </div>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
