@@ -3,9 +3,9 @@
      ===================================================== -->
 
 <!-- Hero Section -->
-<section class="relative pt-24 pb-16 bg-[#020617] overflow-hidden">
-    <!-- Cinematic Background -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
+<section class="relative pt-24 pb-16 bg-white dark:bg-[#020617] overflow-hidden">
+    <!-- Cinematic Background (Dark Only) -->
+    <div class="absolute inset-0 z-0 pointer-events-none hidden dark:block">
         <div class="absolute inset-0 cyber-grid opacity-20"></div>
         <div class="absolute inset-0 diagonal-light"></div>
         <div class="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full h-[400px] top-spotlight opacity-50"></div>
@@ -13,13 +13,13 @@
     </div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block px-4 py-1.5 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-4">
+        <span class="inline-block px-4 py-1.5 bg-blue-50 text-blue-700 dark:bg-white/10 dark:text-white backdrop-blur-sm rounded-full text-sm font-medium mb-4 border border-blue-100 dark:border-white/10">
             Tentang Kami
         </span>
-        <h1 class="reveal-sweep delay-100 text-3xl md:text-5xl font-bold text-white mb-4">
-            Mengenal <span class="text-blue-200 dark:text-blue-400">CSIRT RRI</span>
+        <h1 class="reveal-sweep delay-100 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Mengenal <span class="text-blue-600 dark:text-blue-400">CSIRT RRI</span>
         </h1>
-        <p class="reveal-sweep delay-200 text-blue-100 dark:text-blue-200/80 max-w-2xl mx-auto">
+        <p class="reveal-sweep delay-200 text-gray-600 dark:text-blue-200/80 max-w-2xl mx-auto">
             Computer Security Incident Response Team yang bertanggung jawab atas keamanan siber RRI
         </p>
     </div>

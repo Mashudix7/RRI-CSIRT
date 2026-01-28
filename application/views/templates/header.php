@@ -17,15 +17,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- CRITICAL: Apply dark mode IMMEDIATELY to prevent flash - Default to DARK -->
+    <!-- CRITICAL: Theme Initialization -->
     <script>
-        // Default to dark mode if not set
-        if (localStorage.getItem('darkMode') === null) {
-            localStorage.setItem('darkMode', 'true');
-        }
-        // Apply dark mode from localStorage BEFORE anything renders
-        if (localStorage.getItem('darkMode') === 'true') {
+        // Check for saved theme or system preference
+        if (localStorage.getItem('darkMode') === 'true' || 
+           (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('darkMode', 'false');
         }
     </script>
     
@@ -213,7 +214,7 @@
         .cinematic-overlay {
             position: fixed;
             inset: 0;
-            background: #020617;
+            /* bg color handled by utility classes in HTML */
             z-index: 9999;
             animation: curtain-up 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
             pointer-events: none;
@@ -334,7 +335,7 @@
     </style>
 </head>
 <body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) })"
+      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) }); document.documentElement.classList.toggle('dark', darkMode)"
       class="font-sans antialiased bg-white dark:bg-[#020617] text-gray-900 dark:text-gray-100 transition-colors duration-300">
     
     <!-- Page Wrapper - Prevents horizontal overflow -->

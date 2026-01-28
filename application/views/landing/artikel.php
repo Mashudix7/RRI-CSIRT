@@ -3,9 +3,9 @@
      ===================================================== -->
 
 <main class="pt-24 pb-16 bg-gray-50 dark:bg-[#020617] min-h-screen">
-    <section class="relative pt-32 pb-16 bg-[#020617] overflow-hidden">
-    <!-- Cinematic Background -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
+    <section class="relative pt-32 pb-16 bg-white dark:bg-[#020617] overflow-hidden">
+    <!-- Cinematic Background (Dark Only) -->
+    <div class="absolute inset-0 z-0 pointer-events-none hidden dark:block">
         <div class="absolute inset-0 cyber-grid opacity-20"></div>
         <div class="absolute inset-0 diagonal-light"></div>
         <div class="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full h-[400px] top-spotlight opacity-50"></div>

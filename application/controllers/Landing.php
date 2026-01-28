@@ -152,7 +152,7 @@ class Landing extends CI_Controller {
     public function kontak()
     {
         // Cache output for 60 minutes
-        $this->output->cache(60);
+        // $this->output->cache(60);
 
         $data['title'] = 'Kontak';
         

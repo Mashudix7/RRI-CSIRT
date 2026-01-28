@@ -10,7 +10,6 @@
         .cinematic-overlay {
             position: fixed;
             inset: 0;
-            background: #020617;
             z-index: 9999;
             animation: curtain-up 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
             pointer-events: none;
@@ -104,10 +103,106 @@
             background-size: 50px 50px;
             mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
         }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* 3D Orbit Particles */
+        @keyframes orbit-3d {
+            0% { transform: rotateY(0deg) translateX(220px) rotateY(0deg) scale(0.8); z-index: 5; opacity: 0.4; }
+            25% { opacity: 1; z-index: 30; }
+            50% { transform: rotateY(180deg) translateX(220px) rotateY(-180deg) scale(1.2); z-index: 30; opacity: 1; }
+            75% { opacity: 0.4; z-index: 5; }
+            100% { transform: rotateY(360deg) translateX(220px) rotateY(-360deg) scale(0.8); z-index: 5; opacity: 0.4; }
+        }
+
+        .orbit-container {
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+        
+        .light-particle {
+            position: absolute;
+            top: 45%; 
+            left: 45%;
+            width: 12px;
+            height: 12px;
+            background: rgb(96, 165, 250); /* Blue-400 */
+            border-radius: 50%;
+            box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.8);
+            animation: orbit-3d 6s linear infinite;
+        }
+        .light-particle.p2 {
+            animation-delay: -2s;
+            background: rgb(250, 250, 250);
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
+        }
+        .light-particle.p3 {
+            animation-delay: -4s;
+            background: rgb(167, 139, 250);
+            box-shadow: 0 0 20px 5px rgba(139, 92, 246, 0.8);
+        }
+        /* Text Animations */
+        @keyframes text-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-gradient-text {
+            background-size: 200% auto;
+            animation: text-flow 3s linear infinite;
+        }
+        
+        @keyframes float-text {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float-text {
+            animation: float-text 5s ease-in-out infinite;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        
+        /* Button Shine Animation */
+        @keyframes shine {
+            0% { left: -100%; opacity: 0; }
+            5% { left: -100%; opacity: 0.5; }
+            50% { left: 100%; opacity: 0.5; }
+            100% { left: 100%; opacity: 0; }
+        }
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 3s infinite;
+            pointer-events: none;
+        }
     </style>
 
     <!-- Initial Loading State Overlay -->
-    <div class="cinematic-overlay"></div>
+    <div class="cinematic-overlay bg-white dark:bg-[#020617]"></div>
 
     <!-- Atmospheric Overlays -->
     <div class="center-glow hidden dark:block"></div>
@@ -136,12 +231,12 @@
                 
                 <!-- Main Heading -->
                 <h1 class="reveal-sweep delay-sweep-2 text-4xl sm:text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-[1.05] tracking-tight">
-                    Computer Security<br>
-                    <span class="text-blue-600 dark:text-blue-400 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200 drop-shadow-sm">Incident Response Team</span>
+                    <span class="inline-block animate-float-text">Computer Security</span><br>
+                    <span class="animate-gradient-text text-blue-600 dark:text-blue-400 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 dark:from-blue-400 dark:via-blue-200 dark:to-blue-400 drop-shadow-sm pb-2">Incident Response Team</span>
                 </h1>
                 
                 <!-- Subtitle -->
-                <p class="reveal-sweep delay-sweep-3 text-lg text-gray-600 dark:text-blue-100/50 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
+                <p class="reveal-sweep delay-sweep-3 animate-pulse-slow text-lg text-gray-600 dark:text-blue-100/50 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
                     Portal informasi keamanan siber internal Radio Republik Indonesia. 
                     Akses artikel, panduan, dan wawasan keamanan digital dengan mudah dan cepat.
                 </p>
@@ -149,7 +244,7 @@
                 <!-- CTA Buttons -->
                 <div class="reveal-sweep delay-sweep-4 flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
                     <a href="<?= base_url('auth/login') ?>" 
-                       class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl 
+                       class="btn-shine w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl 
                               hover:bg-blue-700 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -169,21 +264,34 @@
             
             <!-- Hero Image/Illustration - Right Side -->
             <div class="reveal-sweep delay-sweep-4 order-1 lg:order-2 flex justify-center lg:justify-end">
-                <div class="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-[480px] lg:h-[480px]">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-600/10 dark:to-slate-800/20 backdrop-blur-md rounded-[3.5rem] border border-blue-200 dark:border-white/5 flex items-center justify-center shadow-2xl overflow-hidden group">
-                        <!-- Simulated Cyber Shield Interface -->
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            <!-- Shield Icon -->
-                            <svg class="w-32 h-32 sm:w-40 sm:h-40 text-blue-500/80 dark:text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] transform group-hover:scale-110 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                            </svg>
-                            <!-- Rotating Rings -->
-                            <div class="absolute inset-0 border-4 border-dashed border-blue-300/30 dark:border-blue-500/10 rounded-full animate-spin-slow m-10"></div>
-                            <div class="absolute inset-0 border-4 border-dashed border-blue-200/20 dark:border-blue-400/5 rounded-full animate-reverse-spin-slow m-20"></div>
+                <div class="relative w-56 md:w-72 lg:w-[400px] animate-float z-10" style="transform-style: preserve-3d;">
+                    <!-- Particles -->
+                    <div class="orbit-container">
+                        <div class="light-particle"></div>
+                        <div class="light-particle p2"></div>
+                        <div class="light-particle p3"></div>
+                    </div>
+
+                    <!-- Phone Image -->
+                    <img src="<?= base_url('assets/img/phone.png') ?>" alt="CSIRT Mobile App" class="relative z-10 w-full drop-shadow-2xl">
+                    
+                    <!-- Floating Stats Card (Bottom Left) -->
+                    <div class="absolute bottom-10 -left-6 md:left-0 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 pr-6 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-20 animate-bounce" style="animation-duration: 3s;">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Status Sistem</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">Aman & Terlindungi</p>
+                            </div>
                         </div>
                     </div>
-                    <!-- Decorative back layers -->
-                    <div class="absolute -inset-8 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-[4rem] -z-10 blur-3xl group-hover:blur-2xl transition-all duration-700"></div>
+
+                    <!-- Decorative Glow Back -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-500/20 dark:bg-blue-600/20 blur-3xl -z-10 rounded-full"></div>
                 </div>
             </div>
         </div>
