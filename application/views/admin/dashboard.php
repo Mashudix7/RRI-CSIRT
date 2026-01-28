@@ -46,8 +46,24 @@
                         <span class="text-[10px] font-bold uppercase tracking-wider">Real-time</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="btn-fullscreen" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-400 group" title="Toggle Fullscreen">
+                <div class="flex items-center gap-3">
+                    <!-- Premium Capsule Theme Switcher -->
+                    <div id="map-theme-container" class="relative flex items-center bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full border border-gray-200 dark:border-slate-700/50 shadow-inner w-[90px] h-[34px] cursor-pointer group/theme transition-all overflow-hidden">
+                        <!-- Sliding Indicator -->
+                        <div id="theme-indicator" class="absolute left-1 w-[40px] h-[26px] bg-white dark:bg-blue-600 rounded-full shadow-md transition-all duration-500 ease-out z-0"></div>
+                        
+                        <!-- Toggle Buttons Layer -->
+                        <div class="relative z-10 flex items-center justify-between w-full px-1.5">
+                            <button type="button" onclick="setMapTheme('light')" class="w-9 h-6 flex items-center justify-center transition-colors duration-300 text-blue-600 dark:text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z" /></svg>
+                            </button>
+                            <button type="button" onclick="setMapTheme('dark')" class="w-9 h-6 flex items-center justify-center transition-colors duration-300 text-slate-400 dark:text-white">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="btn-fullscreen" class="p-2.5 bg-slate-50 dark:bg-slate-700/50 hover:bg-blue-500 hover:text-white rounded-xl transition-all text-slate-400 group shadow-sm" title="Toggle Fullscreen">
                         <svg id="icon-fullscreen" class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                         </svg>
@@ -57,6 +73,19 @@
             <!-- Map Container -->
             <div id="attack-map-container" class="w-full h-[400px] relative rounded-lg overflow-hidden border border-slate-100 dark:border-slate-700 bg-[#e0e7ff]/30">
                 <div id="attack-map" class="w-full h-full"></div>
+                
+                <!-- Interaction Overlay (Ctrl + Zoom) -->
+                <div id="map-interaction-overlay" class="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300 z-[100]">
+                    <div class="bg-slate-900/95 text-white px-6 py-3 rounded-full text-sm font-semibold border border-white/20 shadow-2xl flex items-center gap-3">
+                        <div class="flex items-center gap-1.5">
+                            <kbd class="px-2 py-1 bg-white/20 rounded border border-white/30 text-[10px] leading-none">Ctrl</kbd>
+                            <span class="text-white/40">+</span>
+                            <span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Scroll</span>
+                        </div>
+                        <div class="w-px h-4 bg-white/10"></div>
+                        <span>Use Ctrl + scroll to zoom the map</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -240,11 +269,22 @@ document.addEventListener('DOMContentLoaded', function() {
     let chartInstance = null;
     let isMapLoaded = false;
 
-    // Theme Colors based on user photo
+    // Theme Configurations
+    const MAP_THEMES = {
+        light: {
+            ocean: '#dee6ed',
+            land: '#ffffff',
+            border: '#cbd5e1'
+        },
+        dark: {
+            ocean: '#0b1426', // Deep Navy
+            land: '#1e3a8a',  // Rich Blue
+            border: '#1e40af' 
+        }
+    };
+
+    let currentTheme = localStorage.getItem('attack-map-theme') || 'light';
     const MAP_THEME = {
-        ocean: '#dee6ed', // Light Grey Blue
-        land: '#ffffff',  // White
-        border: '#cbd5e1', 
         lineStart: '#fb7185', // Pink
         lineEnd: '#8b5cf6',   // Purple
         target: '#22c55e',   // Green
@@ -267,8 +307,9 @@ document.addEventListener('DOMContentLoaded', function() {
         $.getJSON('https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json', function (data) {
             echarts.registerMap('world', data);
             
+            const theme = MAP_THEMES[currentTheme];
             const option = {
-                backgroundColor: MAP_THEME.ocean,
+                backgroundColor: theme.ocean,
                 tooltip: {
                     trigger: 'item',
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -296,9 +337,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 geo: {
+                    id: 'main-geo',
                     map: 'world',
                     roam: true,
-                    scaleLimit: { min: 1, max: 10 },
+                    scaleLimit: { min: 1, max: 50 }, // Increased for province-level detail
                     center: [106, 15],
                     zoom: 1.5,
                     boundingCoords: [
@@ -308,12 +350,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: { emphasis: { show: false } },
                     itemStyle: {
                         normal: {
-                            areaColor: MAP_THEME.land, 
-                            borderColor: MAP_THEME.border,
+                            areaColor: theme.land, 
+                            borderColor: theme.border,
                             borderWidth: 0.5
                         },
                         emphasis: {
-                            areaColor: '#f1f5f9'
+                            areaColor: currentTheme === 'dark' ? '#1e3a8a' : '#f1f5f9'
                         }
                     }
                 },
@@ -321,13 +363,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         name: 'Attack Lines',
                         type: 'lines',
+                        coordinateSystem: 'geo',
+                        zlevel: 1,
+                        progressive: 0,
                         effect: {
                             show: true,
-                            period: 3,
-                            trailLength: 0.4,
-                            color: MAP_THEME.lineStart,
-                            symbolSize: 3,
-                            delay: function(idx) { return idx * 200; }
+                            period: 2.5,             // Faster speed for smoother motion
+                            trailLength: 0.85,       // Longer tail for a "shooting" look
+                            color: '#fff',           // Brilliant white head
+                            symbolSize: 4,           
+                            symbol: 'circle',
+                            delay: function(idx) { return idx * 200; } // More frequent waves
                         },
                         lineStyle: {
                             normal: {
@@ -336,8 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }, {
                                     offset: 1, color: MAP_THEME.lineEnd
                                 }]),
-                                width: 1.2,
-                                opacity: 0.4,
+                                width: 0.7,          // Thinner lines
+                                opacity: 0.15,       // Very subtle lines
                                 curveness: 0.2
                             }
                         },
@@ -347,52 +393,47 @@ document.addEventListener('DOMContentLoaded', function() {
                         name: 'Attack Points',
                         type: 'effectScatter',
                         coordinateSystem: 'geo',
+                        zlevel: 1,
+                        progressive: 0,
                         rippleEffect: {
                             brushType: 'stroke',
                             scale: 3,
                             period: 4
                         },
-                        symbolSize: 6,
+                        symbolSize: 4,
                         itemStyle: {
                             normal: { color: MAP_THEME.attacker }
                         },
                         label: {
-                            show: true,
+                            show: true, // Re-enable labels by default
                             position: 'top',
-                            distance: 12,
+                            distance: 8, // Closer to the point
                             formatter: function(params) {
-                                // params.name is country
-                                // params.value[3] is IP
-                                // params.value[4] is Location (Province/City)
-                                return `{country|${params.name}} {loc|${params.value[4] || ''}} {ip|${params.value[3] || ''}}`;
+                                return `{country|${params.name}} {ip|${params.value[3] || ''}}`;
                             },
                             rich: {
                                 country: {
                                     backgroundColor: '#ef4444',
                                     color: '#fff',
-                                    padding: [2, 6],
-                                    borderRadius: [4, 0, 0, 4],
-                                    fontSize: 10,
+                                    padding: [1, 4],
+                                    borderRadius: [3, 0, 0, 3],
+                                    fontSize: 8,
                                     fontWeight: 'bold'
                                 },
-                                loc: {
-                                    backgroundColor: '#f1f5f9',
-                                    color: '#475569',
-                                    padding: [2, 6],
-                                    fontSize: 9,
-                                    fontWeight: 'medium',
-                                    borderColor: '#e2e8f0',
-                                    borderWidth: 1
-                                },
                                 ip: {
-                                    backgroundColor: '#fff',
+                                    backgroundColor: 'rgba(255,255,255,0.9)',
                                     color: '#1e293b',
-                                    padding: [2, 6],
-                                    borderRadius: [0, 4, 4, 0],
-                                    fontSize: 10,
+                                    padding: [1, 4],
+                                    borderRadius: [0, 3, 3, 0],
+                                    fontSize: 8,
                                     borderColor: '#e2e8f0',
                                     borderWidth: 1
                                 }
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: true // Show on hover/click
                             }
                         },
                         data: []
@@ -401,37 +442,45 @@ document.addEventListener('DOMContentLoaded', function() {
                         name: 'Target Point',
                         type: 'effectScatter',
                         coordinateSystem: 'geo',
+                        zlevel: 2,
+                        z: 10,
                         rippleEffect: {
-                            brushType: 'fill',
-                            period: 2,
-                            scale: 5
+                            brushType: 'stroke',
+                            period: 3,
+                            scale: 4,
+                            number: 3
                         },
                         label: {
                             normal: {
                                 show: true,
                                 position: 'right',
+                                offset: [15, 0],
                                 formatter: '{b}',
-                                fontSize: 10,
-                                fontWeight: 'bold',
-                                color: '#059669',
-                                backgroundColor: 'rgba(255,255,255,0.8)',
-                                padding: [2, 6],
+                                fontSize: 11,
+                                fontWeight: '900',
+                                color: '#10b981',
+                                backgroundColor: currentTheme === 'dark' ? 'rgba(11, 20, 38, 0.9)' : 'rgba(255,255,255,0.95)',
+                                padding: [5, 12],
                                 borderRadius: 4,
                                 borderColor: '#10b981',
-                                borderWidth: 1
+                                borderWidth: 1.5,
+                                shadowBlur: 15,
+                                shadowColor: 'rgba(16, 185, 129, 0.3)'
                             }
                         },
-                        symbolSize: 12,
-                        symbol: 'pin',
+                        symbolSize: 20,
+                        symbol: 'diamond',
                         itemStyle: {
                             normal: {
-                                color: MAP_THEME.target,
-                                shadowBlur: 10,
-                                shadowColor: 'rgba(34, 197, 94, 0.4)'
+                                color: '#10b981',
+                                shadowBlur: 25,
+                                shadowColor: 'rgba(16, 185, 129, 0.8)',
+                                borderColor: '#fff',
+                                borderWidth: 2
                             }
                         },
                         data: [{
-                            name: 'RRI Server',
+                            name: 'RRI DEFENSE HUB',
                             value: [...JAKARTA_COORDS, 100],
                         }]
                     }
@@ -440,6 +489,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             chartInstance.setOption(option);
             isMapLoaded = true;
+
+            // Track user interaction & Trigger 0.5s Automatic Recall
+            let roamTimer = null;
+            chartInstance.on('georoam', function (params) {
+                window.lastMapInteraction = Date.now();
+                
+                // Clear existing recall timer
+                if (roamTimer) clearTimeout(roamTimer);
+                
+                // Set recall timer: 0.5s after user stops dragging/zooming
+                roamTimer = setTimeout(() => {
+                    if (window.lastAttacksData) {
+                        updateMapData(window.lastAttacksData);
+                    }
+                }, 500); 
+            });
             
             // Resize handler
             window.addEventListener('resize', function() {
@@ -453,6 +518,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // -----------------------------------------------------
     function updateMapData(records) {
         if (!isMapLoaded || !chartInstance) return;
+        
+        // Cache data for 0.5s auto-recall feature
+        window.lastAttacksData = records;
 
         // 1. Filter unique entries by IP to ensure variety
         const uniqueEntries = new Map();
@@ -466,22 +534,41 @@ document.addEventListener('DOMContentLoaded', function() {
         const usedCoords = new Set();
 
         /**
-         * Enhanced Jitter:
-         * Prevents points from stacking exactly on top of each other.
-         * Uses smaller jitter for precise coords, larger for center fallbacks.
+         * Deterministic Jitter:
+         * Uses a simple hash of the IP to ensure the same IP always gets the same jitter.
+         * This prevents points from "jumping" every 10 seconds.
          */
-        const applySmartJitter = (coords, isPrecise) => {
-            const range = isPrecise ? 0.3 : 3.5; // Narrow spread for real cities, wide for country centers
-            const key = coords[0].toFixed(2) + ',' + coords[1].toFixed(2);
-            
-            if (usedCoords.has(key)) {
-                return [
-                    coords[0] + (Math.random() - 0.5) * range,
-                    coords[1] + (Math.random() - 0.5) * range
-                ];
+        const getDeterministicJitter = (ip, range) => {
+            let hash = 0;
+            for (let i = 0; i < ip.length; i++) {
+                hash = ((hash << 5) - hash) + ip.charCodeAt(i);
+                hash |= 0; 
             }
-            usedCoords.add(key);
-            return coords;
+            const pseudoRandomX = ((Math.abs(hash) % 1000) / 1000) - 0.5;
+            const pseudoRandomY = ((Math.abs(hash * 31) % 1000) / 1000) - 0.5;
+            return [pseudoRandomX * range, pseudoRandomY * range];
+        };
+
+        const applySmartJitter = (coords, ip, isPrecise) => {
+            let range = isPrecise ? 0.3 : 3.5;
+            
+            // Check if coordinates are aimed directly at Jakarta (within 1 degree)
+            const distToJakarta = Math.sqrt(Math.pow(coords[0] - JAKARTA_COORDS[0], 2) + Math.pow(coords[1] - JAKARTA_COORDS[1], 2));
+            if (distToJakarta < 1.0) {
+                range = 1.5; // Force a wider safety buffer for local attacks
+            }
+
+            const jitter = getDeterministicJitter(ip, range);
+            let finalX = coords[0] + jitter[0];
+            let finalY = coords[1] + jitter[1];
+
+            // Final push to ensure it doesn't cover the exact center of the server pin
+            if (Math.abs(finalX - JAKARTA_COORDS[0]) < 0.1 && Math.abs(finalY - JAKARTA_COORDS[1]) < 0.1) {
+                finalX += 0.2;
+                finalY += 0.2;
+            }
+
+            return [finalX, finalY];
         };
 
         // Increase limit to 100 for a more "active" look
@@ -521,8 +608,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!startCoords || (startCoords[0] === 0 && startCoords[1] === 0)) return;
 
-            // Apply smart jitter to separate overlapping hits
-            const finalCoords = applySmartJitter(startCoords, isPrecise);
+            // Apply deterministic jitter
+            const finalCoords = applySmartJitter(startCoords, src_ip, isPrecise);
 
             lineData.push({
                 fromName: country,
@@ -535,26 +622,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
             scatterData.push({
                 name: country,
-                // value: [lon, lat, size, ip, location]
                 value: [...finalCoords, 10, src_ip, locationName], 
             });
         });
 
-        // Limit labels to first 5 for clarity
+        // Show labels for only the 10 most recent attacks to maintain readability
         const scatterFinal = scatterData.map((d, i) => {
-            if (i > 5) return { ...d, label: { show: false } };
-            return d;
+            return {
+                ...d,
+                label: { show: i < 10 } // Only top 10 recent pins get a persistent label
+            };
         });
 
+        // Use name-based merging for stability with zero-delay rendering
         chartInstance.setOption({
+            animation: false, // Instant appearance
             series: [
-                { data: lineData }, 
-                { data: scatterFinal }, 
-                { data: [{ name: 'RRI Server', value: [...JAKARTA_COORDS, 100] }] } 
+                { name: 'Attack Lines', data: lineData, coordinateSystem: 'geo', geoIndex: 0, geoId: 'main-geo', animation: false }, 
+                { name: 'Attack Points', data: scatterFinal, coordinateSystem: 'geo', geoIndex: 0, geoId: 'main-geo', animation: false }, 
+                { 
+                    name: 'Target Point', 
+                    data: [{ name: 'RRI DEFENSE HUB', value: [...JAKARTA_COORDS, 100] }], 
+                    coordinateSystem: 'geo', 
+                    geoIndex: 0, 
+                    geoId: 'main-geo',
+                    symbol: 'diamond',
+                    symbolSize: 20,
+                    zlevel: 2,
+                    z: 10
+                } 
             ]
         }, {
             notMerge: false,
-            lazyUpdate: true
+            lazyUpdate: false // Force immediate refresh
         });
     }
 
@@ -580,6 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const records = result.data.records || [];
                 const attacks = [...events, ...records]; 
                 
+                // Immediately process map data regardless of interaction
                 updateMapData(attacks);
                 updateWebAttackList(events);
             }
@@ -704,7 +805,81 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
-    // Initialize
+    // -----------------------------------------------------
+    // Premium Theme Switcher Logic
+    // -----------------------------------------------------
+    window.setMapTheme = function(mode) {
+        currentTheme = mode;
+        localStorage.setItem('attack-map-theme', mode);
+        
+        // Update Slider UI
+        const indicator = document.getElementById('theme-indicator');
+        if (indicator) {
+            indicator.style.transform = mode === 'dark' ? 'translateX(42px)' : 'translateX(0px)';
+        }
+        
+        // Update Chart
+        const theme = MAP_THEMES[mode];
+        if (chartInstance) {
+            chartInstance.setOption({
+                backgroundColor: theme.ocean,
+                geo: {
+                    itemStyle: {
+                        normal: {
+                            areaColor: theme.land,
+                            borderColor: theme.border
+                        },
+                        emphasis: {
+                            areaColor: mode === 'dark' ? '#1e3a8a' : '#f1f5f9'
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    // Initialize UI on load
+    setTimeout(() => {
+        setMapTheme(currentTheme);
+    }, 500);
+
+    // -----------------------------------------------------
+    // Ctrl + Interaction Requirement
+    // -----------------------------------------------------
+    const mapInteractionEl = document.getElementById('attack-map-container');
+    const interactionOverlay = document.getElementById('map-interaction-overlay');
+    let overlayTimeout;
+
+    const showInteractionHint = () => {
+        if (!interactionOverlay) return;
+        interactionOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        interactionOverlay.classList.add('opacity-100');
+        clearTimeout(overlayTimeout);
+        overlayTimeout = setTimeout(() => {
+            interactionOverlay.classList.remove('opacity-100');
+            interactionOverlay.classList.add('opacity-0', 'pointer-events-none');
+        }, 1500);
+    };
+
+    // Capture wheel events to block ECharts zoom if Ctrl is not held
+    mapInteractionEl.addEventListener('wheel', (e) => {
+        if (!e.ctrlKey) {
+            e.preventDefault();   // Prevent page scroll
+            e.stopPropagation();  // Stop reaching ECharts
+            showInteractionHint();
+        }
+    }, { capture: true, passive: false });
+
+    // Capture mousedown to block ECharts pan if Ctrl is not held
+    mapInteractionEl.addEventListener('mousedown', (e) => {
+        // Only block for left mouse button and if Ctrl is not held
+        if (e.button === 0 && !e.ctrlKey) {
+            e.stopPropagation();  // Stop reaching ECharts
+            showInteractionHint();
+        }
+    }, { capture: true });
+
+    // Initialize Map
     initMap();
     
     // Initial fetch after 1s
