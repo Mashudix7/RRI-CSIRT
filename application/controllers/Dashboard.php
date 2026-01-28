@@ -20,28 +20,16 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends CI_Controller {
+class Dashboard extends Admin_Controller {
 
     /**
      * Constructor
-     * 
-     * Komentar Kritikal:
-     * - Pengecekan session di constructor untuk proteksi seluruh controller
-     * - User yang tidak login akan di-redirect ke halaman login
      */
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('url');
-        $this->load->library('session');
         date_default_timezone_set('Asia/Jakarta');
-        
-        // Proteksi: Cek apakah user sudah login
-        if (!$this->session->userdata('logged_in')) {
-            redirect('auth/login');
-        }
-
-        $this->load->database();
+        // Admin_Controller already handles session and database
     }
 
     /**
@@ -57,12 +45,7 @@ class Dashboard extends CI_Controller {
         $data['page'] = 'dashboard';
         
         // Data user from session
-        $data['user'] = [
-            'id' => $this->session->userdata('user_id'),
-            'username' => $this->session->userdata('username'),
-            'role' => $this->session->userdata('role'),
-            'role_name' => $this->session->userdata('role_name')
-        ];
+        $data['user'] = $this->_get_user_data();
         
         // Load WAF Model
         $this->load->model('Waf_model');
@@ -76,29 +59,7 @@ class Dashboard extends CI_Controller {
         $data['recent_logs'] = $waf_data['recent'];
         $data['recent_events'] = $waf_events;
         
-        /* 
-        // Example Data Structure from API:
-        $data['recent_threats'] = [
-            [
-                "site_uuid" => "43",
-                "src_ip" => "180.243.39.165",
-                "host" => "jdih.rri.go.id",
-                "url_path" => "/common/dokumen/abs2022kp2090.pdf",
-                "country" => "ID",
-                "city" => "Sidoarjo",
-                "action" => 0, // 0: Detected/Log, 1: Block?
-                "module" => "m_php_unserialize",
-                "attack_type" => 6,
-                "timestamp" => 1769134553
-            ]
-        ];
-        */
-
-        
-        // Load views
-        $this->load->view('admin/templates/header', $data);
-        $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/dashboard', $data);
-        $this->load->view('admin/templates/footer', $data);
+        // Render using parent helper
+        $this->render_admin('admin/dashboard', $data);
     }
 }

@@ -136,6 +136,7 @@ class Auth extends CI_Controller {
             $this->db->where('id', $user['id']);
             $this->db->update('users', [
                 'last_login' => date('Y-m-d H:i:s'),
+                'last_activity' => date('Y-m-d H:i:s'),
                 'login_ip' => $ip_address
             ]);
 
@@ -179,9 +180,14 @@ class Auth extends CI_Controller {
      */
     public function logout()
     {
-        // Audit Log
+        // Audit Log & Activity Update
         if ($this->session->userdata('logged_in')) {
+            $user_id = $this->session->userdata('user_id');
             $this->Audit_model->log('logout', 'User logged out');
+            
+            // Set activity to NULL or old date to appear offline immediately
+            $this->db->where('id', $user_id);
+            $this->db->update('users', ['last_activity' => NULL]);
         }
 
         // Destroy session

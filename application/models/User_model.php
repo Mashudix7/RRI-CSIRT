@@ -51,8 +51,7 @@ class User_model extends CI_Model {
     public function update_activity($user_id) {
         $this->db->where('id', $user_id);
         $this->db->update('users', [
-            'last_activity' => date('Y-m-d H:i:s'),
-            'last_login' => date('Y-m-d H:i:s') // Keep last_login updated as well
+            'last_activity' => date('Y-m-d H:i:s')
         ]);
     }
 
@@ -72,6 +71,14 @@ class User_model extends CI_Model {
                 $user['is_online'] = false;
             }
         }
+
+        // Sort: Online users first, then by ID
+        usort($users, function($a, $b) {
+            if ($a['is_online'] && !$b['is_online']) return -1;
+            if (!$a['is_online'] && $b['is_online']) return 1;
+            return $a['id'] - $b['id'];
+        });
+
         return $users;
     }
 

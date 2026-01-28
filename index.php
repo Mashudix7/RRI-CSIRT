@@ -60,6 +60,9 @@
 		opcache_reset();
 	}
 
+	// Set Default Timezone
+	date_default_timezone_set('Asia/Jakarta');
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
