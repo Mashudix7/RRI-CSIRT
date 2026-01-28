@@ -123,24 +123,20 @@ $percent_used = ($total_capacity > 0) ? round(($total_used / $total_capacity) * 
                 <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
                     <?php $no = 1; foreach($regions as $slug => $net): ?>
                         <?php 
-                            // Determine Color Scheme based on slug/name roughly or random?
-                            // Let's use simple logic or cycle colors.
-                            $colors = ['blue', 'purple', 'amber', 'emerald', 'indigo', 'rose'];
-                            $color = $colors[($no - 1) % count($colors)];
+                            // Determine if it's reserve
+                            $is_reserve = (stripos($slug, 'reserve') !== false || stripos($net['name'], 'reserve') !== false);
                             
-                            // Yellow for reserve
-                            if (stripos($slug, 'reserve') !== false || stripos($net['name'], 'reserve') !== false) {
-                                $color = 'yellow';
-                            }
+                            // Base theme color (emerald for normal, yellow for reserve)
+                            $theme_color = $is_reserve ? 'yellow' : 'emerald';
                         ?>
-                        <tr class="group hover:bg-<?= $color ?>-50 dark:hover:bg-<?= $color ?>-900/10 cursor-pointer transition-all duration-200 relative <?= $color == 'yellow' ? 'border-l-4 border-yellow-400' : '' ?>" onclick="window.location='<?= base_url('admin/ip_management/' . $slug) ?>'">
+                        <tr class="group hover:bg-emerald-50 dark:hover:bg-emerald-900/10 cursor-pointer transition-all duration-200 relative <?= $is_reserve ? 'border-l-4 border-yellow-400' : '' ?>" onclick="window.location='<?= base_url('admin/ip_management/' . $slug) ?>'">
                             <td class="px-6 py-4 text-center font-medium text-gray-500"><?= $no++ ?></td>
                             <td class="px-6 py-4">
-                                <span class="font-mono font-bold text-<?= $color ?>-600 dark:text-<?= $color ?>-400 <?= $color == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded' : '' ?>">
+                                <span class="font-mono font-bold text-<?= $is_reserve ? 'yellow' : 'emerald' ?>-600 dark:text-<?= $is_reserve ? 'yellow' : 'emerald' ?>-400 <?= $is_reserve ? 'bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded' : '' ?>">
                                     <?= $net['range_start'] ?>
                                 </span>
                             </td>
-                            <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300"><?= $net['range_end'] ?></td>
+                            <td class="px-6 py-4 font-mono text-blue-600 dark:text-blue-400 font-bold"><?= $net['range_end'] ?></td>
                             <td class="px-6 py-4 font-mono text-gray-500">
                                 <?= $net['subnet_mask'] ?? '255.255.255.0' ?>
                             </td>
@@ -148,18 +144,18 @@ $percent_used = ($total_capacity > 0) ? round(($total_used / $total_capacity) * 
                             <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200"><?= $net['total'] ?></td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-<?= $color ?>-500 shadow-sm shadow-<?= $color ?>-500/50"></span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
                                     <span class="font-medium text-gray-900 dark:text-white"><?= $net['name'] ?></span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-gray-500 italic">
-                                <?php if($color == 'yellow'): ?>
+                                <?php if($is_reserve): ?>
                                     Reserved / Cadangan
                                 <?php else: ?>
                                     Data Center / Core
                                 <?php endif; ?>
                             </td>
-                            <td class="px-4 py-4 text-gray-400 group-hover:text-<?= $color ?>-500">
+                            <td class="px-4 py-4 text-gray-400 group-hover:text-emerald-500">
                                  <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </td>
                         </tr>

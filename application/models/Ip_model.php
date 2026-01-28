@@ -10,6 +10,8 @@ class Ip_model extends CI_Model {
 
     // Networks
     public function get_networks() {
+        $this->db->order_by('is_reserve', 'ASC');
+        $this->db->order_by('id', 'ASC');
         return $this->db->get('networks')->result_array();
     }
 
@@ -191,6 +193,57 @@ class Ip_model extends CI_Model {
             // $data['created_at'] = date('Y-m-d H:i:s'); // Column likely doesn't exist
             // Ensure network_id is valid or handled if null?
             return $this->db->insert('ip_addresses', $data);
+        }
+    }
+    // =========================================================================
+    // VPN Management
+    // =========================================================================
+
+    public function get_all_vpns() {
+        if (!$this->db->table_exists('vpn_ips')) {
+            return [];
+        }
+        return $this->db->get('vpn_ips')->result_array();
+    }
+
+    public function get_vpn_by_id($id) {
+        return $this->db->get_where('vpn_ips', ['id' => $id])->row_array();
+    }
+
+    public function get_vpn_stats() {
+        if (!$this->db->table_exists('vpn_ips')) {
+            return ['total' => 0, 'online' => 0, 'offline' => 0];
+        }
+
+        $total = $this->db->count_all('vpn_ips');
+        $this->db->where('status', 'online');
+        $online = $this->db->count_all_results('vpn_ips');
+
+        return [
+            'total' => $total,
+            'online' => $online,
+            'offline' => $total - $online
+        ];
+    }
+    
+    public function create_vpn($data) {
+        return $this->db->insert('vpn_ips', $data);
+    }
+
+    public function update_vpn($id, $data) {
+        $this->db->where('id', $id);
+        return $this->db->update('vpn_ips', $data);
+    }
+
+    public function delete_vpn($id) {
+        $this->db->where('id', $id);
+        return $this->db->delete('vpn_ips');
+    }
+
+    // New method for bulk import
+    public function truncate_vpn() {
+        if ($this->db->table_exists('vpn_ips')) {
+            $this->db->truncate('vpn_ips');
         }
     }
 }

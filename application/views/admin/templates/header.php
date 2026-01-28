@@ -149,6 +149,93 @@
             transform: scale(0.96);
             transition-duration: 0.1s; /* Snappy press */
         }
+        /* =========================================
+           FALLBACK CSS FOR OFFLINE / NO-CDN MODE
+           ========================================= */
+        :root {
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+            --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+            --slate-900: #0f172a; --slate-950: #020617;
+            --blue-500: #3b82f6; --blue-600: #2563eb;
+            --emerald-400: #34d399; --emerald-500: #10b981;
+            --red-500: #ef4444;
+        }
+
+        /* Layout & Flexbox */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:flex-row { flex-direction: row; }
+            .md\:col-span-2 { grid-column: span 2 / span 2; }
+        }
+
+        /* Spacing & Sizing */
+        .p-4 { padding: 1rem; } .p-5 { padding: 1.25rem; } .p-6 { padding: 1.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; } .gap-6 { gap: 1.5rem; }
+        
+        .w-full { width: 100%; }
+        .h-screen { height: 100vh; }
+        .w-64 { width: 16rem; }
+        .w-10 { width: 2.5rem; } .h-10 { height: 2.5rem; }
+        .w-6 { width: 1.5rem; } .h-6 { height: 1.5rem; }
+        .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
+
+        /* Typography */
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .font-bold { font-weight: 700; }
+        .font-medium { font-weight: 500; }
+        .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+        .uppercase { text-transform: uppercase; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        
+        /* Colors - Light Mode Defaults */
+        .text-white { color: white; }
+        .text-gray-500 { color: var(--slate-500); }
+        .text-gray-900 { color: var(--slate-900); }
+        .bg-white { background-color: white; }
+        .bg-gray-50 { background-color: var(--slate-50); }
+        
+        /* Dark Mode Overrides (Assumes .dark class on html/body) */
+        .dark .bg-slate-900 { background-color: var(--slate-900); }
+        .dark .bg-slate-800 { background-color: var(--slate-800); }
+        .dark .dark\:text-white { color: white; }
+        .dark .dark\:text-gray-400 { color: var(--slate-400); }
+        .dark .dark\:border-slate-700 { border-color: var(--slate-700); }
+        
+        /* Specific Component Styles */
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        .border { border-width: 1px; }
+        .border-b { border-bottom-width: 1px; }
+        .border-gray-100 { border-color: var(--slate-100); }
+        
+        /* Tables */
+        .overflow-x-auto { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { font-weight: 600; text-align: left; }
+        
+        /* Utilities */
+        .hidden { display: none; }
+        .fixed { position: fixed; }
+        .absolute { position: absolute; }
+        .relative { position: relative; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .items-center { align-items: center; }
     </style>
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">

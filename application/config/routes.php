@@ -124,7 +124,13 @@ $route['admin/ip_update'] = 'admin/ip_update';
 
 $route['admin/ip-management/(:any)'] = 'admin/ip_management/$1';
 $route['admin/ip-private'] = 'admin/ip_private';
-$route['admin/vpn-management'] = 'admin/vpn_management';
+$route['admin/vpn-management'] = 'vpn_management';
+$route['admin/vpn-management/index'] = 'vpn_management/index';
+$route['admin/vpn-management/create'] = 'vpn_management/create';
+$route['admin/vpn-management/store'] = 'vpn_management/store';
+$route['admin/vpn-management/edit/(:any)'] = 'vpn_management/edit/$1';
+$route['admin/vpn-management/update/(:any)'] = 'vpn_management/update/$1';
+$route['admin/vpn-management/delete/(:any)'] = 'vpn_management/delete/$1';
 $route['admin/reports'] = 'admin/reports';
 $route['admin/audit'] = 'admin/audit_log';
 $route['admin/audit-log'] = 'admin/audit_log';

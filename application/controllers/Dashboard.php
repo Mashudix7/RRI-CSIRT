@@ -49,7 +49,7 @@ class Dashboard extends CI_Controller {
      * 
      * Komentar:
      * - Menampilkan statistik overview insiden
-     * - Data dummy sementara, akan diganti dengan query database
+     * - Data statistik ditampilkan secara real-time dari DB & WAF
      */
     public function index()
     {

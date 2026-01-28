@@ -13,14 +13,8 @@ class MY_Controller extends CI_Controller {
         $this->output->set_header('Referrer-Policy: strict-origin-when-cross-origin');
         $this->output->set_header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
         
-        // Content Security Policy
-        $csp = "default-src 'self'; ";
-        $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net unpkg.com; ";
-        $csp .= "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; ";
-        $csp .= "font-src 'self' fonts.gstatic.com; ";
-        $csp .= "img-src 'self' data: https: ui-avatars.com; ";
-        $csp .= "connect-src 'self' https://trial-waf.rri.go.id https://data.bmkg.go.id;";
-        $this->output->set_header("Content-Security-Policy: {$csp}");
+        // Content Security Policy - Permissive for Local Development/Debugging
+        $this->output->set_header("Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
         
         // HSTS - Enable in production with valid SSL
         // $this->output->set_header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
@@ -36,7 +30,7 @@ class Admin_Controller extends MY_Controller {
         $this->load->library(['session', 'form_validation']);
         $this->load->helper(['url', 'form', 'security']);
         $this->load->model('User_model');
-        $this->load->model('Audit_log_model');
+        $this->load->model('Audit_model');
 
         // Check login status
         if (!$this->session->userdata('user_id')) {

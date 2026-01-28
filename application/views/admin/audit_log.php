@@ -142,19 +142,24 @@
     </style>
 
     <!-- Filter Section -->
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex flex-wrap items-center gap-4 no-print" data-aos="fade-up" data-aos-delay="50">
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 flex flex-wrap items-center no-print" data-aos="fade-up" data-aos-delay="50">
         <form action="<?= base_url('admin/audit-log') ?>" method="GET" class="flex items-center gap-3">
             <label for="date" class="text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Tanggal:</label>
             <input type="date" name="date" id="date" value="<?= isset($selected_date) ? $selected_date : date('Y-m-d') ?>" 
-                   class="px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                   onchange="this.form.submit()"
+                   class="px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer">
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium shadow-md shadow-blue-200 dark:shadow-none btn-press-anim">
                 Tampilkan
             </button>
         </form>
+        
         <?php if(isset($selected_date) && $selected_date !== date('Y-m-d')): ?>
-            <a href="<?= base_url('admin/audit-log') ?>" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                Kembali ke Hari Ini
-            </a>
+            <div class="ml-auto">
+                <a href="<?= base_url('admin/audit-log') ?>" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-all font-medium text-sm border border-slate-200 dark:border-slate-600 flex items-center gap-2 btn-press-anim">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Kembali ke Hari Ini
+                </a>
+            </div>
         <?php endif; ?>
     </div>
 

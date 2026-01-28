@@ -1,48 +1,31 @@
 <?php 
 // RBAC: Check if user can edit
 $role = $this->session->userdata('role');
-$can_edit = in_array($role, ['admin', 'management']);
+$can_edit = in_array($role, ['superadmin', 'admin', 'management']);
 ?>
 <div class="space-y-6">
-    <!-- Header & Summary Cards -->
+
+    <!-- Header & Summary Cards (Preserved) -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manajemen IP VPN</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-1">Daftar IP VPN Tunnel & LAN Satker Radio Republik Indonesia Tahun <?= date('Y') ?></p>
-        </div>
-        
-        <div class="flex items-center gap-3">
-             <div class="relative">
-                <input type="text" placeholder="Cari Satker..." 
-                       class="pl-10 pr-4 py-2 border border-gray-200 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all w-64 shadow-sm">
-                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </div>
-            <?php if ($can_edit): ?>
-            <button class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-                Tambah VPN
-            </button>
-            <?php endif; ?>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Daftar IP VPN Tunnel & LAN Satker Radio Republik Indonesia</p>
         </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Stats Cards (Preserved for Fast Count Animation) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up">
         <!-- Card 1: Total VPN -->
         <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-blue-600 dark:text-blue-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                 </div>
                 <div>
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Satker VPN</h3>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><?= $stats['total'] ?></p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1" data-count-up="<?= isset($vpns) ? count($vpns) : 0 ?>"><?= isset($vpns) ? count($vpns) : 0 ?></p>
                 </div>
             </div>
         </div>
@@ -51,13 +34,13 @@ $can_edit = in_array($role, ['admin', 'management']);
         <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl text-emerald-600 dark:text-emerald-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div>
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Online Now</h3>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><?= $stats['online'] ?></p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1" data-count-up="<?= $stats['online'] ?? 0 ?>"><?= $stats['online'] ?? 0 ?></p>
                     <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Active Connections
@@ -70,196 +53,129 @@ $can_edit = in_array($role, ['admin', 'management']);
         <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600 dark:text-red-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div>
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Not Connected</h3>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><?= $stats['offline'] ?></p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1" data-count-up="<?= $stats['offline'] ?? 0 ?>"><?= $stats['offline'] ?? 0 ?></p>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <!-- TABS & TABLES -->
-    <div x-data="{ activeTab: 'connected' }" class="bg-white dark:bg-slate-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-black/20 border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+    <!-- MAIN TABLE SECTION (Re-designed to match Public IP Detail Layout) -->
+    <div class="bg-slate-900 rounded-xl border border-slate-700 shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="100">
         
-        <!-- Tab Navigation equivalent to Public IP Header -->
-        <div class="flex border-b border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50">
-            <button @click="activeTab = 'connected'" 
-                    :class="activeTab === 'connected' ? 'text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-600 dark:border-emerald-400 bg-emerald-50/50 dark:bg-emerald-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'"
-                    class="flex-1 px-6 py-4 font-medium text-sm transition-all cursor-pointer">
-                <span class="flex items-center justify-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500" :class="activeTab === 'connected' ? 'animate-pulse' : ''"></span>
-                    Status: Terhubung (<?= count($vpn_connected) ?>)
-                </span>
-            </button>
-            <button @click="activeTab = 'not_connected'" 
-                    :class="activeTab === 'not_connected' ? 'text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400 bg-red-50/50 dark:bg-red-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'"
-                    class="flex-1 px-6 py-4 font-medium text-sm transition-all cursor-pointer">
-                <span class="flex items-center justify-center gap-2">
-                     <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                    Status: Belum Terkoneksi (<?= count($vpn_not_connected) ?>)
-                </span>
-            </button>
+        <!-- Toolbar -->
+        <div class="p-5 border-b border-slate-700 bg-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Title Block -->
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                    <svg class="w-5 h-5 text-blue-400" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white">Alokasi IP Private</h2>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-600 font-mono text-xs">LAN & VPN</span>
+                        <span>•</span>
+                        <span><?= isset($vpns) ? count($vpns) : 0 ?> Total Satker</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3 w-full sm:w-auto" x-data="{ search: '' }">
+                <div class="relative flex-1 sm:flex-initial">
+                    <input type="text" x-model="search" @input="$dispatch('search-table', search)" placeholder="Cari Satker atau IP..." 
+                           class="w-full sm:w-64 pl-9 pr-4 py-2 bg-slate-800 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                
+                <?php if ($can_edit): ?>
+                <a href="<?= base_url('admin/vpn-management/create') ?>" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                    <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Tambah
+                </a>
+                <?php endif; ?>
+
+                <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors border border-slate-600 flex items-center gap-2">
+                    <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Export
+                </button>
+            </div>
         </div>
 
-        <!-- TABLE 1: CONNECTED -->
-        <div x-show="activeTab === 'connected'" class="overflow-x-auto">
-             <table class="w-full text-left">
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="vpnTable">
                 <thead>
-                    <tr class="bg-gray-50/50 dark:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700">
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase w-16 text-center">No</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nama Satker</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center">Detail Akun</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center">Network Info</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center">ISP & SNMP</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center">Status</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-right">Aksi</th>
+                    <tr class="bg-slate-800/50 border-b border-slate-700 text-xs uppercase text-slate-400 font-bold tracking-wider">
+                        <th class="px-6 py-4 w-16 text-center">No</th>
+                        <th class="px-6 py-4">Daerah / Unit</th>
+                        <th class="px-6 py-4">Network (LAN)</th>
+                        <th class="px-6 py-4">Gateway / IP Remote</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
-                    <?php if (empty($vpn_connected)): ?>
-                        <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center">
-                                <span class="text-sm">Tidak ada data terhubung.</span>
-                            </td>
-                        </tr>
+                <tbody class="divide-y divide-slate-700/50 block-search-list">
+                    <?php if (empty($vpns)): ?>
+                        <tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 italic">Tidak ada data IP VPN.</td></tr>
                     <?php else: ?>
-                        <?php foreach ($vpn_connected as $vpn): ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors bg-white dark:bg-slate-800">
-                            <td class="px-6 py-4 text-center font-medium text-gray-400 text-sm"><?= $vpn['no'] ?></td>
-                            <td class="px-6 py-4">
-                                <div class="font-medium text-gray-900 dark:text-white"><?= $vpn['satker'] ?></div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ISP Satker: <?= $vpn['isp_satker'] ?></div>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="inline-flex flex-col items-start text-xs bg-gray-50 dark:bg-slate-900 p-2 rounded-lg border border-gray-100 dark:border-slate-700 min-w-[120px]">
-                                    <div class="flex justify-between w-full mb-1">
-                                        <span class="text-gray-400">User:</span>
-                                        <span class="font-mono text-gray-700 dark:text-gray-300"><?= $vpn['username'] ?: '-' ?></span>
-                                    </div>
-                                    <div class="flex justify-between w-full">
-                                        <span class="text-gray-400">Pass:</span>
-                                        <span class="font-mono text-gray-700 dark:text-gray-300"><?= $vpn['password'] ?: '-' ?></span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-1 text-sm">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-16 text-xs text-gray-400 uppercase">IP VPN</span>
-                                        <code class="font-mono text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-1 py-0.5 rounded text-xs"><?= $vpn['ip_vpn'] ?: '-' ?></code>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-16 text-xs text-gray-400 uppercase">IP LAN</span>
-                                        <code class="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1 py-0.5 rounded text-xs"><?= $vpn['ip_lan'] ?: '-' ?></code>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-center text-sm">
-                                <div class="flex flex-col items-center gap-1">
-                                    <span class="text-gray-900 dark:text-white font-medium"><?= $vpn['isp_pusat'] ?: '-' ?></span>
-                                    <span class="text-xs text-gray-400">SNMP: <?= $vpn['snmp'] ?: '-' ?></span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Online
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <?php if ($can_edit): ?>
-                                    <button class="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors" title="Edit">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </button>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- TABLE 2: NOT CONNECTED -->
-        <div x-show="activeTab === 'not_connected'" class="overflow-x-auto">
-             <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-gray-50/50 dark:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700">
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase w-16 text-center align-middle border-r border-gray-100 dark:border-slate-700">No</th>
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase align-middle border-r border-gray-100 dark:border-slate-700">Nama Satker</th>
-                        <th colspan="3" class="px-4 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center border-b border-r border-gray-100 dark:border-slate-700">Username VPN</th>
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center align-middle border-r border-gray-100 dark:border-slate-700">Password</th>
-                        <th colspan="3" class="px-4 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center border-b border-r border-gray-100 dark:border-slate-700">Direct VPN MPLS</th>
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-center align-middle border-r border-gray-100 dark:border-slate-700">Status</th>
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase align-middle border-r border-gray-100 dark:border-slate-700">PIC</th>
-                        <th rowspan="2" class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase text-right align-middle">Aksi</th>
-                    </tr>
-                    <tr class="bg-gray-50 dark:bg-slate-700/30">
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">PRO 1</th>
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">PRO 2</th>
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">PRO 4</th>
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">ASTINET</th>
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">DSCPC</th>
-                        <th class="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 text-center uppercase border-r border-gray-100 dark:border-slate-700">HSP</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
-                    <?php if (empty($vpn_not_connected)): ?>
-                        <tr><td colspan="12" class="px-6 py-12 text-center text-gray-500">Belum ada data.</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($vpn_not_connected as $vpn): ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors bg-white dark:bg-slate-800">
-                            <td class="px-6 py-4 text-center font-medium text-gray-400 text-sm border-r border-gray-50 dark:border-slate-700/50"><?= $vpn['no'] ?></td>
-                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white border-r border-gray-50 dark:border-slate-700/50"><?= $vpn['satker'] ?></td>
+                        <?php $no=1; foreach ($vpns as $vpn): ?>
+                        <tr class="group hover:bg-slate-800/60 transition-colors bg-slate-900 text-sm search-item" 
+                            data-search="<?= strtolower($vpn['satker'] . ' ' . $vpn['ip_lan'] . ' ' . $vpn['ip_vpn']) ?>">
                             
-                            <?php if(!empty($vpn['u_single'])): ?>
-                                <td colspan="3" class="px-4 py-4 text-center text-sm font-mono text-gray-600 dark:text-gray-400 border-r border-gray-50 dark:border-slate-700/50">
-                                    <?= $vpn['u_single'] ?>
-                                </td>
-                            <?php else: ?>
-                                <td class="px-2 py-4 text-center text-xs font-mono text-gray-500 border-r border-gray-50 dark:border-slate-700/50"><?= $vpn['u_pro1'] ?></td>
-                                <td class="px-2 py-4 text-center text-xs font-mono text-gray-500 border-r border-gray-50 dark:border-slate-700/50"><?= $vpn['u_pro2'] ?></td>
-                                <td class="px-2 py-4 text-center text-xs font-mono text-gray-500 border-r border-gray-50 dark:border-slate-700/50"><?= $vpn['u_pro4'] ?></td>
-                            <?php endif; ?>
-
-                            <td class="px-6 py-4 text-center border-r border-gray-50 dark:border-slate-700/50 bg-gray-50/30 dark:bg-slate-900/10">
-                                <code class="bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded text-xs font-mono text-gray-700 dark:text-gray-300"><?= $vpn['password'] ?></code>
+                            <td class="px-6 py-4 text-center text-slate-500 font-mono"><?= $no++ ?></td>
+                            
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-white mb-0.5"><?= !empty($vpn['satker']) ? $vpn['satker'] : '<span class="text-slate-500 italic">No Name</span>' ?></div>
+                            </td>
+                            
+                            <td class="px-6 py-4 font-mono text-emerald-400">
+                                <?= !empty($vpn['ip_lan']) ? $vpn['ip_lan'] : '<span class="text-slate-600">---</span>' ?>
+                            </td>
+                            
+                            <td class="px-6 py-4 font-mono text-blue-400">
+                                <?= !empty($vpn['ip_vpn']) ? $vpn['ip_vpn'] : '<span class="text-slate-600">---</span>' ?>
                             </td>
 
-                            <td class="px-2 py-4 text-center border-r border-gray-50 dark:border-slate-700/50">
-                                <?= $vpn['isp_astinet'] ? '<span class="text-blue-500">✓</span>' : '<span class="text-gray-300">-</span>' ?>
+                            <td class="px-6 py-4 text-center">
+                                <?php if($vpn['status'] === 'online'): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active
+                                    </span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 border border-slate-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Inactive
+                                    </span>
+                                <?php endif; ?>
                             </td>
-                            <td class="px-2 py-4 text-center border-r border-gray-50 dark:border-slate-700/50">
-                                <?= $vpn['isp_dscpc'] ? '<span class="text-purple-500">✓</span>' : '<span class="text-gray-300">-</span>' ?>
-                            </td>
-                            <td class="px-2 py-4 text-center border-r border-gray-50 dark:border-slate-700/50">
-                                <?= $vpn['isp_hsp'] ? '<span class="text-pink-500">✓</span>' : '<span class="text-gray-300">-</span>' ?>
-                            </td>
-
-                            <td class="px-6 py-4 text-center border-r border-gray-50 dark:border-slate-700/50">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-slate-600">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-                                    Offline
-                                </span>
-                            </td>
-
-                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 border-r border-gray-50 dark:border-slate-700/50">
-                                <?= $vpn['pic'] ?>
-                            </td>
-
+                            
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <?php if ($can_edit): ?>
-                                    <button class="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors" title="Edit">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </button>
+                                    <a href="<?= base_url('admin/vpn-management/edit/'.$vpn['id']) ?>" class="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors border border-transparent hover:border-blue-500/30" title="Edit">
+                                        <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="<?= base_url('admin/vpn-management/delete/'.$vpn['id']) ?>" 
+                                       class="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors border border-transparent hover:border-red-500/30" 
+                                       title="Hapus"
+                                       data-confirm="Apakah Anda yakin ingin menghapus data VPN satker <?= $vpn['satker'] ?>?">
+                                        <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </a>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -268,6 +184,37 @@ $can_edit = in_array($role, ['admin', 'management']);
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Pagination (Static for now, but design implies it) -->
+        <div class="p-4 border-t border-slate-700 bg-slate-800/30 flex items-center justify-between text-xs text-slate-400">
+            <div>Menampilkan 1-<?= count($vpns) ?> dari <?= count($vpns) ?> data</div>
+            <div class="flex gap-1">
+                <button class="px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50" disabled>Previous</button>
+                <button class="px-3 py-1 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50" disabled>Next</button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    // Basic Client-Side Search
+    const searchInput = document.querySelector('input[placeholder="Cari Satker atau IP..."]');
+    if(searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.search-item');
+            
+            rows.forEach(row => {
+                const text = row.getAttribute('data-search');
+                if(text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>

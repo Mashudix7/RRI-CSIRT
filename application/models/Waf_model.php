@@ -382,31 +382,18 @@ class Waf_model extends CI_Model {
     {
         return array(
             'summary' => array(
-                'total_attacks' => 15420,
-                'blocked_attacks' => 15380,
-                'active_threats' => 45,
-                'protection_level' => 'High'
+                'total_attacks' => 0,
+                'blocked_attacks' => 0,
+                'active_threats' => 0,
+                'protection_level' => 'Offline'
             ),
-            'recent' => array(
-                array(
-                    'module' => 'SQL Injection',
-                    'src_ip' => '192.168.1.105',
-                    'city' => 'Jakarta',
-                    'country' => 'Indonesia',
-                    'host' => 'trial-waf.rri.go.id',
-                    'url_path' => '/api/v1/auth',
-                    'timestamp' => time() - 120,
-                    'action' => 1,
-                    'count' => 12,
-                    'duration' => '5m'
-                )
-            ),
+            'recent' => array(),
             'types' => array(
-                'ddos' => 5000,
-                'intrusion' => 8400,
-                'malware' => 320,
-                'phishing' => 1200,
-                'other' => 500
+                'ddos' => 0,
+                'intrusion' => 0,
+                'malware' => 0,
+                'phishing' => 0,
+                'other' => 0
             )
         );
     }

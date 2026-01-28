@@ -39,7 +39,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-total-attacks"><?= number_format($stats['total_attacks'] ?? 0) ?></p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-total-attacks" data-count-up="<?= $stats['total_attacks'] ?? 0 ?>"><?= number_format($stats['total_attacks'] ?? 0) ?></p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Serangan Hari Ini</p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-blocked-attacks"><?= number_format($stats['blocked_attacks'] ?? 0) ?></p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-blocked-attacks" data-count-up="<?= $stats['blocked_attacks'] ?? 0 ?>"><?= number_format($stats['blocked_attacks'] ?? 0) ?></p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Diblokir</p>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['protected_sites'] ?? 12 ?></p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['protected_sites'] ?? 12 ?>"><?= $stats['protected_sites'] ?? 12 ?></p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Situs Dilindungi</p>
                     </div>
                 </div>
@@ -161,15 +161,15 @@
             </div>
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">4</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="4">4</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Data Center</p>
                 </div>
                 <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">68</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="68">68</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Satker VPN</p>
                 </div>
                 <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">254</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="254">254</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">IP Terkelola</p>
                 </div>
             </div>
