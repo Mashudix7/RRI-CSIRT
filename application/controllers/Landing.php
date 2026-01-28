@@ -103,10 +103,23 @@ class Landing extends CI_Controller {
         // Data tim dari database
         $all_teams = $this->Team_model->get_all();
         
-        // Group by division
+        $data['director'] = null;
+        $data['main_head'] = null; // Keeping for potential fallback or legacy, though view might ignore
         $grouped_teams = [];
+
         foreach ($all_teams as $member) {
-            $division = $member['division'] ?? 'Lainnya'; // Fallback if division is empty
+            $role = $member['role'] ?? '';
+            
+            if ($role === 'director') {
+                $data['director'] = $member;
+                continue;
+            }
+            if ($role === 'main_head') {
+                $data['main_head'] = $member;
+                continue;
+            }
+
+            $division = $member['division'] ?? 'Lainnya'; 
             if (!isset($grouped_teams[$division])) {
                 $grouped_teams[$division] = [];
             }
@@ -116,12 +129,10 @@ class Landing extends CI_Controller {
         // Sort each group: Leader first, then others
         foreach ($grouped_teams as $div => &$members) {
             usort($members, function($a, $b) {
-                // Priority: Leader < Staff
                 $level_order = ['leader' => 1, 'member' => 2];
                 $wa = $level_order[$a['role'] ?? 'member'] ?? 99;
                 $wb = $level_order[$b['role'] ?? 'member'] ?? 99;
                 if ($wa != $wb) return $wa - $wb;
-                
                 return strcmp($a['name'], $b['name']);
             });
         }

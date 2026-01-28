@@ -67,8 +67,9 @@
                             <?php endif; ?>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 dark:text-white truncate max-w-[300px]" title="<?= htmlspecialchars($log['url_path']) ?>"><?= htmlspecialchars($log['url_path']) ?></div>
-                            <div class="text-[10px] text-gray-400"><?= htmlspecialchars($log['host']) ?></div>
+                            <div class="text-sm text-gray-900 dark:text-white truncate max-w-[350px]" title="<?= htmlspecialchars($log['host'] . $log['url_path']) ?>">
+                                <span class="font-medium"><?= htmlspecialchars($log['host']) ?></span><?= htmlspecialchars($log['url_path']) ?>
+                            </div>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-xs font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($log['module']) ?></span>
@@ -195,8 +196,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                 <td class="px-6 py-4">${actionBadge}</td>
                 <td class="px-6 py-4">
-                    <div class="text-sm text-gray-900 dark:text-white truncate max-w-[300px]" title="${log.url_path || ''}">${log.url_path || ''}</div>
-                    <div class="text-[10px] text-gray-400">${log.host || ''}</div>
+                    <div class="text-sm text-gray-900 dark:text-white truncate max-w-[350px]" title="${(log.host || '') + (log.url_path || '')}">
+                        <span class="font-medium">${log.host || ''}</span>${log.url_path || ''}
+                    </div>
                 </td>
                 <td class="px-6 py-4">
                     <span class="text-xs font-medium text-gray-700 dark:text-gray-300">${log.module || ''}</span>

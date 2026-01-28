@@ -20,7 +20,7 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin extends CI_Controller {
+class Admin extends Admin_Controller {
 
     public function __construct()
     {
@@ -107,7 +107,7 @@ class Admin extends CI_Controller {
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]', [
             'is_unique' => 'Email sudah terdaftar! Silakan gunakan email lain.'
         ]);
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('password', 'Password', 'required|callback__check_password_strength');
         $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');
 
         if ($this->form_validation->run() === FALSE) {
@@ -266,6 +266,11 @@ class Admin extends CI_Controller {
         // Update Password only if provided
         $password = $this->input->post('password');
         if (!empty($password)) {
+            if (!$this->_is_strong_password($password)) {
+                $this->session->set_flashdata('error', 'Password baru kurang kuat! Gunakan minimal 8 karakter dengan kombinasi Huruf Besar, Angka & Simbol.');
+                redirect('admin/user_edit/' . $id);
+                return;
+            }
             $data['password'] = $password; 
         }
 
@@ -295,6 +300,117 @@ class Admin extends CI_Controller {
         }
 
         redirect('admin/users');
+    }
+
+    /**
+     * Team Management
+     */
+    public function teams($action = 'index', $id = null)
+    {
+        $role = $this->session->userdata('role');
+        $data = [];
+
+        // RBAC Check
+        if (in_array($action, ['create', 'store', 'edit', 'update', 'delete'])) {
+             if (!in_array($role, ['admin', 'management'])) {
+                 show_error('Unauthorized', 403);
+             }
+        }
+
+        switch ($action) {
+            case 'create':
+                $data['title'] = 'Tambah Anggota Tim';
+                $data['page'] = 'teams';
+                $data['leaders_status'] = [
+                    'Tim IT' => $this->Team_model->has_leader('Tim IT'),
+                    'Tim Teknologi Media Baru' => $this->Team_model->has_leader('Tim Teknologi Media Baru')
+                ];
+                $this->render_admin('admin/teams/create', $data);
+                break;
+
+            case 'store':
+                $input = $this->input->post();
+                
+                // Special handling for Director
+                if ($input['role'] === 'director') {
+                    if ($this->Team_model->has_director()) {
+                        $this->session->set_flashdata('error', 'Posisi Kepala Direktur sudah terisi! Hanya boleh ada 1 Kepala Direktur.');
+                        redirect('admin/teams/create');
+                        return;
+                    }
+                    $input['division'] = 'Direksi';
+                }
+
+                unset($input[$this->security->get_csrf_token_name()]);
+                if (!empty($_FILES['photo']['name'])) {
+                    $upload = $this->_upload_and_resize('photo', 400, 400);
+                    if ($upload['status']) $input['photo'] = 'assets/uploads/' . $upload['file_name'];
+                }
+                if ($this->Team_model->create($input)) {
+                    $this->session->set_flashdata('success', 'Anggota tim berhasil ditambahkan');
+                }
+                redirect('admin/teams');
+                break;
+
+            case 'edit':
+                $data['title'] = 'Edit Anggota Tim';
+                $data['page'] = 'teams';
+                $data['member'] = $this->Team_model->get_by_id($id);
+                if (!$data['member']) show_404();
+                $this->render_admin('admin/teams/edit', $data);
+                break;
+
+            case 'update':
+                $input = $this->input->post();
+                
+                // Special handling for Director
+                if ($input['role'] === 'director') {
+                    if ($this->Team_model->has_director($id)) {
+                        $this->session->set_flashdata('error', 'Posisi Kepala Direktur sudah terisi! Hanya boleh ada 1 Kepala Direktur.');
+                        redirect('admin/teams/edit/' . $id);
+                        return;
+                    }
+                    $input['division'] = 'Direksi';
+                }
+
+                unset($input[$this->security->get_csrf_token_name()]);
+                if (!empty($_FILES['photo']['name'])) {
+                    $upload = $this->_upload_and_resize('photo', 400, 400);
+                    if ($upload['status']) $input['photo'] = 'assets/uploads/' . $upload['file_name'];
+                }
+                if ($this->Team_model->update($id, $input)) {
+                    $this->session->set_flashdata('success', 'Data tim berhasil diperbarui');
+                }
+                redirect('admin/teams');
+                break;
+
+            case 'delete':
+                if ($this->Team_model->delete($id)) {
+                    $this->session->set_flashdata('success', 'Anggota tim berhasil dihapus');
+                }
+                redirect('admin/teams');
+                break;
+
+            case 'index':
+            default:
+                $data['title'] = 'Manajemen Tim';
+                $data['page'] = 'teams';
+                $all_teams = $this->Team_model->get_all_by_division_sorted();
+                $data['all_teams'] = $all_teams;
+                
+                // Segregate roles
+                $data['director'] = array_filter($all_teams, function($t) { return $t['role'] == 'director'; });
+                $data['main_head'] = array_filter($all_teams, function($t) { return $t['role'] == 'main_head'; });
+                
+                $data['team_media_baru'] = array_filter($all_teams, function($t) { 
+                    return $t['division'] == 'Tim Teknologi Media Baru' && !in_array($t['role'], ['main_head', 'director']); 
+                });
+                $data['team_it'] = array_filter($all_teams, function($t) { 
+                    return $t['division'] == 'Tim IT' && !in_array($t['role'], ['main_head', 'director']); 
+                });
+                $this->render_admin('admin/teams/teams', $data);
+                break;
+        }
     }
 
     public function user_delete($id)
@@ -655,153 +771,7 @@ class Admin extends CI_Controller {
         redirect('admin/settings');
     }
 
-    /**
-     * Team Management
-     */
-    public function teams($action = 'index', $id = null)
-    {
-        $data['user'] = $this->_get_user_data();
 
-        // RBAC Check
-        $role = $this->session->userdata('role');
-        if (in_array($action, ['create', 'store', 'edit', 'update', 'delete'])) {
-             if (!in_array($role, ['admin', 'management'])) {
-                 show_error('Unauthorized', 403);
-             }
-        }
-
-
-        
-        // Ensure models are loaded
-        if (!isset($this->Team_model)) {
-            $this->load->model('Team_model');
-        }
-
-        switch ($action) {
-            case 'create':
-                $data['title'] = 'Tambah Anggota Tim';
-                $data['page'] = 'teams';
-                $this->load->view('admin/templates/header', $data);
-                $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/teams/create', $data);
-                $this->load->view('admin/templates/footer', $data);
-                break;
-
-            case 'store':
-                $input = $this->input->post();
-                unset($input[$this->security->get_csrf_token_name()]); // Remove CSRF token
-
-                // Validation: Check for existing leader in division
-                if ($input['role'] === 'leader') {
-                    if ($this->Team_model->has_leader($input['division'])) {
-                        $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua Tim. Hapus atau ubah ketua tim lama terlebih dahulu.');
-                        redirect('admin/teams/create');
-                        return;
-                    }
-                }
-                
-                // Upload Photo
-                if (!empty($_FILES['photo']['name'])) {
-                    $upload = $this->_upload_and_resize('photo', 400, 400); // 1:1 Aspect Ratio preferred
-                    if ($upload['status']) {
-                        $input['photo'] = $upload['file_name'];
-                    } else {
-                        $this->session->set_flashdata('error', $upload['error']);
-                        redirect('admin/teams/create');
-                        return;
-                    }
-                }
-
-                if ($this->Team_model->create($input)) {
-                    $this->Audit_model->log('create_team', 'Added team member: ' . $input['name']);
-                    $this->session->set_flashdata('success', 'Anggota tim berhasil ditambahkan');
-                } else {
-                    $this->session->set_flashdata('error', 'Gagal menambahkan anggota tim');
-                }
-                redirect('admin/teams');
-                break;
-
-            case 'edit':
-                $data['title'] = 'Edit Anggota Tim';
-                $data['page'] = 'teams';
-                $data['member'] = $this->Team_model->get_by_id($id);
-
-                if (!$data['member']) show_404();
-
-                $this->load->view('admin/templates/header', $data);
-                $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/teams/edit', $data);
-                $this->load->view('admin/templates/footer', $data);
-                break;
-                
-            case 'update':
-                $input = $this->input->post();
-                unset($input[$this->security->get_csrf_token_name()]); // Remove CSRF token
-                
-                // Validation: Check for existing leader (exclude self)
-                if ($input['role'] === 'leader') {
-                    if ($this->Team_model->has_leader($input['division'], $id)) {
-                        $this->session->set_flashdata('error', 'Divisi ini sudah memiliki Ketua Tim.');
-                        redirect('admin/teams/edit/' . $id);
-                        return;
-                    }
-                }
-
-                if (!empty($_FILES['photo']['name'])) {
-                    $upload = $this->_upload_and_resize('photo', 400, 400);
-                    if ($upload['status']) {
-                        $input['photo'] = $upload['file_name'];
-                    } else {
-                        $this->session->set_flashdata('error', $upload['error']);
-                        redirect('admin/teams/edit/' . $id);
-                        return;
-                    }
-                }
-
-                if ($this->Team_model->update($id, $input)) {
-                    $this->Audit_model->log('update_team', 'Updated team member ID: ' . $id);
-                    $this->session->set_flashdata('success', 'Data tim berhasil diperbarui');
-                } else {
-                    $this->session->set_flashdata('error', 'Gagal memperbarui data');
-                }
-                redirect('admin/teams');
-                break;
-
-            case 'delete':
-                $member = $this->Team_model->get_by_id($id);
-                if ($this->Team_model->delete($id)) {
-                    $this->Audit_model->log('delete_team', 'Deleted team member: ' . ($member['name'] ?? $id));
-                    $this->session->set_flashdata('success', 'Anggota tim berhasil dihapus');
-                } else {
-                    $this->session->set_flashdata('error', 'Gagal menghapus anggota');
-                }
-                redirect('admin/teams');
-                break;
-
-            case 'index':
-            default:
-                $data['title'] = 'Manajemen Tim';
-                $data['page'] = 'teams';
-                
-                // Fetch ALL teams and sort/group them in the view or here
-                // For simplified grouping as requested (Media Baru vs IT)
-                // We'll fetch all sorted by division & level using the new model method
-                $all_teams = $this->Team_model->get_all_by_division_sorted();
-                
-                $data['team_media_baru'] = array_filter($all_teams, function($t) { 
-                    return $t['division'] == 'Tim Teknologi Media Baru'; 
-                });
-                $data['team_it'] = array_filter($all_teams, function($t) { 
-                    return $t['division'] == 'Tim IT'; 
-                });
-                
-                $this->load->view('admin/templates/header', $data);
-                $this->load->view('admin/templates/sidebar', $data);
-                $this->load->view('admin/teams/teams', $data);
-                $this->load->view('admin/templates/footer', $data);
-                break;
-        }
-    }
 
     /**
      * IP Address Management
@@ -1429,17 +1399,29 @@ class Admin extends CI_Controller {
 
 
 
-    private function _get_user_data()
+
+
+    /**
+     * Helper: Check Password Strength
+     */
+    public function _check_password_strength($password)
     {
-        // If we strictly want database data, fetch it.
-        // But session data is usually enough. For Avatar we might need to be sure.
-        // Let's use session, it's faster. Avatar is in session.
-        return [
-            'id' => $this->session->userdata('user_id'),
-            'username' => $this->session->userdata('username'),
-            'role' => $this->session->userdata('role'),
-            'role_name' => $this->session->userdata('role_name'),
-            'avatar' => $this->session->userdata('avatar') ?? 'default_avatar.png'
-        ];
+        if (!$this->_is_strong_password($password)) {
+            $this->form_validation->set_message([
+                '_check_password_strength' => 'Keamanan {field} kurang kuat! Minimal 8 karakter, kombinasi Huruf Besar, Angka & Simbol.'
+            ]);
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    private function _is_strong_password($password)
+    {
+        if (strlen($password) < 8) return FALSE;
+        if (!preg_match('/[A-Z]/', $password)) return FALSE;
+        if (!preg_match('/[a-z]/', $password)) return FALSE;
+        if (!preg_match('/[0-9]/', $password)) return FALSE;
+        if (!preg_match('/[^A-Za-z0-9]/', $password)) return FALSE;
+        return TRUE;
     }
 }

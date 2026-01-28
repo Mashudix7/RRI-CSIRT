@@ -96,10 +96,14 @@ $route['dashboard'] = 'dashboard/index';
 // =====================================================
 // Admin Routes (Protected - Admin Only)
 // =====================================================
+$route['admin/dashboard'] = 'admin/index';
+
 $route['admin/users'] = 'admin/users';
 $route['admin/users/(:any)'] = 'admin/users/$1';
+
 $route['admin/articles'] = 'admin/articles';
 $route['admin/articles/(:any)'] = 'admin/articles/$1';
+
 $route['admin/teams'] = 'admin/teams';
 $route['admin/teams/(:any)'] = 'admin/teams/$1';
 

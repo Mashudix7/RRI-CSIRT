@@ -34,6 +34,24 @@ class Team_model extends CI_Model {
         return $this->db->delete('teams');
     }
 
+    public function has_main_head($exclude_id = null) {
+        $this->db->where('role', 'main_head');
+        if ($exclude_id) {
+            $this->db->where('id !=', $exclude_id);
+        }
+        $query = $this->db->get('teams');
+        return $query->num_rows() > 0;
+    }
+
+    public function has_director($exclude_id = null) {
+        $this->db->where('role', 'director');
+        if ($exclude_id) {
+            $this->db->where('id !=', $exclude_id);
+        }
+        $query = $this->db->get('teams');
+        return $query->num_rows() > 0;
+    }
+
     public function has_leader($division, $exclude_id = null) {
         $this->db->where('division', $division);
         $this->db->where('role', 'leader');
@@ -44,15 +62,21 @@ class Team_model extends CI_Model {
         return $query->num_rows() > 0;
     }
 
+    public function count_members($division, $exclude_id = null) {
+        $this->db->where('division', $division);
+        $this->db->where('role', 'member');
+        if ($exclude_id) {
+            $this->db->where('id !=', $exclude_id);
+        }
+        return $this->db->count_all_results('teams');
+    }
+
     public function get_all_by_division_sorted() {
         $this->db->from('teams');
-        // Sort by division first
+        // Sort by role precedence: director=1, main_head=2, leader=3, member=4
+        $this->db->order_by("FIELD(role, 'director', 'main_head', 'leader', 'member')", '', FALSE);
+        // Then by division
         $this->db->order_by('division', 'ASC');
-        
-        // Then custom sort by role: leader=1, member=2
-        // MySQL FIELD() function returns the index of the value in the list
-        $this->db->order_by("FIELD(role, 'leader', 'member')", '', FALSE);
-        
         $this->db->order_by('name', 'ASC');
         
         return $this->db->get()->result_array();

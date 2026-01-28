@@ -32,137 +32,132 @@
     </div>
 </section>
 
-<!-- Team Members with Tabs -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900" 
-         x-data="{ activeTab: '<?= !empty($grouped_teams) ? slugify(array_key_first($grouped_teams)) : '' ?>' }">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <?php
-        // Helper to slugify string
-        function slugify($text) {
-            return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $text)));
-        }
-        ?>
+<!-- Team Chart Section -->
+<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 relative overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-100/50 dark:bg-blue-600/5 rounded-full blur-3xl -mr-48 -mt-24"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-100/50 dark:bg-purple-600/5 rounded-full blur-3xl -ml-48 -mb-24"></div>
 
-        <?php if (empty($grouped_teams)): ?>
-            <div class="text-center py-10" data-aos="fade-up">
-                <p class="text-gray-500">Belum ada data tim.</p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <?php if (!$director && !$main_head && empty($grouped_teams)): ?>
+            <div class="text-center py-20" data-aos="fade-up">
+                <div class="w-20 h-20 mx-auto bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354l1.1 3.393h3.566l-2.885 2.096 1.1 3.393L12 11.14l-2.885 2.096 1.1-3.393-2.885-2.096h3.565L12 4.354z"></path></svg>
+                </div>
+                <p class="text-gray-500 font-medium">Data tim belum tersedia.</p>
             </div>
         <?php else: ?>
-            <!-- Tab Buttons -->
-            <div class="flex flex-wrap justify-center gap-4 mb-16" data-aos="fade-up">
-                <?php foreach ($grouped_teams as $division => $members): ?>
-                    <?php $tabId = slugify($division); ?>
-                    <button @click="activeTab = '<?= $tabId ?>'" 
-                            :class="activeTab === '<?= $tabId ?>' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700'"
-                            class="px-6 py-3 rounded-xl font-semibold transition-all duration-300">
-                        <span class="flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                            <?= $division ?>
-                        </span>
-                    </button>
-                <?php endforeach; ?>
-            </div>
-            
-            <!-- Dynamic Content -->
-            <?php foreach ($grouped_teams as $division => $members): ?>
-                <?php 
-                    $tabId = slugify($division); 
-                    // Separate Leader (level = leader or first one)
-                    $leader = null;
-                    $staff = [];
-                    foreach ($members as $m) {
-                        if (($m['role'] ?? '') === 'leader' && !$leader) {
-                            $leader = $m;
-                        } else {
-                            $staff[] = $m;
-                        }
-                    }
-                    if (!$leader && !empty($members)) {
-                        $leader = array_shift($staff);
-                    }
-                ?>
-                <div x-show="activeTab === '<?= $tabId ?>'" 
-                     x-transition:enter="transition ease-out duration-300" 
-                     x-transition:enter-start="opacity-0 transform translate-y-4" 
-                     x-transition:enter-end="opacity-100 transform translate-y-0">
-                    
-                    <!-- Row 1: Leader -->
-                    <?php if ($leader): ?>
-                    <div class="flex justify-center mb-0">
-                        <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border-2 border-blue-500 dark:border-blue-400 shadow-lg dark:shadow-none text-center w-56 hover-lift" data-aos="zoom-in">
-                            <div class="w-20 h-20 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center overflow-hidden">
-                                <?php if (!empty($leader['photo'])): ?>
-                                    <?php 
-                                        $photo = $leader['photo'];
-                                        if (strpos($photo, 'assets') === false) $photo = 'assets/uploads/' . $photo;
-                                    ?>
-                                    <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover" loading="lazy">
+
+            <!-- Level 1: Kepala Direktur -->
+            <div class="flex justify-center mb-16 relative" data-aos="zoom-in">
+                <?php if ($director): ?>
+                    <div class="relative group">
+                        <!-- Connecting Line Down -->
+                        <div class="absolute left-1/2 -bottom-16 w-0.5 h-16 bg-gray-300 dark:bg-slate-600 hidden lg:block"></div>
+                        
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-xl text-center w-64 md:w-72 transform transition-all duration-500 hover:scale-105">
+                            <div class="w-28 h-28 mx-auto mb-4 p-1 rounded-full border-4 border-white dark:border-slate-700 shadow-sm overflow-hidden">
+                                <?php if (!empty($director['photo'])): ?>
+                                    <img src="<?= base_url(strpos($director['photo'], 'assets') !== false ? $director['photo'] : 'assets/uploads/' . $director['photo']) ?>" class="w-full h-full object-cover">
                                 <?php else: ?>
-                                    <span class="text-white font-bold text-2xl"><?= substr($leader['name'], 0, 1) ?></span>
+                                    <div class="w-full h-full bg-amber-600 flex items-center justify-center text-white text-4xl font-black">
+                                        <?= substr($director['name'], 0, 1) ?>
+                                    </div>
                                 <?php endif; ?>
                             </div>
-                            <span class="inline-block px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-full mb-2">KEPALA TIM</span>
-                            <h3 class="font-bold text-gray-900 dark:text-white mb-1"><?= $leader['name'] ?></h3>
-                            <p class="text-blue-600 dark:text-blue-400 text-xs font-medium"><?= $leader['position'] ?? 'Leader' ?></p>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight mb-1"><?= htmlspecialchars($director['name']) ?></h3>
+                            <p class="text-amber-600 dark:text-amber-500 text-sm font-medium"><?= htmlspecialchars($director['position']) ?></p>
+                            <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest">Pimpinan Tertinggi</p>
                         </div>
                     </div>
-                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- Level 2 & 3: Divisions Layout -->
+            <div class="relative">
+                <!-- Horizontal Connecting Line (Desktop) -->
+                <div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-blue-300 dark:bg-blue-700 hidden lg:block"></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
                     
-                    <?php if (!empty($staff)): ?>
-                        <!-- Connector from Leader -->
-                        <div class="flex justify-center hidden md:flex">
-                            <div class="w-0.5 h-6 bg-blue-300 dark:bg-blue-600"></div>
-                        </div>
+                    <?php 
+                    $divisions = ['Tim Teknologi Media Baru', 'Tim IT'];
+                    foreach ($divisions as $divIdx => $divName): 
+                        $members = $grouped_teams[$divName] ?? [];
+                        $leader = null;
+                        $staff = [];
+                        foreach ($members as $m) {
+                            if (($m['role'] ?? '') === 'leader') $leader = $m;
+                            else $staff[] = $m;
+                        }
+                    ?>
+                    <!-- Division Column -->
+                    <div class="relative space-y-12">
+                        <!-- Vertical line from horizontal line to leader -->
+                        <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-12 bg-blue-300 dark:bg-blue-700 hidden lg:block"></div>
 
-                        <!-- Staff Container with Connectors -->
-                        <div class="flex justify-center flex-wrap max-w-6xl mx-auto">
-                            <?php 
-                            $count = count($staff);
-                            foreach ($staff as $index => $member): 
-                                $isFirst = ($index === 0);
-                                $isLast = ($index === $count - 1);
-                            ?>
-                            <!-- Staff Item Wrapper - Smaller -->
-                            <div class="relative px-1 pt-3 md:pt-6 text-center w-24 md:w-28" data-aos="fade-up" data-aos-delay="<?= min($index * 30, 200) ?>">
-                                
-                                <!-- Vertical Line to Card (Desktop only) -->
-                                <div class="absolute top-0 left-1/2 -ml-[1px] w-0.5 h-6 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
-                                
-                                <!-- Horizontal Line Left (Connect to previous) (Desktop only) -->
-                                <?php if (!$isFirst): ?>
-                                    <div class="absolute top-0 right-1/2 w-1/2 h-0.5 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
-                                <?php endif; ?>
-
-                                <!-- Horizontal Line Right (Connect to next) (Desktop only) -->
-                                <?php if (!$isLast): ?>
-                                    <div class="absolute top-0 left-1/2 w-1/2 h-0.5 bg-blue-300 dark:bg-blue-600 hidden md:block"></div>
-                                <?php endif; ?>
-
-                                <!-- Card - Compact -->
-                                <div class="bg-white dark:bg-slate-800 rounded-lg p-2 border border-gray-200 dark:border-slate-700 shadow-sm dark:shadow-none h-full relative z-10 mx-auto hover-lift">
-                                    <div class="w-10 h-10 md:w-12 md:h-12 mx-auto mb-1.5 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center overflow-hidden">
-                                        <?php if (!empty($member['photo'])): ?>
-                                            <?php 
-                                                $photo = $member['photo'];
-                                                if (strpos($photo, 'assets') === false) $photo = 'assets/uploads/' . $photo;
-                                            ?>
-                                            <img src="<?= base_url($photo) ?>" class="w-full h-full object-cover" loading="lazy">
-                                        <?php else: ?>
-                                            <span class="text-gray-500 font-bold text-sm"><?= substr($member['name'], 0, 1) ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    <h3 class="font-semibold text-gray-900 dark:text-white text-[10px] md:text-xs mb-0.5 line-clamp-1"><?= $member['name'] ?></h3>
-                                    <p class="text-gray-500 dark:text-gray-400 text-[8px] md:text-[10px] line-clamp-1"><?= $member['position'] ?? 'Anggota' ?></p>
+                        <!-- Division Leader -->
+                        <div class="flex justify-center pt-8 md:pt-12" data-aos="fade-up" data-aos-delay="<?= $divIdx * 100 ?>">
+                            <?php if ($leader): ?>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border-2 border-blue-400 dark:border-blue-900/50 shadow-xl text-center w-56 transform transition-all hover:scale-105 relative">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[9px] font-black uppercase rounded-full border border-blue-200 dark:border-blue-800/50">
+                                    Ketua <?= ($divIdx == 0) ? 'TMB' : 'IT' ?>
                                 </div>
+                                <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden ring-4 ring-blue-50 dark:ring-blue-900/20">
+                                    <?php if (!empty($leader['photo'])): ?>
+                                        <img src="<?= base_url(strpos($leader['photo'], 'assets') !== false ? $leader['photo'] : 'assets/uploads/' . $leader['photo']) ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <div class="w-full h-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl font-bold">
+                                            <?= substr($leader['name'], 0, 1) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm leading-tight"><?= htmlspecialchars($leader['name']) ?></h4>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium mt-1"><?= htmlspecialchars($leader['position']) ?></p>
                             </div>
-                            <?php endforeach; ?>
+                            <?php else: ?>
+                            <div class="w-48 h-20 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl flex items-center justify-center text-gray-400 text-xs italic">
+                                Ketua Belum Ditentukan
+                            </div>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
+
+                        <!-- Division Staff Grid -->
+                        <div class="bg-blue-50/30 dark:bg-slate-800/30 rounded-3xl p-6 md:p-8" data-aos="fade-up" data-aos-delay="<?= $divIdx * 150 + 100 ?>">
+                            <div class="text-center mb-6">
+                                <h5 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Anggota Tim <?= ($divIdx == 0) ? 'TMB' : 'IT' ?></h5>
+                                <div class="w-8 h-1 bg-blue-500/20 mx-auto mt-2 rounded-full"></div>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <?php if (empty($staff)): ?>
+                                    <div class="col-span-full py-4 text-center text-xs text-gray-400 italic">Belum ada anggota</div>
+                                <?php else: ?>
+                                    <?php foreach ($staff as $sIdx => $s): ?>
+                                    <div class="text-center group">
+                                        <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 rounded-2xl overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400 dark:group-hover:ring-blue-500 transition-all shadow-sm">
+                                            <?php if (!empty($s['photo'])): ?>
+                                                <img src="<?= base_url(strpos($s['photo'], 'assets') !== false ? $s['photo'] : 'assets/uploads/' . $s['photo']) ?>" class="w-full h-full object-cover">
+                                            <?php else: ?>
+                                                <div class="w-full h-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-gray-400 dark:text-gray-500 text-lg font-bold">
+                                                    <?= substr($s['name'], 0, 1) ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <h6 class="text-[10px] md:text-xs font-bold text-gray-800 dark:text-gray-200 line-clamp-1 h-3.5"><?= htmlspecialchars($s['name']) ?></h6>
+                                        <p class="text-[8px] md:text-[9px] text-gray-500 dark:text-gray-500 line-clamp-1"><?= htmlspecialchars($s['position']) ?></p>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+
                 </div>
-            <?php endforeach; ?>
+            </div>
+
         <?php endif; ?>
         
     </div>

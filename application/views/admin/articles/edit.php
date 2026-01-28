@@ -65,7 +65,7 @@
                     </div>
                     <div class="flex-1">
                         <input type="file" name="thumbnail" accept="image/*" onchange="previewImage(this)" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG. Maksimal 2MB. Gambar akan diresize otomatis menjadi 800px.</p>
+                        <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG. Maksimal 10MB. Gambar akan dikompres otomatis oleh sistem.</p>
                     </div>
                 </div>
             </div>
@@ -90,8 +90,12 @@
             </script>
 
             <div class="flex justify-end pt-6">
-                 <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                    Update Artikel
+                 <!-- Save Draft -->
+                 <button type="submit" name="status" value="draft" class="mr-3 px-6 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">
+                    Simpan Ke Draft
+                </button>
+                 <button type="submit" name="status" value="published" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    Update & Publish
                 </button>
             </div>
         <?= form_close() ?>

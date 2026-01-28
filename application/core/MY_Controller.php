@@ -61,10 +61,12 @@ class Admin_Controller extends MY_Controller {
     protected function render_admin($view, $data = [])
     {
         // Get current user data for the layout (navbar/sidebar)
-        $data['current_user'] = $this->_get_user_data();
+        $user_data = $this->_get_user_data();
+        $data['current_user'] = $user_data;
+        $data['user'] = $user_data; // Compatibility with older templates using $user
 
         // Load partials
-        $this->load->view('admin/templates/header', $data); // Note: Admin header might need updates if it doesn't use $title well
+        $this->load->view('admin/templates/header', $data); 
         $this->load->view('admin/templates/sidebar', $data);
         // Topbar might be redundant if Sidebar handles it or included in header
         $this->load->view($view, $data);
