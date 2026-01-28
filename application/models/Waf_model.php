@@ -53,6 +53,14 @@ class Waf_model extends CI_Model {
         // 4. Parse Response
         $stats = $this->_parse_safeline_response($result);
         
+        // 4b. Override some stats with Events data if available
+        if (isset($events_result['data']['total'])) {
+            // Using total events as another metric if needed, 
+            // but usually total_attacks is sum of counts in events or raw records.
+            // Let's keep total_attacks from records but ensure we have event count
+            $stats['summary']['total_events'] = $events_result['data']['total'];
+        }
+
         // 5. Save Cache
         $this->_save_cache($stats);
 
@@ -360,8 +368,9 @@ class Waf_model extends CI_Model {
             'summary' => array(
                 'total_attacks' => $total_attacks,
                 'blocked_attacks' => $blocked_attacks,
-                'active_threats' => count($unique_ips),
-                'protection_level' => 'High'
+                'unique_ips' => count($unique_ips),
+                'protection_level' => 'High',
+                'status' => 'online'
             ),
             'recent' => $recent_threats,
             'types' => $attack_types

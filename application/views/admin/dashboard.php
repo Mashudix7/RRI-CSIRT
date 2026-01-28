@@ -14,9 +14,15 @@
             <rect width="100%" height="100%" fill="url(#dash-grid)"/>
         </svg>
     </div>
-    <div class="relative z-10">
-        <h1 class="text-2xl font-bold mb-2">Security Operations Center</h1>
-        <p class="text-slate-300">Monitoring ancaman siber dan status perlindungan sistem secara real-time.</p>
+    <div class="relative z-10 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold mb-2">Security Operations Center</h1>
+            <p class="text-slate-300">Monitoring ancaman siber dan status perlindungan sistem secara real-time.</p>
+        </div>
+        <div class="text-right hidden md:block">
+            <div id="live-date" class="text-sm font-bold text-slate-400 mb-1 uppercase tracking-widest"><?= date('Y-m-d') ?></div>
+            <div id="live-clock" class="text-4xl font-black text-white tracking-tighter tabular-nums">00:00:00</div>
+        </div>
     </div>
     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
     <div class="absolute -right-5 -bottom-5 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
@@ -28,68 +34,7 @@
 <div class="grid lg:grid-cols-3 gap-6">
     <!-- Security Overview Cards (Main Column) -->
     <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
-        <!-- Quick Stats Row -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <!-- Total Attacks Today -->
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-red-100 dark:bg-red-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-total-attacks" data-count-up="<?= $stats['total_attacks'] ?? 0 ?>"><?= number_format($stats['total_attacks'] ?? 0) ?></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Serangan Hari Ini</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Blocked Attacks -->
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-green-100 dark:bg-green-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white" id="stat-blocked-attacks" data-count-up="<?= $stats['blocked_attacks'] ?? 0 ?>"><?= number_format($stats['blocked_attacks'] ?? 0) ?></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Diblokir</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Protected Sites -->
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="<?= $stats['protected_sites'] ?? 12 ?>"><?= $stats['protected_sites'] ?? 12 ?></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Situs Dilindungi</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Uptime -->
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white">99.9%</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Uptime WAF</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Attack Map Box (Replaces Placeholder) -->
         <div id="map-card" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 relative overflow-hidden transition-all duration-500">
@@ -164,113 +109,25 @@
             <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
         </div>
 
-        <!-- Placeholder for Future Content -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Ringkasan Infrastruktur</h3>
-                <span class="text-xs text-gray-400 dark:text-gray-500">Coming Soon</span>
-            </div>
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="4">4</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Data Center</p>
-                </div>
-                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="68">68</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Satker VPN</p>
-                </div>
-                <div class="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white" data-count-up="254">254</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">IP Terkelola</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <!-- Right Sidebar -->
     <div class="space-y-6">
-        <!-- Attack Types -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Jenis Serangan</h3>
-            
-            <div class="space-y-4">
-                <?php
-                $attack_config = [
-                    'ddos' => ['label' => 'DDoS Attacks', 'color' => 'bg-red-500'],
-                    'phishing' => ['label' => 'Phishing Attempts', 'color' => 'bg-orange-500'],
-                    'malware' => ['label' => 'Malware', 'color' => 'bg-yellow-500'],
-                    'intrusion' => ['label' => 'Intrusion Attempts', 'color' => 'bg-blue-500']
-                ];
-                $total_types = array_sum($attack_stats ?? []);
-                ?>
-                
-                <?php foreach ($attack_config as $key => $config): ?>
-                    <?php 
-                    $count = $attack_stats[$key] ?? 0;
-                    $percentage = $total_types > 0 ? round(($count / $total_types) * 100) : 0;
-                    ?>
-                    <div>
-                        <div class="flex items-center justify-between text-sm mb-1">
-                            <span class="font-medium text-gray-700 dark:text-gray-300"><?= $config['label'] ?></span>
-                            <span class="text-gray-500 dark:text-gray-400"><?= $count ?></span>
-                        </div>
-                        <div class="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div class="h-full <?= $config['color'] ?> rounded-full" style="width: <?= $percentage ?>%"></div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+        <!-- Real-time Web Attack Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden flex flex-col h-[520px]" data-aos="fade-up">
+            <div class="p-6 pb-2 border-b border-gray-50 dark:border-slate-700/50">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Real-time Web Attack</h3>
             </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kontrol Keamanan</h3>
             
-            <div class="space-y-3">
-                <button class="w-full flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 rounded-xl transition-all text-left group">
-                    <div class="p-2 bg-red-50 dark:bg-red-500/10 rounded-lg group-hover:bg-red-100 dark:group-hover:bg-red-500/20 transition-colors">
-                        <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Blokir IP</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Tambahkan ke blacklist</p>
-                    </div>
-                </button>
-                
-                <a href="<?= base_url('admin/reports') ?>" class="w-full flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 rounded-xl transition-all text-left group">
-                    <div class="p-2 bg-gray-50 dark:bg-gray-600/30 rounded-lg group-hover:bg-gray-100 dark:group-hover:bg-gray-600/50 transition-colors">
-                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-medium text-gray-900 dark:text-white">Laporan Keamanan</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Download PDF</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        
-        <!-- System Status -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6" data-aos="fade-up" data-aos-delay="200">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status Agen</h3>
-            
-            <div class="space-y-3">
-                <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-500/10 rounded-lg">
-                    <div class="flex items-center gap-2">
-                         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">WAF Protection</span>
-                    </div>
-                    <span class="text-xs font-bold text-green-600 dark:text-green-400">ACTIVE</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
-                    <div class="flex items-center gap-2">
-                         <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">SSL Status</span>
-                    </div>
-                    <span class="text-xs font-bold text-blue-600 dark:text-blue-400">SECURE</span>
+            <div id="web-attack-list" class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
+                <!-- Loading State -->
+                <div class="flex flex-col items-center justify-center h-full text-slate-400 space-y-2 opacity-50">
+                    <svg class="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Syncing events...</span>
                 </div>
             </div>
         </div>
@@ -441,7 +298,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 geo: {
                     map: 'world',
                     roam: true,
-                    scaleLimit: { min: 1, max: 15 },
+                    scaleLimit: { min: 1, max: 10 },
+                    center: [106, 15],
+                    zoom: 1.5,
+                    boundingCoords: [
+                        [-180, 85],
+                        [180, -60]
+                    ],
                     label: { emphasis: { show: false } },
                     itemStyle: {
                         normal: {
@@ -452,15 +315,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         emphasis: {
                             areaColor: '#f1f5f9'
                         }
-                    },
-                    zoom: 1.5,
-                    center: [106, 0]
+                    }
                 },
                 series: [
                     {
                         name: 'Attack Lines',
                         type: 'lines',
-                        zlevel: 1,
                         effect: {
                             show: true,
                             period: 3,
@@ -487,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         name: 'Attack Points',
                         type: 'effectScatter',
                         coordinateSystem: 'geo',
-                        zlevel: 2,
                         rippleEffect: {
                             brushType: 'stroke',
                             scale: 3,
@@ -542,7 +401,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         name: 'Target Point',
                         type: 'effectScatter',
                         coordinateSystem: 'geo',
-                        zlevel: 3,
                         rippleEffect: {
                             brushType: 'fill',
                             period: 2,
@@ -713,7 +571,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.data.summary) {
                     const totalElem = document.getElementById('stat-total-attacks');
                     const blockedElem = document.getElementById('stat-blocked-attacks');
-                    // Stats update logic here if needed...
+                    
+                    if (totalElem) totalElem.innerText = Number(result.data.summary.total_attacks || 0).toLocaleString();
+                    if (blockedElem) blockedElem.innerText = Number(result.data.summary.blocked_attacks || 0).toLocaleString();
                 }
 
                 const events = result.data.events || [];
@@ -721,11 +581,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 const attacks = [...events, ...records]; 
                 
                 updateMapData(attacks);
+                updateWebAttackList(events);
             }
         } catch (error) {
             console.log('Stats refresh skipped', error);
         }
     }
+
+    // -----------------------------------------------------
+    // Web Attack List Rendering
+    // -----------------------------------------------------
+    function updateWebAttackList(events) {
+        const listContainer = document.getElementById('web-attack-list');
+        if (!listContainer || !events.length) return;
+
+        const html = events.map(record => {
+            const date = new Date(record.timestamp * 1000);
+            const formattedDate = date.getFullYear() + '-' + 
+                                String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(date.getDate()).padStart(2, '0') + ' ' + 
+                                String(date.getHours()).padStart(2, '0') + ':' + 
+                                String(date.getMinutes()).padStart(2, '0') + ':' + 
+                                String(date.getSeconds()).padStart(2, '0');
+
+            return `
+                <div class="flex items-start justify-between py-4 border-b border-gray-50 dark:border-slate-700/50 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors px-2 -mx-2 rounded-lg group">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
+                            <span class="font-bold text-slate-900 dark:text-white tracking-tight">${record.src_ip}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 font-medium pl-3.5">
+                            ${formattedDate}
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-slate-800 dark:text-slate-200 text-sm">${record.country}</div>
+                        <div class="text-xs font-bold text-rose-500 mt-1">${record.count || 0}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        listContainer.innerHTML = html;
+    }
+
+    // -----------------------------------------------------
+    // Live Clock
+    // -----------------------------------------------------
+    function startClock() {
+        const clockElem = document.getElementById('live-clock');
+        const dateElem = document.getElementById('live-date');
+        if (!clockElem) return;
+
+        setInterval(() => {
+            const now = new Date();
+            clockElem.innerText = now.getHours().toString().padStart(2, '0') + ':' + 
+                                now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                now.getSeconds().toString().padStart(2, '0');
+            
+            if (now.getSeconds() === 0) {
+                dateElem.innerText = now.getFullYear() + '-' + 
+                                    (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                    now.getDate().toString().padStart(2, '0');
+            }
+        }, 1000);
+    }
+    
+    startClock();
 
     // -----------------------------------------------------
     // Fullscreen Logic

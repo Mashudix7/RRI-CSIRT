@@ -176,6 +176,11 @@ class Admin extends CI_Controller {
         // Fetch Dedicated Events from Safeline API
         $waf_events = $this->Waf_model->get_daily_events(30);
 
+        // Load Infrastructure Model
+        $this->load->model('Ip_model');
+        $infra_stats = $this->Ip_model->get_global_stats();
+        $vpn_stats = $this->Ip_model->get_vpn_stats();
+
         $data['stats'] = $waf_data['summary'];
         $data['attack_stats'] = $waf_data['types'];
         // logs = raw records (individual events)
@@ -184,9 +189,14 @@ class Admin extends CI_Controller {
         // events = grouped events from open/events api
         $data['recent_events'] = $waf_events ?? [];
 
-        // Add additional needed stats if not in WAF response
+        // Add additional dynamic stats
         $data['stats']['uptime'] = '99.9%'; 
-
+        $data['stats']['protected_sites'] = $infra_stats['total_networks'] ?? 12; // Using networks as "sites" or proxy
+        $data['stats']['infra'] = [
+            'data_centers' => 4, // Still hardcoded if no model for this, but could be from Ip_model if needed
+            'vpns' => $vpn_stats['total'] ?? 0,
+            'ips' => $infra_stats['total_ips'] ?? 0
+        ];
         // Debug Log
         if (empty($data['recent_logs'])) {
             log_message('error', 'DEBUG: recent_logs is EMPTY');
