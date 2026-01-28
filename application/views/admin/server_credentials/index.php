@@ -6,17 +6,17 @@ $isAdmin = ($role === 'admin');
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4" data-aos="fade-up">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data IP & Password</h1>
             <p class="text-gray-500 dark:text-gray-400 mt-1">Manajemen kredensial server dan IP Address.</p>
         </div>
         
         <?php if ($isAdmin): ?>
-        <button onclick="document.getElementById('addModal').showModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all flex items-center gap-2">
+        <a href="<?= base_url('admin/server_credentials/create') ?>" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg shadow-md transition-all flex items-center gap-2 btn-press-anim">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
             Tambah Data
-        </button>
+        </a>
         <?php endif; ?>
     </div>
 
@@ -33,7 +33,7 @@ $isAdmin = ($role === 'admin');
     <?php endif; ?>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
         <div class="w-full">
             <table class="w-full text-left border-collapse table-fixed">
                 <thead>
@@ -84,9 +84,9 @@ $isAdmin = ($role === 'admin');
                         <?php if ($isAdmin): ?>
                         <td class="p-4 text-center align-top">
                             <div class="flex items-center justify-center gap-2">
-                                <button onclick='openEditModal(<?= json_encode($row) ?>)' class="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit">
+                                <a href="<?= base_url('admin/server_credentials/edit/'.$row['id']) ?>" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                </button>
+                                </a>
                                 <a href="<?= base_url('admin/server_credentials/delete/'.$row['id']) ?>" onclick="return confirm('Hapus data ini?')" class="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </a>
@@ -101,109 +101,3 @@ $isAdmin = ($role === 'admin');
         </div>
     </div>
 </div>
-
-<!-- Add Modal -->
-<dialog id="addModal" class="modal rounded-xl shadow-2xl p-0 backdrop:bg-gray-900/50 w-full max-w-lg">
-    <div class="bg-white dark:bg-slate-800">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Tambah Data Server</h3>
-            <button onclick="document.getElementById('addModal').close()" class="text-gray-400 hover:text-gray-600">✕</button>
-        </div>
-        <form action="<?= base_url('admin/server_credentials/store') ?>" method="POST" class="p-6 space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Nama VM</label>
-                    <input type="text" name="vm_name" required class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">IP Address</label>
-                    <input type="text" name="ip_address" required class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600 font-mono">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Domain (Opsional)</label>
-                <input type="text" name="domain" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Username</label>
-                    <input type="text" name="username" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Password</label>
-                    <input type="text" name="password" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Deskripsi</label>
-                <textarea name="description" rows="2" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"></textarea>
-            </div>
-            <div class="flex justify-end pt-4">
-                <button type="button" onclick="document.getElementById('addModal').close()" class="px-4 py-2 mr-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
-            </div>
-        </form>
-    </div>
-</dialog>
-
-<!-- Edit Modal -->
-<dialog id="editModal" class="modal rounded-xl shadow-2xl p-0 backdrop:bg-gray-900/50 w-full max-w-lg">
-    <div class="bg-white dark:bg-slate-800">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Edit Data Server</h3>
-            <button onclick="document.getElementById('editModal').close()" class="text-gray-400 hover:text-gray-600">✕</button>
-        </div>
-        <form id="editForm" method="POST" class="p-6 space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Nama VM</label>
-                    <input type="text" id="edit_vm_name" name="vm_name" required class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">IP Address</label>
-                    <input type="text" id="edit_ip_address" name="ip_address" required class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600 font-mono">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Domain</label>
-                <input type="text" id="edit_domain" name="domain" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Username</label>
-                    <input type="text" id="edit_username" name="username" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1 dark:text-gray-300">Password</label>
-                    <input type="text" id="edit_password" name="password" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Deskripsi</label>
-                <textarea id="edit_description" name="description" rows="2" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"></textarea>
-            </div>
-            <div class="flex justify-end pt-4">
-                <button type="button" onclick="document.getElementById('editModal').close()" class="px-4 py-2 mr-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Update</button>
-            </div>
-        </form>
-    </div>
-</dialog>
-
-<script>
-function openEditModal(data) {
-    const modal = document.getElementById('editModal');
-    const form = document.getElementById('editForm');
-    
-    form.action = "<?= base_url('admin/server_credentials/update/') ?>" + data.id;
-    
-    document.getElementById('edit_vm_name').value = data.vm_name;
-    document.getElementById('edit_ip_address').value = data.ip_address;
-    document.getElementById('edit_domain').value = data.domain;
-    document.getElementById('edit_username').value = data.username;
-    document.getElementById('edit_password').value = data.password;
-    document.getElementById('edit_description').value = data.description;
-    
-    modal.showModal();
-}
-</script>

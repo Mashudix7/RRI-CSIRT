@@ -6,7 +6,7 @@ $can_edit = in_array($role, ['superadmin', 'admin', 'management']);
 <div class="space-y-6">
 
     <!-- Header & Summary Cards (Preserved) -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" data-aos="fade-up">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manajemen IP VPN</h1>
             <p class="text-gray-500 dark:text-gray-400 mt-1">Daftar IP VPN Tunnel & LAN Satker Radio Republik Indonesia</p>
@@ -100,13 +100,13 @@ $can_edit = in_array($role, ['superadmin', 'admin', 'management']);
                 </div>
                 
                 <?php if ($can_edit): ?>
-                <a href="<?= base_url('admin/vpn-management/create') ?>" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                <a href="<?= base_url('admin/vpn-management/create') ?>" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-medium rounded-lg transition-all shadow-md flex items-center gap-2 btn-press-anim">
                     <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Tambah
                 </a>
                 <?php endif; ?>
 
-                <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors border border-slate-600 flex items-center gap-2">
+                <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors border border-slate-600 flex items-center gap-2 btn-press-anim">
                     <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Export
                 </button>

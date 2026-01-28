@@ -32,19 +32,56 @@ class Server_credentials extends CI_Controller {
         $data['user'] = [
             'username' => $this->session->userdata('username'),
             'role' => $this->session->userdata('role'),
-            'role_name' => $this->session->userdata('role_name')
+            'role_name' => $this->session->userdata('role_name'),
+            'avatar' => $this->session->userdata('avatar')
         ];
 
         $data['credentials'] = $this->Server_credential_model->get_all();
 
-        // Fail-safe view loading
-        if (!file_exists(APPPATH.'views/admin/templates/header.php')) {
-            show_error('Template Header missing');
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/server_credentials/index', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function create() {
+        $data['title'] = 'Tambah Data IP & Password';
+        $data['page'] = 'server_credentials';
+        
+        $data['user'] = [
+            'username' => $this->session->userdata('username'),
+            'role' => $this->session->userdata('role'),
+            'role_name' => $this->session->userdata('role_name'),
+            'avatar' => $this->session->userdata('avatar')
+        ];
+
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/templates/sidebar', $data);
+        $this->load->view('admin/server_credentials/create', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function edit($id) {
+        $data['title'] = 'Edit Data IP & Password';
+        $data['page'] = 'server_credentials';
+        
+        $data['user'] = [
+            'username' => $this->session->userdata('username'),
+            'role' => $this->session->userdata('role'),
+            'role_name' => $this->session->userdata('role_name'),
+            'avatar' => $this->session->userdata('avatar')
+        ];
+
+        $data['credential'] = $this->Server_credential_model->get_by_id($id);
+        
+        if (!$data['credential']) {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan');
+            redirect('admin/server_credentials');
         }
 
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/templates/sidebar', $data);
-        $this->load->view('admin/server_credentials/index', $data);
+        $this->load->view('admin/server_credentials/edit', $data);
         $this->load->view('admin/templates/footer', $data);
     }
 

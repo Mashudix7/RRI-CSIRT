@@ -10,52 +10,61 @@
         </a>
     </div>
 
-    <!-- Form -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
-        <?= form_open('admin/server_credentials_update/' . $credential['id'], ['class' => 'space-y-6']) ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- VM Name -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">VM Name</label>
-                    <input type="text" name="vm_name" value="<?= htmlspecialchars($credential['vm_name']) ?>" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <!-- IP Address -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IP Address</label>
-                    <input type="text" name="ip_address" value="<?= htmlspecialchars($credential['ip_address']) ?>" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+    <!-- Form Card -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+        <div class="px-8 py-6 border-b border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Perbarui Informasi Kredensial
+            </h3>
+        </div>
+
+        <div class="p-8">
+            <?= form_open('admin/server_credentials/update/' . $credential['id'], ['class' => 'space-y-8']) ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                    <!-- VM Name -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Nama VM / Host</label>
+                        <input type="text" name="vm_name" value="<?= htmlspecialchars($credential['vm_name']) ?>" required class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                    </div>
+                    
+                    <!-- IP Address -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">IP Address</label>
+                        <input type="text" name="ip_address" value="<?= htmlspecialchars($credential['ip_address']) ?>" required class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-mono text-blue-600 dark:text-blue-400">
+                    </div>
+
+                    <!-- Username -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Username</label>
+                        <input type="text" name="username" value="<?= htmlspecialchars($credential['username']) ?>" class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-mono">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Password</label>
+                        <input type="text" name="password" value="<?= htmlspecialchars($credential['password']) ?>" class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-mono text-red-600 dark:text-red-400">
+                    </div>
+
+                    <!-- Domain -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Domain / Subdomain</label>
+                        <input type="text" name="domain" value="<?= htmlspecialchars($credential['domain']) ?>" class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Deskripsi / Keterangan</label>
+                        <textarea name="description" rows="4" class="w-full px-4 py-3 rounded-xl border-gray-200 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm"><?= htmlspecialchars($credential['description']) ?></textarea>
+                    </div>
                 </div>
 
-                <!-- Username -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Username</label>
-                    <input type="text" name="username" value="<?= htmlspecialchars($credential['username']) ?>" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                <div class="flex justify-end pt-8 border-t border-gray-100 dark:border-slate-700">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all btn-press-anim">
+                        Update Data
+                    </button>
                 </div>
-
-                <!-- Password -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
-                    <input type="text" name="password" value="<?= htmlspecialchars($credential['password']) ?>" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <!-- Domain -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Domain</label>
-                    <input type="text" name="domain" value="<?= htmlspecialchars($credential['domain']) ?>" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <!-- Description -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keterangan</label>
-                    <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"><?= htmlspecialchars($credential['description']) ?></textarea>
-                </div>
-            </div>
-
-            <div class="flex justify-end pt-6">
-                <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                    Update Data
-                </button>
-            </div>
-        <?= form_close() ?>
+            <?= form_close() ?>
+        </div>
     </div>
 </div>
