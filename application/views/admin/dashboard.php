@@ -92,16 +92,27 @@
         </div>
 
         <!-- Attack Map Box (Replaces Placeholder) -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 relative overflow-hidden">
-            <div class="flex items-center justify-between mb-4 relative z-10">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Live Attack Map</h3>
+        <div id="map-card" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 relative overflow-hidden transition-all duration-500">
+            <div class="flex items-center justify-between mb-4 relative z-10 text-slate-800">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-lg font-semibold dark:text-white">Live Attack Map</h3>
+                    <div class="flex items-center gap-2 px-2 py-0.5 bg-red-100 dark:bg-red-500/10 rounded text-red-600 dark:text-red-400">
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Real-time</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">Real-time</span>
+                    <button id="btn-fullscreen" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-slate-400 group" title="Toggle Fullscreen">
+                        <svg id="icon-fullscreen" class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                        </svg>
+                    </button>
                 </div>
             </div>
             <!-- Map Container -->
-            <div id="attack-map" class="w-full h-[400px]"></div>
+            <div id="attack-map-container" class="w-full h-[400px] relative rounded-lg overflow-hidden border border-slate-100 dark:border-slate-700 bg-[#e0e7ff]/30">
+                <div id="attack-map" class="w-full h-full"></div>
+            </div>
         </div>
 
         <!-- WAF Activity Card with Link -->
@@ -275,6 +286,36 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<style>
+/* Fullscreen Styles for the Map Card */
+#map-card:-webkit-full-screen {
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 2rem !important;
+    background-color: #f8fafc !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+#map-card:fullscreen {
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 2rem !important;
+    background-color: #f8fafc !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+#map-card.is-fullscreen #attack-map-container {
+    height: calc(100vh - 120px) !important;
+}
+
+#map-card.is-fullscreen h3 {
+    font-size: 1.5rem !important;
+    color: #1e293b !important;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // -----------------------------------------------------
@@ -342,6 +383,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let chartInstance = null;
     let isMapLoaded = false;
 
+    // Theme Colors based on user photo
+    const MAP_THEME = {
+        ocean: '#dee6ed', // Light Grey Blue
+        land: '#ffffff',  // White
+        border: '#cbd5e1', 
+        lineStart: '#fb7185', // Pink
+        lineEnd: '#8b5cf6',   // Purple
+        target: '#22c55e',   // Green
+        attacker: '#ef4444'  // Red
+    };
+
     // -----------------------------------------------------
     // Map Initialization
     // -----------------------------------------------------
@@ -349,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dom = document.getElementById('attack-map');
         if (!dom) return;
 
-        chartInstance = echarts.init(dom, 'dark', {
+        chartInstance = echarts.init(dom, null, {
             renderer: 'canvas',
             useDirtyRect: false
         });
@@ -359,57 +411,50 @@ document.addEventListener('DOMContentLoaded', function() {
             echarts.registerMap('world', data);
             
             const option = {
-                backgroundColor: 'transparent',
+                backgroundColor: MAP_THEME.ocean,
                 tooltip: {
                     trigger: 'item',
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)', // Slate-900 transparent
-                    borderColor: '#334155',
-                    textStyle: { color: '#f8fafc' },
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e2e8f0',
+                    textStyle: { color: '#1e293b' },
+                    padding: 8,
+                    borderRadius: 8,
+                    extraCssText: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;',
                     formatter: function(params) {
-                        // FIX: Check if it's a line or a point
                         if (params.seriesType === 'lines') {
-                            const data = params.data;
+                            const d = params.data;
                             return `
-                                <div class="font-bold border-b border-gray-600 pb-1 mb-1">Attack Detected</div>
-                                <div class="text-xs">
-                                    <span class="text-red-400">Src:</span> ${data.fromName}${data.location ? ', ' + data.location : ''} <span class="text-gray-400">(${data.ip})</span><br/>
-                                    <span class="text-green-400">Dst:</span> ${data.toName}<br/>
-                                    <span class="text-blue-400">Type:</span> ${data.type}
+                                <div class="text-xs p-1">
+                                    <div class="font-bold text-red-600 mb-1 border-b border-red-100 pb-1 uppercase tracking-tight">ATTACK DETECTED</div>
+                                    <div class="space-y-1 mt-1">
+                                        <div><span class="text-slate-500 font-medium">IP:</span> <span class="font-mono text-slate-800">${d.ip}</span></div>
+                                        <div><span class="text-slate-500 font-medium">From:</span> ${d.fromName}${d.location ? ' • ' + d.location : ''}</div>
+                                        <div><span class="text-slate-500 font-medium">Target:</span> ${d.toName}</div>
+                                        <div><span class="text-slate-500 font-medium">Module:</span> <span class="text-blue-600 font-semibold">${d.type}</span></div>
+                                    </div>
                                 </div>
                             `;
-                        } else if (params.seriesType === 'effectScatter') {
-                            const data = params.data;
-                            // Custom tooltip for RRI Server vs Attacker Node
-                            if (data.name === 'RRI Server') {
-                                return `
-                                    <div class="font-bold text-green-400">RRI Server (Protected)</div>
-                                    <div class="text-xs text-gray-300">Location: Jakarta, ID</div>
-                                `;
-                            } else {
-                                return `<div class="font-bold text-red-400">${data.name}</div><div class="text-xs text-gray-300">${data.location || 'Attacker Source'}</div>`;
-                            }
                         }
+                        return null;
                     }
                 },
                 geo: {
                     map: 'world',
-                    roam: 'scale', // Only Zoom allowed (No Panning/Dragging)
-                    silent: true,
-                    label: {
-                        emphasis: { show: false }
-                    },
+                    roam: true,
+                    scaleLimit: { min: 1, max: 15 },
+                    label: { emphasis: { show: false } },
                     itemStyle: {
                         normal: {
-                            areaColor: '#1e293b', 
-                            borderColor: '#0f172a',
-                            borderWidth: 1
+                            areaColor: MAP_THEME.land, 
+                            borderColor: MAP_THEME.border,
+                            borderWidth: 0.5
                         },
                         emphasis: {
-                            areaColor: '#334155'
+                            areaColor: '#f1f5f9'
                         }
                     },
-                    zoom: 4, // Default Zoom In
-                    center: [115, -2] // Focus on Indonesia
+                    zoom: 1.5,
+                    center: [106, 0]
                 },
                 series: [
                     {
@@ -418,17 +463,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         zlevel: 1,
                         effect: {
                             show: true,
-                            period: 2, // Faster animation
-                            trailLength: 0.2, // Shorter trail for cleaner look
-                            color: '#fb7185', // Rose-400
-                            symbolSize: 4
+                            period: 3,
+                            trailLength: 0.4,
+                            color: MAP_THEME.lineStart,
+                            symbolSize: 3,
+                            delay: function(idx) { return idx * 200; }
                         },
                         lineStyle: {
                             normal: {
-                                color: '#f43f5e', // Rose-500
-                                width: 0.5,
-                                opacity: 0.1, // Faint tracer
-                                curveness: 0.3
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0, color: MAP_THEME.lineStart
+                                }, {
+                                    offset: 1, color: MAP_THEME.lineEnd
+                                }]),
+                                width: 1.2,
+                                opacity: 0.4,
+                                curveness: 0.2
                             }
                         },
                         data: [] 
@@ -439,12 +489,52 @@ document.addEventListener('DOMContentLoaded', function() {
                         coordinateSystem: 'geo',
                         zlevel: 2,
                         rippleEffect: {
-                            brushType: 'fill',
-                            scale: 4
+                            brushType: 'stroke',
+                            scale: 3,
+                            period: 4
                         },
                         symbolSize: 6,
                         itemStyle: {
-                            normal: { color: '#ef4444' }
+                            normal: { color: MAP_THEME.attacker }
+                        },
+                        label: {
+                            show: true,
+                            position: 'top',
+                            distance: 12,
+                            formatter: function(params) {
+                                // params.name is country
+                                // params.value[3] is IP
+                                // params.value[4] is Location (Province/City)
+                                return `{country|${params.name}} {loc|${params.value[4] || ''}} {ip|${params.value[3] || ''}}`;
+                            },
+                            rich: {
+                                country: {
+                                    backgroundColor: '#ef4444',
+                                    color: '#fff',
+                                    padding: [2, 6],
+                                    borderRadius: [4, 0, 0, 4],
+                                    fontSize: 10,
+                                    fontWeight: 'bold'
+                                },
+                                loc: {
+                                    backgroundColor: '#f1f5f9',
+                                    color: '#475569',
+                                    padding: [2, 6],
+                                    fontSize: 9,
+                                    fontWeight: 'medium',
+                                    borderColor: '#e2e8f0',
+                                    borderWidth: 1
+                                },
+                                ip: {
+                                    backgroundColor: '#fff',
+                                    color: '#1e293b',
+                                    padding: [2, 6],
+                                    borderRadius: [0, 4, 4, 0],
+                                    fontSize: 10,
+                                    borderColor: '#e2e8f0',
+                                    borderWidth: 1
+                                }
+                            }
                         },
                         data: []
                     },
@@ -454,30 +544,32 @@ document.addEventListener('DOMContentLoaded', function() {
                         coordinateSystem: 'geo',
                         zlevel: 3,
                         rippleEffect: {
-                            brushType: 'stroke',
-                            period: 4,
-                            scale: 6
+                            brushType: 'fill',
+                            period: 2,
+                            scale: 5
                         },
                         label: {
                             normal: {
                                 show: true,
                                 position: 'right',
                                 formatter: '{b}',
-                                fontSize: 12,
+                                fontSize: 10,
                                 fontWeight: 'bold',
-                                color: '#4ade80',
-                                backgroundColor: 'rgba(0,0,0,0.5)',
-                                padding: [4, 8],
-                                borderRadius: 4
+                                color: '#059669',
+                                backgroundColor: 'rgba(255,255,255,0.8)',
+                                padding: [2, 6],
+                                borderRadius: 4,
+                                borderColor: '#10b981',
+                                borderWidth: 1
                             }
                         },
-                        symbolSize: 15,
-                        symbol: 'diamond',
+                        symbolSize: 12,
+                        symbol: 'pin',
                         itemStyle: {
                             normal: {
-                                color: '#22c55e',
+                                color: MAP_THEME.target,
                                 shadowBlur: 10,
-                                shadowColor: '#22c55e'
+                                shadowColor: 'rgba(34, 197, 94, 0.4)'
                             }
                         },
                         data: [{
@@ -504,110 +596,107 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateMapData(records) {
         if (!isMapLoaded || !chartInstance) return;
 
-        console.log("Updating Map Data with:", records.length, "records");
+        // 1. Filter unique entries by IP to ensure variety
+        const uniqueEntries = new Map();
+        [...records].reverse().forEach(r => {
+            const key = r.ip || r.src_ip || 'Unknown';
+            if (!uniqueEntries.has(key)) uniqueEntries.set(key, r);
+        });
 
         const lineData = [];
         const scatterData = [];
+        const usedCoords = new Set();
 
-        // Limit to recent 20 for visual clarity and effectiveness of animation
-        // Sort by timestamp if available to animate chronologically? 
-        // Or just take the list as is (usually latest first). 
-        // Let's reverse it so the "oldest" of the recent batch starts first? 
-        // Or just animate 1-by-1 in the list.
-        const recent = records.slice(0, 20);
-
-        recent.forEach((record, idx) => {
-            const country = record.country || 'Unknown';
-            const src_ip = record.src_ip || 'Unknown';
-            const module = record.module || 'Web Detection';
-            const target_host = record.host || 'RRI Server';
+        /**
+         * Enhanced Jitter:
+         * Prevents points from stacking exactly on top of each other.
+         * Uses smaller jitter for precise coords, larger for center fallbacks.
+         */
+        const applySmartJitter = (coords, isPrecise) => {
+            const range = isPrecise ? 0.3 : 3.5; // Narrow spread for real cities, wide for country centers
+            const key = coords[0].toFixed(2) + ',' + coords[1].toFixed(2);
             
-            let startCoords = null;
+            if (usedCoords.has(key)) {
+                return [
+                    coords[0] + (Math.random() - 0.5) * range,
+                    coords[1] + (Math.random() - 0.5) * range
+                ];
+            }
+            usedCoords.add(key);
+            return coords;
+        };
+
+        // Increase limit to 100 for a more "active" look
+        const entries = Array.from(uniqueEntries.values()).slice(0, 100);
+
+        entries.forEach((record) => {
+            const country = record.country || 'ID';
+            const src_ip = record.ip || record.src_ip || 'Unknown';
+            const module = record.module || 'Web Detection';
+            const target_host = record.host || 'RRI SOC';
+            
+            let isPrecise = false;
             let locationName = '';
             
-            // PRIORITY 1: Use precise coordinates from tracking API (provided by backend)
-            if (record.coords && record.coords.lon && record.coords.lat) {
-                startCoords = [record.coords.lon, record.coords.lat];
-                locationName = (record.coords.city ? record.coords.city + ', ' : '') + (record.coords.region || '');
-            } 
-            // PRIORITY 2: Fallback to country centers
-            else if (COUNTRY_COORDS[country]) {
-                startCoords = COUNTRY_COORDS[country];
-            } else {
-                const upper = country.toUpperCase();
-                const foundKey = Object.keys(COUNTRY_COORDS).find(k => 
-                    k.toUpperCase() === upper || 
-                    k.toUpperCase().includes(upper) || 
-                    upper.includes(k.toUpperCase())
-                );
-                
-                if (foundKey) {
-                    startCoords = COUNTRY_COORDS[foundKey];
-                } else {
-                     startCoords = [0, 0]; 
-                }
+            if (record.coords && record.coords.city) {
+                locationName = record.coords.city;
+                isPrecise = true;
+            } else if (record.coords && record.coords.region) {
+                locationName = record.coords.region;
+                isPrecise = true;
+            } else if (record.province && record.province !== '-') {
+                locationName = record.province;
+            } else if (record.city && record.city !== '-') {
+                locationName = record.city;
             }
 
-            if (!startCoords) return;
+            let startCoords = null;
+            if (record.coords && record.coords.lon && record.coords.lat) {
+                startCoords = [record.coords.lon, record.coords.lat];
+                isPrecise = true;
+            } else if (COUNTRY_COORDS[country]) {
+                startCoords = [...COUNTRY_COORDS[country]];
+                isPrecise = false;
+            } else {
+                startCoords = [0, 0];
+            }
 
-            // Create Line: Source -> Target Host
+            if (!startCoords || (startCoords[0] === 0 && startCoords[1] === 0)) return;
+
+            // Apply smart jitter to separate overlapping hits
+            const finalCoords = applySmartJitter(startCoords, isPrecise);
+
             lineData.push({
                 fromName: country,
                 toName: target_host,
-                coords: [startCoords, JAKARTA_COORDS],
+                coords: [finalCoords, JAKARTA_COORDS],
                 type: module,
                 ip: src_ip,
-                location: locationName,
-                // Custom property for delay calculation
-                index: idx 
+                location: locationName
             });
 
-            // Create Scatter for Source
             scatterData.push({
                 name: country,
-                location: locationName,
-                value: [...startCoords, 10], 
+                // value: [lon, lat, size, ip, location]
+                value: [...finalCoords, 10, src_ip, locationName], 
             });
+        });
+
+        // Limit labels to first 5 for clarity
+        const scatterFinal = scatterData.map((d, i) => {
+            if (i > 5) return { ...d, label: { show: false } };
+            return d;
         });
 
         chartInstance.setOption({
             series: [
-                { 
-                    name: 'Attack Lines',
-                    type: 'lines',
-                    zlevel: 1,
-                    effect: {
-                        show: true,
-                        period: 4, 
-                        trailLength: 0.5, // Longer trail
-                        color: '#fb7185', 
-                        symbolSize: 4,
-                        // One by One Animation Logic
-                        // Delay based on index: 500ms separation
-                        delay: function (idx) {
-                            return idx * 1000;
-                        }
-                    },
-                    lineStyle: {
-                        normal: {
-                            color: '#f43f5e', 
-                            width: 0.2, // Thinner lines to reduce clutter
-                            opacity: 0.1, 
-                            curveness: 0.3
-                        }
-                    },
-                    data: lineData 
-                }, 
-                { 
-                    data: scatterData 
-                }, 
-                { 
-                     data: [{
-                        name: 'RRI Server',
-                        value: [...JAKARTA_COORDS, 100],
-                    }]
-                } 
+                { data: lineData }, 
+                { data: scatterFinal }, 
+                { data: [{ name: 'RRI Server', value: [...JAKARTA_COORDS, 100] }] } 
             ]
+        }, {
+            notMerge: false,
+            lazyUpdate: true
         });
     }
 
@@ -637,6 +726,60 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Stats refresh skipped', error);
         }
     }
+
+    // -----------------------------------------------------
+    // Fullscreen Logic
+    // -----------------------------------------------------
+    const mapCard = document.getElementById('map-card');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+    const iconFullscreen = document.getElementById('icon-fullscreen');
+
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            if (mapCard.requestFullscreen) {
+                mapCard.requestFullscreen();
+            } else if (mapCard.webkitRequestFullscreen) { /* Safari */
+                mapCard.webkitRequestFullscreen();
+            } else if (mapCard.msRequestFullscreen) { /* IE11 */
+                mapCard.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    if (btnFullscreen) {
+        btnFullscreen.addEventListener('click', toggleFullscreen);
+    }
+
+    // Keyboard shortcut 'F' for fullscreen
+    document.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+            if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                toggleFullscreen();
+            }
+        }
+    });
+
+    const handleFullscreenChange = () => {
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+            mapCard.classList.add('is-fullscreen');
+            iconFullscreen.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
+        } else {
+            mapCard.classList.remove('is-fullscreen');
+            iconFullscreen.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />';
+        }
+        setTimeout(() => { if (chartInstance) chartInstance.resize(); }, 150);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
     // Initialize
     initMap();

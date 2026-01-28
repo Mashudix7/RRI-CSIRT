@@ -167,20 +167,25 @@ class Waf_model extends CI_Model {
         foreach ($records as $r) {
             if (!is_array($r)) continue;
             
-            $ts = $r['timestamp'] ?? ($r['start_time'] ?? ($r['first_time'] ?? ($r['start_at'] ?? time())));
+            $ts = $r['timestamp'] ?? ($r['start_time'] ?? ($r['first_time'] ?? ($r['start_at'] ?? ($r['updated_at'] ?? time()))));
             if ($ts > 2000000000) $ts = floor($ts / 1000); // ms to sec
 
+            $ip = $r['src_ip'] ?? ($r['ip'] ?? '-');
+            
+            $country = $r['country'] ?? ($r['src_country'] ?? ($r['geoip_country_name'] ?? 'Unknown'));
+            $province = $r['province'] ?? ($r['region'] ?? null);
+
             $parsed[] = [
-                'src_ip' => $r['src_ip'] ?? ($r['ip'] ?? '-'),
-                'country' => $r['country'] ?? ($r['src_country'] ?? ($r['geoip_country_name'] ?? 'Unknown')),
+                'src_ip' => $ip,
+                'country' => $country,
+                'province' => $province ?? '-',
                 'city' => $r['city'] ?? ($r['src_city'] ?? ($r['geoip_city_name'] ?? '-')),
                 'host' => $r['host'] ?? ($r['target'] ?? '-'),
-                // Some events use pass_count or deny_count
                 'count' => $r['count'] ?? ($r['attack_count'] ?? (($r['deny_count'] ?? 0) + ($r['pass_count'] ?? 0) ?: 1)),
                 'duration' => $r['duration'] ?? '1m',
                 'timestamp' => $ts,
-                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Event'),
-                'coords' => $this->_resolve_geoip($r['src_ip'] ?? ($r['ip'] ?? null))
+                'module' => $r['module'] ?? ($r['attack_type'] ?? 'Web Attack'),
+                'coords' => $this->_resolve_geoip($ip, $province, $country)
             ];
         }
         return $parsed;
@@ -401,13 +406,29 @@ class Waf_model extends CI_Model {
     /**
      * Resolve IP to Geo Coordinates with local caching
      */
-    private function _resolve_geoip($ip)
+    private function _resolve_geoip($ip, $province = null, $country = null)
     {
         if (!$ip || $ip == 'Unknown' || $ip == '-' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
             return null;
         }
 
-        // 1. Load cache from file if not loaded
+        // 1. Initialization & Translation Map
+        $translation_map = [
+            '雅加达' => 'DKI Jakarta', '西爪哇' => 'Jawa Barat', '中爪哇' => 'Jawa Tengah',
+            '东爪哇' => 'Jawa Timur', '万丹' => 'Banten', '峇里' => 'Bali',
+            '北苏门答腊' => 'Sumatera Utara', '南苏门答腊' => 'Sumatera Selatan',
+            '廖内' => 'Riau', '北苏拉威西' => 'Sulawesi Utara', '南苏拉威西' => 'Sulawesi Selatan',
+            '苏门答腊' => 'Sumatera', '爪哇' => 'Jawa', '苏拉威西' => 'Sulawesi',
+            '加里曼丹' => 'Kalimantan', '巴布亚' => 'Papua', '马鲁古' => 'Maluku'
+        ];
+
+        // Translate the input province if possible
+        $input_province_translated = $province;
+        if (isset($translation_map[$province])) {
+            $input_province_translated = $translation_map[$province];
+        }
+
+        // 2. Load/Check Cache
         if ($this->geoip_data === null) {
             if (file_exists($this->geoip_cache_file)) {
                 $this->geoip_data = json_decode(file_get_contents($this->geoip_cache_file), true) ?: [];
@@ -416,53 +437,78 @@ class Waf_model extends CI_Model {
             }
         }
 
-        // 2. Check if already in cache
         if (isset($this->geoip_data[$ip])) {
-            return $this->geoip_data[$ip];
+            $cached = $this->geoip_data[$ip];
+            // Ensure even cached records have translated names
+            if (isset($translation_map[$cached['region']])) {
+                $cached['region'] = $translation_map[$cached['region']];
+            }
+            return $cached;
         }
 
-        // 3. Fetch from Tracking API if not in cache
-        // Limit to max 10 new fetches per request to prevent lag
+        // 3. PRIORITY: Precise Tracking API
         static $new_fetches = 0;
-        if ($new_fetches >= 10) return null;
-
-        $new_fetches++;
-        
-        try {
-            // Use ip-api.com (HTTP is more reliable for free tier in some environments)
-            $url = "http://ip-api.com/json/" . $ip;
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-            $response = curl_exec($ch);
-            
-            if (curl_errno($ch)) {
-                log_message('error', 'GeoIP CURL Error: ' . curl_error($ch));
+        if ($new_fetches < 30) {
+            $new_fetches++;
+            try {
+                $url = "http://ip-api.com/json/" . $ip . "?fields=status,message,country,countryCode,regionName,city,lat,lon";
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+                $response = curl_exec($ch);
                 curl_close($ch);
-                return null;
-            }
-            curl_close($ch);
 
-            if ($response) {
-                $data = json_decode($response, true);
-                if (isset($data['lat']) && isset($data['lon'])) {
-                    $coords = [
-                        'lat' => (float)$data['lat'],
-                        'lon' => (float)$data['lon'],
-                        'city' => $data['city'] ?? '',
-                        'region' => $data['regionName'] ?? ''
-                    ];
-                    
-                    // Update cache
-                    $this->geoip_data[$ip] = $coords;
-                    file_put_contents($this->geoip_cache_file, json_encode($this->geoip_data));
-                    
-                    return $coords;
+                if ($response) {
+                    $data = json_decode($response, true);
+                    if (isset($data['lat']) && isset($data['lon'])) {
+                        $region = $data['regionName'] ?? '';
+                        // Translate API region if it matches our list
+                        if (isset($translation_map[$region])) $region = $translation_map[$region];
+                        
+                        $coords = [
+                            'lat' => (float)$data['lat'],
+                            'lon' => (float)$data['lon'],
+                            'city' => $data['city'] ?? '',
+                            'region' => $region ?: ($input_province_translated ?: '')
+                        ];
+                        
+                        $this->geoip_data[$ip] = $coords;
+                        file_put_contents($this->geoip_cache_file, json_encode($this->geoip_data));
+                        return $coords;
+                    }
+                }
+            } catch (Exception $e) {}
+        }
+
+        // 4. FALLBACK: Local Tracking Map (if API fails or exceeds limit)
+        $province_coords = [
+            'Aceh' => [95.3, 5.5], 'Sumatera Utara' => [98.6, 3.6], 'Sumatera Barat' => [100.3, -0.9],
+            'Riau' => [101.4, 0.5], 'Jambi' => [103.6, -1.6], 'Sumatera Selatan' => [104.7, -2.9],
+            'Bengkulu' => [102.3, -3.8], 'Lampung' => [105.2, -5.4], 'Kepulauan Bangka Belitung' => [106.1, -2.1],
+            'Kepulauan Riau' => [108.2, 3.9], 'DKI Jakarta' => [106.8, -6.2], 'Jawa Barat' => [107.6, -6.9],
+            'Jawa Tengah' => [110.4, -7.0], 'DI Yogyakarta' => [110.3, -7.8], 'Jawa Timur' => [112.7, -7.2],
+            'Banten' => [106.1, -6.1], 'Bali' => [115.2, -8.4], 'Nusa Tenggara Barat' => [116.1, -8.6],
+            'Nusa Tenggara Timur' => [123.5, -10.1], 'Kalimantan Barat' => [109.3, 0.0],
+            'Kalimantan Tengah' => [113.9, -2.2], 'Kalimantan Selatan' => [114.6, -3.3],
+            'Kalimantan Timur' => [117.1, -0.5], 'Kalimantan Utara' => [117.4, 3.3],
+            'Sulawesi Utara' => [124.8, 1.5], 'Sulawesi Tengah' => [119.8, -0.9],
+            'Sulawesi Selatan' => [119.4, -5.1], 'Sulawesi Tenggara' => [122.5, -3.9],
+            'Gorontalo' => [123.0, 0.5], 'Sulawesi Barat' => [119.3, -2.3],
+            'Maluku' => [128.1, -3.7], 'Maluku Utara' => [127.3, 0.7],
+            'Papua Barat' => [134.0, -0.8], 'Papua' => [138.8, -4.2],
+            'Jakarta' => [106.8, -6.2], 'Surabaya' => [112.7, -7.2], 'Medan' => [98.6, 3.6],
+            'Bandung' => [107.6, -6.9], 'Makassar' => [119.4, -5.1], 'Semarang' => [110.4, -7.0],
+            'Palembang' => [104.7, -2.9], 'Batam' => [104.0, 1.1], 'Pekanbaru' => [101.4, 0.5],
+        ];
+
+        if (($country == 'ID' || $country == 'Indonesia')) {
+            $search_name = !empty($input_province_translated) ? $input_province_translated : $province;
+            foreach ($province_coords as $name => $coords) {
+                if ($search_name && stripos($search_name, $name) !== false) {
+                    return ['lon' => (float)$coords[0], 'lat' => (float)$coords[1], 'region' => $search_name, 'city' => ''];
                 }
             }
-        } catch (Exception $e) {
-            log_message('error', 'GeoIP resolving error: ' . $e->getMessage());
         }
 
         return null;
