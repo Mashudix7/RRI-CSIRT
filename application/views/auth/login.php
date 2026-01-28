@@ -104,8 +104,7 @@
                         </svg>
                     </div>
                     <div class="text-left">
-                        <span class="text-2xl font-bold gradient-text">CSIRT</span>
-                        <span class="text-2xl font-bold text-white"> RRI</span>
+                        <span class="text-2xl font-bold text-white"> CSIRT</span>
                     </div>
                 </a>
                 <h1 class="text-2xl font-bold text-white mb-2">Selamat Datang</h1>

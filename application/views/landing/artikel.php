@@ -2,8 +2,17 @@
      Artikel List Page
      ===================================================== -->
 
-<main class="pt-24 pb-16 bg-gray-50 dark:bg-slate-900 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<main class="pt-24 pb-16 bg-gray-50 dark:bg-[#020617] min-h-screen">
+    <section class="relative pt-32 pb-16 bg-[#020617] overflow-hidden">
+    <!-- Cinematic Background -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 cyber-grid opacity-20"></div>
+        <div class="absolute inset-0 diagonal-light"></div>
+        <div class="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full h-[400px] top-spotlight opacity-50"></div>
+        <div class="absolute top-[40%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] center-glow opacity-30"></div>
+    </div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Page Header -->
         <div class="mb-10">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">Artikel</h1>
@@ -11,11 +20,11 @@
         </div>
         
         <!-- Category Filter -->
-        <div class="flex flex-wrap gap-2 mb-8">
+        <div class="reveal-sweep delay-200 flex flex-wrap gap-2 mb-8">
             <?php 
                 // Fungsi helper untuk menentukan class aktif
                 $activeClass = 'btn-gradient text-white';
-                $inactiveClass = 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300';
+                $inactiveClass = 'bg-white dark:bg-[#0f172a] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300';
             ?>
             <a href="<?= base_url('artikel') ?>" 
                class="px-4 py-2 rounded-lg font-medium text-sm transition-colors 
@@ -48,8 +57,7 @@
         <?php if (!empty($articles)): ?>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($articles as $index => $article): ?>
-            <article class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden hover-lift group" 
-                     data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
+            <article class="reveal-sweep delay-300 bg-white dark:bg-[#0f172a] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden hover-lift group">
                 <!-- Image Placeholder -->
                 <div class="relative h-48 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                     <?php if (!empty($article['thumbnail'])): ?>
@@ -67,7 +75,7 @@
                     <?php endif; ?>
                     <!-- Category Badge -->
                     <div class="absolute top-3 left-3">
-                        <span class="px-2.5 py-1 bg-white/90 dark:bg-slate-900/90 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-full shadow-sm">
+                        <span class="px-2.5 py-1 bg-white/90 dark:bg-[#020617]/90 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-full shadow-sm">
                             <?= htmlspecialchars($article['category']) ?>
                         </span>
                     </div>
@@ -109,4 +117,6 @@
         </div>
         <?php endif; ?>
     </div>
+    </div>
+    </section>
 </main>

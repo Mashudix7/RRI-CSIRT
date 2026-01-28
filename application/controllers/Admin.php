@@ -101,12 +101,8 @@ class Admin extends Admin_Controller {
     {
         if ($this->session->userdata('role') !== 'admin') show_error('Unauthorized', 403);
 
-        $this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]', [
-            'is_unique' => 'Username sudah digunakan! Silakan gunakan username lain.'
-        ]);
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]', [
-            'is_unique' => 'Email sudah terdaftar! Silakan gunakan email lain.'
-        ]);
+        $this->form_validation->set_rules('username', 'Username', 'required|callback__check_unique_username');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email|callback__check_unique_email');
         $this->form_validation->set_rules('password', 'Password', 'required|callback__check_password_strength');
         $this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,management,auditor]');
 
@@ -122,6 +118,7 @@ class Admin extends Admin_Controller {
             'email' => $this->input->post('email'),
             'password' => $this->input->post('password'), // Model will hash it
             'role' => $this->input->post('role'),
+            'status' => 'active', // Default status for new users
             'created_at' => date('Y-m-d H:i:s')
         ];
 
@@ -135,13 +132,14 @@ class Admin extends Admin_Controller {
             if (!is_dir($config['upload_path'])) mkdir($config['upload_path'], 0777, TRUE);
 
             $this->load->library('upload', $config);
+            $this->upload->initialize($config);
 
             if ($this->upload->do_upload('avatar')) {
                 $upload_data = $this->upload->data();
                 $data['avatar'] = $upload_data['file_name'];
             } else {
                 $this->session->set_flashdata('error', $this->upload->display_errors());
-                $this->user_create();
+                redirect('admin/user_create');
                 return;
             }
         } else {
@@ -152,10 +150,66 @@ class Admin extends Admin_Controller {
             $this->Audit_model->log('create_user', 'Created user: ' . $data['username']);
             $this->session->set_flashdata('success', 'Pengguna berhasil ditambahkan!');
         } else {
-            $this->session->set_flashdata('error', 'Gagal menambahkan pengguna DB.');
+            $this->session->set_flashdata('error', 'Gagal menambahkan pengguna ke database.');
         }
         
         redirect('admin/users');
+    }
+
+    /**
+     * Password Strength Callback
+     */
+    public function _check_password_strength($password)
+    {
+        if ($this->_is_strong_password($password)) {
+            return TRUE;
+        }
+
+        $this->form_validation->set_message(['_check_password_strength' => '{field} kurang kuat! Gunakan minimal 8 karakter dengan kombinasi Huruf Besar, Angka & Simbol.']);
+        return FALSE;
+    }
+
+    private function _is_strong_password($password)
+    {
+        if (strlen($password) < 8) return FALSE;
+        if (!preg_match("#[0-9]+#", $password)) return FALSE;
+        if (!preg_match("#[a-z]+#", $password)) return FALSE;
+        if (!preg_match("#[A-Z]+#", $password)) return FALSE;
+        // Use [^A-Za-z0-9] to match frontend logic (includes underscore and symbols)
+        if (!preg_match("#[^A-Za-z0-9]+#", $password)) return FALSE;
+        return TRUE;
+    }
+
+    /**
+     * Unique Username Callback (Ignore Deleted)
+     */
+    public function _check_unique_username($username)
+    {
+        $this->db->where('username', $username);
+        $this->db->where('is_deleted', 0);
+        $query = $this->db->get('users');
+
+        if ($query->num_rows() > 0) {
+            $this->form_validation->set_message(['_check_unique_username' => 'Username sudah digunakan! Silakan gunakan username lain.']);
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    /**
+     * Unique Email Callback (Ignore Deleted)
+     */
+    public function _check_unique_email($email)
+    {
+        $this->db->where('email', $email);
+        $this->db->where('is_deleted', 0);
+        $query = $this->db->get('users');
+
+        if ($query->num_rows() > 0) {
+            $this->form_validation->set_message(['_check_unique_email' => 'Email sudah terdaftar! Silakan gunakan email lain.']);
+            return FALSE;
+        }
+        return TRUE;
     }
 
     /**
@@ -1394,34 +1448,5 @@ class Admin extends Admin_Controller {
         $this->load->view('admin/templates/sidebar', $data);
         $this->load->view('admin/audit', $data);
         $this->load->view('admin/templates/footer', $data);
-    }
-
-
-
-
-
-
-    /**
-     * Helper: Check Password Strength
-     */
-    public function _check_password_strength($password)
-    {
-        if (!$this->_is_strong_password($password)) {
-            $this->form_validation->set_message([
-                '_check_password_strength' => 'Keamanan {field} kurang kuat! Minimal 8 karakter, kombinasi Huruf Besar, Angka & Simbol.'
-            ]);
-            return FALSE;
-        }
-        return TRUE;
-    }
-
-    private function _is_strong_password($password)
-    {
-        if (strlen($password) < 8) return FALSE;
-        if (!preg_match('/[A-Z]/', $password)) return FALSE;
-        if (!preg_match('/[a-z]/', $password)) return FALSE;
-        if (!preg_match('/[0-9]/', $password)) return FALSE;
-        if (!preg_match('/[^A-Za-z0-9]/', $password)) return FALSE;
-        return TRUE;
     }
 }

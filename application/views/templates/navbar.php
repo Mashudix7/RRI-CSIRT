@@ -1,7 +1,7 @@
 <!-- =====================================================
      Navigation Bar - Underline Animation Style
      ===================================================== -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/90 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-md dark:shadow-lg dark:shadow-black/20">
+<nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl transition-all duration-300 bg-white/80 dark:bg-[#020617]/70 backdrop-blur-xl border border-gray-100 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-black/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -11,8 +11,7 @@
                     <img src="<?= base_url('assets/img/logo_rri.png') ?>" alt="Logo RRI" class="w-full h-full object-contain p-1">
                 </div>
                 <div>
-                    <span class="text-xl font-bold gradient-text">CSIRT</span>
-                    <span class="text-xl font-bold text-gray-700 dark:text-white"> RRI</span>
+                    <span class="text-xl font-bold text-gray-700 dark:text-white"> CSIRT</span>
                 </div>
             </a>
             

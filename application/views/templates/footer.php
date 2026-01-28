@@ -1,7 +1,7 @@
     <!-- =====================================================
          Footer Section - With Dark Mode Support
          ===================================================== -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800">
+    <footer class="bg-white dark:bg-[#020617] border-t border-gray-200 dark:border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Brand -->
@@ -54,7 +54,7 @@
             </div>
             
             <!-- Bottom Bar -->
-            <div class="border-t border-gray-200 dark:border-slate-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="border-t border-gray-200 dark:border-white/5 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-gray-500 dark:text-gray-500 text-sm">
                     &copy; <?= date('Y') ?> CSIRT RRI. Hak Cipta Dilindungi.
                 </p>

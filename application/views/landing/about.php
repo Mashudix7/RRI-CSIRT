@@ -3,41 +3,34 @@
      ===================================================== -->
 
 <!-- Hero Section -->
-<section class="relative pt-24 pb-16 hero-gradient overflow-hidden">
-    <!-- Grid Pattern -->
-    <div class="absolute inset-0 opacity-10 dark:opacity-20">
-        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
-                </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-        </svg>
+<section class="relative pt-24 pb-16 bg-[#020617] overflow-hidden">
+    <!-- Cinematic Background -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 cyber-grid opacity-20"></div>
+        <div class="absolute inset-0 diagonal-light"></div>
+        <div class="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full h-[400px] top-spotlight opacity-50"></div>
+        <div class="absolute top-[40%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] center-glow opacity-30"></div>
     </div>
-    
-    <!-- Glow for dark mode -->
-    <div class="hero-glow hidden dark:block"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block px-4 py-1.5 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-4">
             Tentang Kami
         </span>
-        <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">
+        <h1 class="reveal-sweep delay-100 text-3xl md:text-5xl font-bold text-white mb-4">
             Mengenal <span class="text-blue-200 dark:text-blue-400">CSIRT RRI</span>
         </h1>
-        <p class="text-blue-100 dark:text-blue-200/80 max-w-2xl mx-auto">
+        <p class="reveal-sweep delay-200 text-blue-100 dark:text-blue-200/80 max-w-2xl mx-auto">
             Computer Security Incident Response Team yang bertanggung jawab atas keamanan siber RRI
         </p>
     </div>
 </section>
 
 <!-- Visi Misi -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900 overflow-hidden">
+<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-[#020617] dark:to-[#020617] overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-8">
             <!-- Visi -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow" data-aos="fade-up">
+            <div class="reveal-sweep delay-300 bg-white dark:bg-[#0f172a] rounded-2xl p-8 border border-gray-200 dark:border-white/10 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow">
                 <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mb-6">
                     <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -51,7 +44,7 @@
             </div>
             
             <!-- Misi -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="100">
+            <div class="reveal-sweep delay-400 bg-white dark:bg-[#0f172a] rounded-2xl p-8 border border-gray-200 dark:border-white/10 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow">
                 <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mb-6">
                     <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -84,7 +77,7 @@
 </section>
 
 <!-- Workflow -->
-<section class="py-20 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-slate-800/50 dark:to-slate-800/50 relative overflow-hidden" data-aos="fade-in">
+<section class="py-20 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-[#0f172a]/80 dark:to-[#0f172a]/80 relative overflow-hidden" data-aos="fade-in">
     <!-- Grid pattern -->
     <div class="absolute inset-0 opacity-10">
         <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -105,7 +98,7 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Step 1 -->
             <div class="relative" data-aos="fade-up" data-aos-delay="100">
-                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 text-center shadow-lg">
+                <div class="bg-white dark:bg-[#20293b] rounded-xl p-6 border border-gray-200 dark:border-white/10 text-center shadow-lg">
                     <div class="w-12 h-12 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">1</div>
                     <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Identifikasi</h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Mendeteksi dan mengidentifikasi potensi insiden keamanan</p>
@@ -114,7 +107,7 @@
             
             <!-- Step 2 -->
             <div class="relative" data-aos="fade-up" data-aos-delay="200">
-                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 text-center shadow-lg">
+                <div class="bg-white dark:bg-[#20293b] rounded-xl p-6 border border-gray-200 dark:border-white/10 text-center shadow-lg">
                     <div class="w-12 h-12 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">2</div>
                     <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Containment</h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Membatasi dampak dan mencegah penyebaran insiden</p>
@@ -123,7 +116,7 @@
             
             <!-- Step 3 -->
             <div class="relative" data-aos="fade-up" data-aos-delay="300">
-                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 text-center shadow-lg">
+                <div class="bg-white dark:bg-[#20293b] rounded-xl p-6 border border-gray-200 dark:border-white/10 text-center shadow-lg">
                     <div class="w-12 h-12 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">3</div>
                     <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Eradikasi</h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Menghapus penyebab insiden dari sistem</p>
@@ -132,7 +125,7 @@
             
             <!-- Step 4 -->
             <div class="relative" data-aos="fade-up" data-aos-delay="400">
-                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 text-center shadow-lg">
+                <div class="bg-white dark:bg-[#20293b] rounded-xl p-6 border border-gray-200 dark:border-white/10 text-center shadow-lg">
                     <div class="w-12 h-12 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">4</div>
                     <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Pemulihan</h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Memulihkan sistem dan dokumentasi insiden</p>
@@ -145,7 +138,7 @@
 </section>
 
 <!-- Scope -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900">
+<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-[#020617] dark:to-[#020617]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12" data-aos="fade-up">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">Ruang Lingkup Kerja</h2>
@@ -153,7 +146,7 @@
         </div>
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-white dark:bg-[#0f172a] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-lg dark:shadow-none hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="100">
                 <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-4">
                     <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -163,7 +156,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">Koordinasi dan analisis penanganan insiden keamanan siber</p>
             </div>
             
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up" data-aos-delay="200">
+            <div class="bg-white dark:bg-[#0f172a] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up" data-aos-delay="200">
                 <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -173,7 +166,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">Pemantauan keamanan infrastruktur 24/7</p>
             </div>
             
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#0f172a] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
                 <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -187,7 +180,7 @@
 </section>
 
 <!-- Location Map Section -->
-<section class="py-20 bg-gradient-to-b from-white to-blue-50 dark:from-slate-900 dark:to-slate-900">
+<section class="py-20 bg-gradient-to-b from-white to-blue-50 dark:from-[#020617] dark:to-[#020617]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12" data-aos="fade-up">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">Lokasi Kami</h2>
@@ -197,14 +190,14 @@
         <div class="grid lg:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
             <!-- Map Container -->
             <div class="lg:col-span-2">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl p-2 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none overflow-hidden">
+                <div class="bg-white dark:bg-[#0f172a] rounded-2xl p-2 border border-gray-200 dark:border-white/10 shadow-lg dark:shadow-none overflow-hidden">
                     <div id="rri-map" class="w-full h-80 md:h-96 rounded-xl"></div>
                 </div>
             </div>
             
             <!-- Address Info -->
             <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-lg dark:shadow-none h-full">
+                <div class="bg-white dark:bg-[#0f172a] rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-lg dark:shadow-none h-full">
                     <div class="flex items-start gap-4 mb-6">
                         <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

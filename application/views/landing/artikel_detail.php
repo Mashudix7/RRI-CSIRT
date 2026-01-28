@@ -2,7 +2,7 @@
      Artikel Detail Page
      ===================================================== -->
 
-<main class="pt-24 pb-16 bg-white dark:bg-slate-900 min-h-screen">
+<main class="pt-24 pb-16 bg-white dark:bg-[#020617] min-h-screen">
     <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Back Link -->
         <a href="<?= base_url('artikel') ?>" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors">
@@ -13,7 +13,7 @@
         </a>
         
         <!-- Article Header -->
-        <header class="mb-8">
+        <header class="reveal-sweep delay-100 mb-8">
             <div class="flex items-center gap-3 mb-4">
                 <span class="px-3 py-1 btn-gradient text-white text-xs font-semibold rounded-full">
                     <?= htmlspecialchars($article['category']) ?>
@@ -44,7 +44,7 @@
         </header>
         
         <!-- Featured Image Placeholder -->
-        <div class="relative h-64 md:h-96 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden mb-8">
+        <div class="reveal-sweep delay-200 relative h-64 md:h-96 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden mb-8">
             <?php if (!empty($article['thumbnail'])): ?>
                 <?php 
                     $thumb = $article['thumbnail'];
@@ -61,7 +61,7 @@
         </div>
         
         <!-- Article Content -->
-        <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
+        <div class="reveal-sweep delay-300 prose prose-lg dark:prose-invert max-w-none mb-12">
             <style>
                 .prose h3 { @apply text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4; }
                 .prose p { @apply text-gray-600 dark:text-gray-300 mb-4 leading-relaxed; }
@@ -72,13 +72,13 @@
         </div>
         
         <!-- Share & Actions -->
-        <div class="flex items-center justify-between py-6 border-t border-b border-gray-200 dark:border-slate-700 mb-12">
+        <div class="flex items-center justify-between py-6 border-t border-b border-gray-200 dark:border-white/10 mb-12">
             <div class="text-sm text-gray-500 dark:text-gray-400">
                 Artikel ini bermanfaat? Bagikan kepada rekan kerja.
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="navigator.clipboard.writeText(window.location.href)" 
-                        class="px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors text-sm font-medium">
+                        class="px-4 py-2 bg-gray-100 dark:bg-[#0f172a] text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors text-sm font-medium">
                     Salin Link
                 </button>
             </div>
@@ -86,11 +86,11 @@
         
         <!-- Related Articles -->
         <?php if (!empty($related_articles)): ?>
-        <section>
+        <section class="reveal-sweep delay-400">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Artikel Lainnya</h2>
             <div class="grid md:grid-cols-3 gap-6">
                 <?php foreach ($related_articles as $rel): ?>
-                    <a href="<?= base_url('artikel/' . $rel['id']) ?>" class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
+                    <a href="<?= base_url('artikel/' . $rel['id']) ?>" class="bg-gray-50 dark:bg-[#0f172a] rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors group">
                         <span class="text-xs text-blue-600 dark:text-blue-400 font-medium"><?= htmlspecialchars($rel['category']) ?></span>
                         <h3 class="font-semibold text-gray-900 dark:text-white mt-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             <?= htmlspecialchars($rel['title']) ?>

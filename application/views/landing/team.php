@@ -3,37 +3,30 @@
      ===================================================== -->
 
 <!-- Hero Section -->
-<section class="relative pt-24 pb-16 hero-gradient overflow-hidden">
-    <!-- Grid Pattern -->
-    <div class="absolute inset-0 opacity-10 dark:opacity-20">
-        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
-                </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-        </svg>
+<section class="relative pt-24 pb-16 bg-[#020617] overflow-hidden">
+    <!-- Cinematic Background -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 cyber-grid opacity-20"></div>
+        <div class="absolute inset-0 diagonal-light"></div>
+        <div class="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full h-[400px] top-spotlight opacity-50"></div>
+        <div class="absolute top-[40%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] center-glow opacity-30"></div>
     </div>
-    
-    <!-- Glow for dark mode -->
-    <div class="hero-glow hidden dark:block"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block px-4 py-1.5 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-4">
             Tim Kami
         </span>
-        <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">
+        <h1 class="reveal-sweep delay-100 text-3xl md:text-5xl font-bold text-white mb-4">
             Tim <span class="text-blue-200 dark:text-blue-400">CSIRT RRI</span>
         </h1>
-        <p class="text-blue-100 dark:text-blue-200/80 max-w-2xl mx-auto">
+        <p class="reveal-sweep delay-200 text-blue-100 dark:text-blue-200/80 max-w-2xl mx-auto">
             Para profesional yang berdedikasi untuk menjaga keamanan siber RRI
         </p>
     </div>
 </section>
 
 <!-- Team Chart Section -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 relative overflow-hidden">
+<section class="py-20 bg-gradient-to-b from-[#020617] to-[#020617] relative overflow-hidden">
     <!-- Decorative background elements -->
     <div class="absolute top-0 right-0 w-96 h-96 bg-blue-100/50 dark:bg-blue-600/5 rounded-full blur-3xl -mr-48 -mt-24"></div>
     <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-100/50 dark:bg-purple-600/5 rounded-full blur-3xl -ml-48 -mb-24"></div>
@@ -50,13 +43,13 @@
         <?php else: ?>
 
             <!-- Level 1: Kepala Direktur -->
-            <div class="flex justify-center mb-16 relative" data-aos="zoom-in">
+            <div class="flex justify-center mb-16 relative">
                 <?php if ($director): ?>
-                    <div class="relative group">
+                    <div class="relative group reveal-sweep delay-300">
                         <!-- Connecting Line Down -->
                         <div class="absolute left-1/2 -bottom-16 w-0.5 h-16 bg-gray-300 dark:bg-slate-600 hidden lg:block"></div>
                         
-                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-xl text-center w-64 md:w-72 transform transition-all duration-500 hover:scale-105">
+                        <div class="bg-white dark:bg-[#0f172a] rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-xl text-center w-64 md:w-72 transform transition-all duration-500 hover:scale-105">
                             <div class="w-28 h-28 mx-auto mb-4 p-1 rounded-full border-4 border-white dark:border-slate-700 shadow-sm overflow-hidden">
                                 <?php if (!empty($director['photo'])): ?>
                                     <img src="<?= base_url(strpos($director['photo'], 'assets') !== false ? $director['photo'] : 'assets/uploads/' . $director['photo']) ?>" class="w-full h-full object-cover">
@@ -100,7 +93,7 @@
                         <!-- Division Leader -->
                         <div class="z-10 mb-2" data-aos="fade-up" data-aos-delay="<?= $divIdx * 100 ?>">
                             <?php if ($leader): ?>
-                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border-2 border-blue-500/20 dark:border-blue-400/30 shadow-xl text-center w-56 transform transition-all hover:scale-105 relative">
+                            <div class="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border-2 border-blue-500/20 dark:border-blue-400/30 shadow-xl text-center w-56 transform transition-all hover:scale-105 relative">
                                 <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-[10px] font-bold uppercase rounded-full shadow-md">
                                     Ketua <?= ($divIdx == 0) ? 'TMB' : 'IT' ?>
                                 </div>
@@ -139,7 +132,7 @@
                         <?php endif; ?>
 
                         <!-- Division Staff Grid (Compact & Centered) -->
-                        <div class="inline-block max-w-[90%] md:max-w-3xl bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-blue-100 dark:border-slate-700 relative mt-0" data-aos="fade-up" data-aos-delay="<?= $divIdx * 150 + 100 ?>">
+                        <div class="inline-block max-w-[90%] md:max-w-3xl bg-slate-50 dark:bg-[#0f172a]/50 rounded-2xl p-4 border border-blue-100 dark:border-white/5 relative mt-0" data-aos="fade-up" data-aos-delay="<?= $divIdx * 150 + 100 ?>">
                             <!-- Top subtle highlight -->
                             <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
                             
@@ -149,7 +142,7 @@
                                     <div class="col-span-4 py-2 text-center text-[10px] text-gray-400 italic">Belum ada anggota</div>
                                 <?php else: ?>
                                     <?php foreach ($staff as $sIdx => $s): ?>
-                                    <div class="w-20 md:w-24 bg-white dark:bg-slate-800 rounded-lg p-2 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all duration-300 text-center group relative overflow-hidden flex-shrink-0">
+                                    <div class="w-20 md:w-24 bg-white dark:bg-[#0f172a] rounded-lg p-2 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all duration-300 text-center group relative overflow-hidden flex-shrink-0">
                                         <!-- Top Accent -->
                                         <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 opacity-80"></div>
                                         
@@ -181,7 +174,7 @@
 </section>
 
 <!-- Join Team CTA -->
-<section class="py-16 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-slate-800/50 dark:to-slate-800/50 relative overflow-hidden" data-aos="fade-in">
+<section class="py-16 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-[#0f172a]/80 dark:to-[#0f172a]/80 relative overflow-hidden" data-aos="fade-in">
     <!-- Grid pattern -->
     <div class="absolute inset-0 opacity-10">
         <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">

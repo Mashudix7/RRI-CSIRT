@@ -10,9 +10,8 @@
         </a>
     </div>
 
-    <!-- Form -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
-        <?= form_open_multipart('admin/user_update/' . $user_edit['id'], ['class' => 'space-y-6']) ?>
+        <?= form_open_multipart('admin/user_update/' . $user_edit['id'], ['class' => 'space-y-6', 'autocomplete' => 'off']) ?>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Username (Readonly) -->
                 <div>
@@ -57,6 +56,7 @@
                         <input :type="showPassword ? 'text' : 'password'" 
                                name="password" 
                                x-model="password"
+                               autocomplete="new-password"
                                class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 pr-10" 
                                placeholder="••••••••">
                         <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">

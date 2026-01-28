@@ -15,7 +15,6 @@
             </div>
             <div>
                 <span class="text-lg font-bold text-white">CSIRT</span>
-                <span class="text-lg font-bold text-blue-400"> RRI</span>
             </div>
         </div>
         

@@ -9,11 +9,11 @@ class User_model extends CI_Model {
     }
 
     public function get_all() {
-        return $this->db->get('users')->result_array();
+        return $this->db->get_where('users', ['is_deleted' => 0])->result_array();
     }
 
     public function get_by_id($id) {
-        return $this->db->get_where('users', ['id' => $id])->row_array();
+        return $this->db->get_where('users', ['id' => $id, 'is_deleted' => 0])->row_array();
     }
 
     public function create($data) {
@@ -34,11 +34,18 @@ class User_model extends CI_Model {
 
     public function delete($id) {
         $this->db->where('id', $id);
-        return $this->db->delete('users');
+        return $this->db->update('users', [
+            'is_deleted' => 1,
+            'deleted_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     public function login($username, $password) {
-        $user = $this->db->get_where('users', ['username' => $username])->row_array();
+        $user = $this->db->get_where('users', [
+            'username' => $username,
+            'is_deleted' => 0
+        ])->row_array();
+        
         if ($user && password_verify($password, $user['password'])) {
             // Update last login
             $this->db->where('id', $user['id']);
@@ -56,7 +63,7 @@ class User_model extends CI_Model {
     }
 
     public function get_all_with_status() {
-        $users = $this->db->get('users')->result_array();
+        $users = $this->db->get_where('users', ['is_deleted' => 0])->result_array();
         
         // Define online threshold (e.g., 5 minutes)
         $threshold = 5 * 60; // 5 minutes in seconds
@@ -83,6 +90,6 @@ class User_model extends CI_Model {
     }
 
     public function count_all() {
-        return $this->db->count_all('users');
+        return $this->db->where('is_deleted', 0)->count_all_results('users');
     }
 }

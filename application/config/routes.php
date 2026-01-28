@@ -109,6 +109,8 @@ $route['admin/teams/(:any)'] = 'admin/teams/$1';
 
 // Server Credentials
 $route['admin/server_credentials'] = 'server_credentials/index';
+$route['admin/server_credentials/unlock'] = 'server_credentials/unlock';
+$route['admin/server_credentials/lock'] = 'server_credentials/lock';
 $route['admin/server_credentials/create'] = 'server_credentials/create';
 $route['admin/server_credentials/store'] = 'server_credentials/store';
 $route['admin/server_credentials/edit/(:any)'] = 'server_credentials/edit/$1';

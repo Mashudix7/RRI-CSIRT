@@ -3,35 +3,121 @@
      ===================================================== -->
 
 <!-- Hero Section - FULL VIEWPORT HEIGHT -->
-<!-- Hero Section - FULL VIEWPORT HEIGHT -->
-<section class="relative min-h-screen flex items-center overflow-hidden bg-white dark:bg-slate-900 pt-20 lg:pt-0">
-    <!-- Grid Pattern - Blue gradient for light mode -->
-    <div class="absolute inset-0 z-0">
-        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="grid-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.15"/>
-                    <stop offset="50%" style="stop-color:#1d4ed8;stop-opacity:0.1"/>
-                    <stop offset="100%" style="stop-color:#1e40af;stop-opacity:0.15"/>
-                </linearGradient>
-                <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="url(#grid-gradient)" stroke-width="1" class="dark:stroke-blue-500/20"/>
-                </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-        </svg>
+<section class="relative min-h-screen flex items-center overflow-hidden bg-white dark:bg-[#020617] pt-20 lg:pt-0">
+    <!-- Cinematic Entrance & Atmospheric Styles -->
+    <style>
+        /* Initial navy dark state */
+        .cinematic-overlay {
+            position: fixed;
+            inset: 0;
+            background: #020617;
+            z-index: 9999;
+            animation: curtain-up 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+            pointer-events: none;
+        }
+
+        @keyframes curtain-up {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes reveal-sharpen-sweep {
+            0% { 
+                filter: blur(40px) brightness(0.5); 
+                opacity: 0; 
+                transform: scale(1.05); 
+            }
+            100% { 
+                filter: blur(0) brightness(1); 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+
+        .reveal-sweep {
+            animation: reveal-sharpen-sweep 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            will-change: filter, opacity, transform;
+        }
+
+        .delay-sweep-1 { animation-delay: 0.3s; }
+        .delay-sweep-2 { animation-delay: 0.4s; }
+        .delay-sweep-3 { animation-delay: 0.5s; }
+        .delay-sweep-4 { animation-delay: 0.6s; }
+
+        /* Intensified Center Glow - Circular Like Image */
+        .center-glow {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(30, 64, 175, 0.25) 0%, rgba(30, 64, 175, 0.1) 30%, transparent 70%);
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulse-glow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            to { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        /* 3D Directional Light */
+        .diagonal-light {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .top-spotlight {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .grid-entrance {
+            animation: grid-reveal 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes grid-reveal {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+        }
+    </style>
+
+    <!-- Initial Loading State Overlay -->
+    <div class="cinematic-overlay"></div>
+
+    <!-- Atmospheric Overlays -->
+    <div class="center-glow hidden dark:block"></div>
+    <div class="top-spotlight hidden dark:block"></div>
+    <div class="diagonal-light hidden dark:block"></div>
+    
+    <!-- Grid Pattern -->
+    <div class="absolute inset-0 z-0 grid-entrance">
+        <div class="w-full h-full cyber-grid"></div>
     </div>
-    
-    <!-- Dark mode glow effect -->
-    <div class="hero-glow hidden dark:block z-0"></div>
-    
-    <!-- Decorative Silhouettes/Blurs -->
-    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 dark:bg-blue-500/10 rounded-full blur-3xl z-0"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-400/10 dark:bg-blue-600/10 rounded-full blur-3xl z-0"></div>
-    <div class="absolute top-1/2 left-1/3 w-64 h-64 bg-blue-300/10 dark:bg-blue-400/5 rounded-full blur-2xl z-0"></div>
-    
-    <!-- Bottom gradient for dark mode only -->
-    <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-slate-900 to-transparent hidden dark:block z-0"></div>
     
     <!-- Hero Content -->
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -40,39 +126,39 @@
             <!-- Text Content -->
             <div class="order-2 lg:order-1 text-center lg:text-left">
                 <!-- Badge -->
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-white/10 backdrop-blur-md rounded-full mb-6 border border-blue-200 dark:border-white/10" data-aos="fade-right" data-aos-delay="200">
+                <div class="reveal-sweep delay-sweep-1 inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-white/5 backdrop-blur-xl rounded-full mb-6 border border-blue-200 dark:border-white/10">
                     <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                       <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
-                    <span class="text-blue-700 dark:text-white text-sm font-medium">Tim CSIRT Aktif 24/7</span>
+                    <span class="text-blue-700 dark:text-blue-300 text-sm font-semibold tracking-wide">Tim CSIRT Aktif 24/7</span>
                 </div>
                 
                 <!-- Main Heading -->
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight" data-aos="fade-up" data-aos-delay="300">
+                <h1 class="reveal-sweep delay-sweep-2 text-4xl sm:text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-[1.05] tracking-tight">
                     Computer Security<br>
-                    <span class="text-blue-600 dark:text-blue-400 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200">Incident Response Team</span>
+                    <span class="text-blue-600 dark:text-blue-400 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200 drop-shadow-sm">Incident Response Team</span>
                 </h1>
                 
                 <!-- Subtitle -->
-                <p class="text-lg text-gray-600 dark:text-blue-100/80 max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="400">
+                <p class="reveal-sweep delay-sweep-3 text-lg text-gray-600 dark:text-blue-100/50 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
                     Portal informasi keamanan siber internal Radio Republik Indonesia. 
                     Akses artikel, panduan, dan wawasan keamanan digital dengan mudah dan cepat.
                 </p>
                 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="reveal-sweep delay-sweep-4 flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
                     <a href="<?= base_url('auth/login') ?>" 
-                       class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl 
-                              hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-1">
+                       class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl 
+                              hover:bg-blue-700 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                         </svg>
                         Masuk Dashboard
                     </a>
                     <a href="#articles" 
-                       class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-blue-600 dark:text-white font-semibold rounded-xl border-2 border-blue-200 dark:border-white/10
-                              hover:bg-blue-50 dark:hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 shadow-md transform hover:-translate-y-1">
+                       class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-blue-600 dark:text-white font-bold rounded-xl border-2 border-blue-200 dark:border-white/10
+                              hover:bg-blue-50 dark:hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                         </svg>
@@ -82,33 +168,33 @@
             </div>
             
             <!-- Hero Image/Illustration - Right Side -->
-            <div class="order-1 lg:order-2 flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-                <div class="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-[450px] lg:h-[450px]">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/20 dark:to-slate-800/50 backdrop-blur-sm rounded-[3rem] border border-blue-200 dark:border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+            <div class="reveal-sweep delay-sweep-4 order-1 lg:order-2 flex justify-center lg:justify-end">
+                <div class="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-[480px] lg:h-[480px]">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-600/10 dark:to-slate-800/20 backdrop-blur-md rounded-[3.5rem] border border-blue-200 dark:border-white/5 flex items-center justify-center shadow-2xl overflow-hidden group">
                         <!-- Simulated Cyber Shield Interface -->
                         <div class="relative w-full h-full flex items-center justify-center">
                             <!-- Shield Icon -->
-                            <svg class="w-32 h-32 sm:w-40 sm:h-40 text-blue-500 dark:text-blue-400 drop-shadow-lg transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-32 h-32 sm:w-40 sm:h-40 text-blue-500/80 dark:text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] transform group-hover:scale-110 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                             </svg>
                             <!-- Rotating Rings -->
-                            <div class="absolute inset-0 border-4 border-dashed border-blue-300/50 dark:border-blue-500/30 rounded-full animate-spin-slow m-10"></div>
-                            <div class="absolute inset-0 border-4 border-dashed border-blue-200/50 dark:border-blue-400/20 rounded-full animate-reverse-spin-slow m-20"></div>
+                            <div class="absolute inset-0 border-4 border-dashed border-blue-300/30 dark:border-blue-500/10 rounded-full animate-spin-slow m-10"></div>
+                            <div class="absolute inset-0 border-4 border-dashed border-blue-200/20 dark:border-blue-400/5 rounded-full animate-reverse-spin-slow m-20"></div>
                         </div>
                     </div>
                     <!-- Decorative back layers -->
-                    <div class="absolute -inset-4 bg-gradient-to-tr from-blue-200/30 to-purple-200/30 dark:from-blue-500/10 dark:to-purple-500/10 rounded-[3rem] -z-10 blur-xl"></div>
+                    <div class="absolute -inset-8 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-[4rem] -z-10 blur-3xl group-hover:blur-2xl transition-all duration-700"></div>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-10 inset-x-0 z-20 hidden md:flex justify-center" data-aos="fade-up" data-aos-delay="800">
-        <a href="#articles" class="flex flex-col items-center gap-2 text-blue-500 dark:text-white/60 hover:text-blue-600 dark:hover:text-white transition-colors group">
-            <span class="text-sm font-medium tracking-wide">Scroll ke bawah</span>
+    <div class="reveal-anim delay-4 absolute bottom-10 inset-x-0 z-20 hidden md:flex justify-center">
+        <a href="#articles" class="flex flex-col items-center gap-2 text-blue-500 dark:text-white/40 hover:text-blue-600 dark:hover:text-blue-300 transition-colors group">
+            <span class="text-xs font-bold tracking-[0.2em] uppercase">Scroll</span>
             <div class="animate-bounce">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                 </svg>
             </div>
@@ -119,7 +205,7 @@
 <!-- ============================================= -->
 <!-- ARTIKEL SECTION - STARTS AFTER HERO          -->
 <!-- ============================================= -->
-<section id="articles" class="py-20 bg-white dark:bg-slate-900">
+<section id="articles" class="py-20 bg-white dark:bg-[#020617]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Header -->
         <div class="flex items-center justify-between mb-10" data-aos="fade-up">
@@ -204,7 +290,7 @@
 </section>
 
 <!-- Categories - Light Blue Tint in Light Mode -->
-<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900">
+<section class="py-20 bg-gradient-to-b from-blue-50 to-white dark:from-[#020617] dark:to-[#020617]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12" data-aos="fade-up">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">Kategori Informasi</h2>

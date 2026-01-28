@@ -25,7 +25,49 @@ class Server_credentials extends CI_Controller {
         $this->load->library('form_validation');
     }
 
+    private function _check_lock() {
+        if (!$this->session->userdata('vault_unlocked')) {
+            $data['title'] = 'Vault Locked';
+            $data['page'] = 'server_credentials';
+            $data['user'] = [
+                'username' => $this->session->userdata('username'),
+                'role' => $this->session->userdata('role'),
+                'role_name' => $this->session->userdata('role_name'),
+                'avatar' => $this->session->userdata('avatar')
+            ];
+
+            $this->load->view('admin/templates/header', $data);
+            $this->load->view('admin/templates/sidebar', $data);
+            $this->load->view('admin/server_credentials/lock', $data);
+            $this->load->view('admin/templates/footer', $data);
+            return true; // Is locked
+        }
+        return false; // Is unlocked
+    }
+
+    public function unlock() {
+        $password = $this->input->post('vault_password');
+        
+        // As requested: password 1-8
+        if ($password === '12345678') {
+            $this->session->set_userdata('vault_unlocked', true);
+            $this->session->set_userdata('vault_unlocked_at', time());
+            redirect('admin/server_credentials');
+        } else {
+            $this->session->set_flashdata('vault_error', 'Master Password salah!');
+            redirect('admin/server_credentials');
+        }
+    }
+
+    public function lock() {
+        $this->session->unset_userdata('vault_unlocked');
+        $this->session->unset_userdata('vault_unlocked_at');
+        redirect('admin/server_credentials');
+    }
+
     public function index() {
+        if ($this->_check_lock()) return;
+
         $data['title'] = 'Data IP & Password';
         $data['page'] = 'server_credentials';
         
@@ -45,6 +87,7 @@ class Server_credentials extends CI_Controller {
     }
 
     public function create() {
+        if ($this->_check_lock()) return;
         $data['title'] = 'Tambah Data IP & Password';
         $data['page'] = 'server_credentials';
         
@@ -62,6 +105,7 @@ class Server_credentials extends CI_Controller {
     }
 
     public function edit($id) {
+        if ($this->_check_lock()) return;
         $data['title'] = 'Edit Data IP & Password';
         $data['page'] = 'server_credentials';
         

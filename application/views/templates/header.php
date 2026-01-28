@@ -205,11 +205,137 @@
         .dark .hover-lift:hover {
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
         }
+        /* =========================================
+           GLOBAL ANIMATIONS & CINEMATIC STYLES
+           ========================================= */
+
+        /* Cinematic Overlay (Curtain Up) */
+        .cinematic-overlay {
+            position: fixed;
+            inset: 0;
+            background: #020617;
+            z-index: 9999;
+            animation: curtain-up 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+            pointer-events: none;
+        }
+
+        @keyframes curtain-up {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        /* Reveal Sharpen Sweep Animation */
+        @keyframes reveal-sharpen-sweep {
+            0% { 
+                filter: blur(20px) brightness(0.7); 
+                opacity: 0; 
+                transform: scale(1.02); 
+            }
+            100% { 
+                filter: blur(0) brightness(1); 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+
+        .reveal-sweep {
+            animation: reveal-sharpen-sweep 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            will-change: filter, opacity, transform;
+        }
+
+        /* Hero specific slower animation */
+        .reveal-sweep-hero {
+            animation: reveal-sharpen-sweep 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            will-change: filter, opacity, transform;
+        }
+
+        /* Staggered Delays */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Global Glow & Lighting Effects */
+        .glow-spot { /* Legacy support */
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .center-glow {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(30, 64, 175, 0.25) 0%, rgba(30, 64, 175, 0.1) 30%, transparent 70%);
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulse-glow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            to { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        .diagonal-light {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .top-spotlight {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Cyber Grid Background */
+        .grid-entrance {
+            animation: grid-reveal 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes grid-reveal {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
       x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) })"
-      class="font-sans antialiased bg-white dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300">
+      class="font-sans antialiased bg-white dark:bg-[#020617] text-gray-900 dark:text-gray-100 transition-colors duration-300">
     
     <!-- Page Wrapper - Prevents horizontal overflow -->
     <div id="page-wrapper" class="w-full max-w-full overflow-x-hidden">

@@ -192,6 +192,12 @@
     border-radius: 0 !important;
 }
 
+/* Dark Mode Fullscreen Support */
+.dark #map-card:fullscreen,
+.dark #map-card:-webkit-full-screen {
+    background-color: #0b1426 !important;
+}
+
 #map-card.is-fullscreen #attack-map-container {
     height: calc(100vh - 120px) !important;
 }
@@ -199,6 +205,18 @@
 #map-card.is-fullscreen h3 {
     font-size: 1.5rem !important;
     color: #1e293b !important;
+}
+
+.dark #map-card.is-fullscreen h3 {
+    color: #f8fafc !important;
+}
+
+#map-card.map-dark-theme h3 {
+    color: white !important;
+}
+
+#map-card.map-dark-theme .text-slate-800 {
+    color: #f1f5f9 !important;
 }
 </style>
 
@@ -836,6 +854,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+
+        // Update card background for fullscreen surroundings
+        const mapCard = document.getElementById('map-card');
+        if (mapCard) {
+            if (mode === 'dark') {
+                mapCard.style.setProperty('background-color', theme.ocean, 'important');
+                mapCard.classList.add('map-dark-theme');
+            } else {
+                mapCard.style.removeProperty('background-color');
+                mapCard.classList.remove('map-dark-theme');
+            }
+        }
     };
 
     // Initialize UI on load
@@ -863,7 +893,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Capture wheel events to block ECharts zoom if Ctrl is not held
     mapInteractionEl.addEventListener('wheel', (e) => {
-        if (!e.ctrlKey) {
+        // Bypass if in fullscreen OR if Ctrl is held
+        if (!document.fullscreenElement && !e.ctrlKey) {
             e.preventDefault();   // Prevent page scroll
             e.stopPropagation();  // Stop reaching ECharts
             showInteractionHint();
@@ -872,8 +903,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Capture mousedown to block ECharts pan if Ctrl is not held
     mapInteractionEl.addEventListener('mousedown', (e) => {
-        // Only block for left mouse button and if Ctrl is not held
-        if (e.button === 0 && !e.ctrlKey) {
+        // Bypass if in fullscreen OR if Ctrl is held
+        // Only block for left mouse button
+        if (e.button === 0 && !document.fullscreenElement && !e.ctrlKey) {
             e.stopPropagation();  // Stop reaching ECharts
             showInteractionHint();
         }
