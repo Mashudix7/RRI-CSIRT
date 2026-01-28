@@ -20,7 +20,7 @@
         </div>
         
         <!-- Category Filter -->
-        <div class="reveal-sweep delay-200 flex flex-wrap gap-2 mb-8">
+        <div class="flex flex-wrap gap-2 mb-8" data-aos="fade-up">
             <?php 
                 // Fungsi helper untuk menentukan class aktif
                 $activeClass = 'btn-gradient text-white';
@@ -57,7 +57,7 @@
         <?php if (!empty($articles)): ?>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($articles as $index => $article): ?>
-            <article class="reveal-sweep delay-300 bg-white dark:bg-[#0f172a] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden hover-lift group">
+            <article class="bg-white dark:bg-[#0f172a] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden hover-lift group" data-aos="fade-up">
                 <!-- Image Placeholder -->
                 <div class="relative h-48 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                     <?php if (!empty($article['thumbnail'])): ?>

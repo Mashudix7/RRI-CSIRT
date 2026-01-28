@@ -236,9 +236,11 @@
                 </h1>
                 
                 <!-- Subtitle -->
-                <p class="reveal-sweep delay-sweep-3 animate-pulse-slow text-lg text-gray-600 dark:text-blue-100/50 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
-                    Portal informasi keamanan siber internal Radio Republik Indonesia. 
-                    Akses artikel, panduan, dan wawasan keamanan digital dengan mudah dan cepat.
+                <p class="reveal-sweep delay-sweep-3 text-lg text-gray-600 dark:text-blue-100/50 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
+                    <span class="animate-pulse-slow block">
+                        Portal informasi keamanan siber internal Radio Republik Indonesia. 
+                        Akses artikel, panduan, dan wawasan keamanan digital dengan mudah dan cepat.
+                    </span>
                 </p>
                 
                 <!-- CTA Buttons -->

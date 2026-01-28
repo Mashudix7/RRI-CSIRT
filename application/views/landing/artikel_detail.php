@@ -13,7 +13,7 @@
         </a>
         
         <!-- Article Header -->
-        <header class="reveal-sweep delay-100 mb-8">
+        <header class="mb-8" data-aos="fade-up">
             <div class="flex items-center gap-3 mb-4">
                 <span class="px-3 py-1 btn-gradient text-white text-xs font-semibold rounded-full">
                     <?= htmlspecialchars($article['category']) ?>
@@ -44,7 +44,7 @@
         </header>
         
         <!-- Featured Image Placeholder -->
-        <div class="reveal-sweep delay-200 relative h-64 md:h-96 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden mb-8">
+        <div class="relative h-64 md:h-96 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl overflow-hidden mb-8" data-aos="fade-up" data-aos-delay="100">
             <?php if (!empty($article['thumbnail'])): ?>
                 <?php 
                     $thumb = $article['thumbnail'];
@@ -61,7 +61,7 @@
         </div>
         
         <!-- Article Content -->
-        <div class="reveal-sweep delay-300 prose prose-lg dark:prose-invert max-w-none mb-12">
+        <div class="prose prose-lg dark:prose-invert max-w-none mb-12" data-aos="fade-up" data-aos-delay="200">
             <style>
                 .prose h3 { @apply text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4; }
                 .prose p { @apply text-gray-600 dark:text-gray-300 mb-4 leading-relaxed; }
@@ -86,7 +86,7 @@
         
         <!-- Related Articles -->
         <?php if (!empty($related_articles)): ?>
-        <section class="reveal-sweep delay-400">
+        <section data-aos="fade-up" data-aos-delay="300">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Artikel Lainnya</h2>
             <div class="grid md:grid-cols-3 gap-6">
                 <?php foreach ($related_articles as $rel): ?>
