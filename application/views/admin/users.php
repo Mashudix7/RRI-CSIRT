@@ -8,6 +8,7 @@
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manajemen Pengguna</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-1">Kelola akun pengguna dan hak akses</p>
     </div>
+    <?php if ($this->session->userdata('role') === 'admin'): ?>
     <a href="<?= base_url('admin/user_create') ?>" 
             class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-md transition-all flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,6 +16,7 @@
         </svg>
         Tambah Pengguna
     </a>
+    <?php endif; ?>
 </div>
 
 
@@ -50,7 +52,9 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Role</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Login Terakhir</th>
+                    <?php if ($this->session->userdata('role') === 'admin'): ?>
                     <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Aksi</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
@@ -108,6 +112,7 @@
                             <?php endif; ?>
                         </div>
                     </td>
+                    <?php if ($this->session->userdata('role') === 'admin'): ?>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
                             <a href="<?= base_url('admin/user_edit/' . $u['id']) ?>" class="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/20 rounded-lg transition-colors" title="Edit">
@@ -122,6 +127,7 @@
                             </a>
                         </div>
                     </td>
+                    <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

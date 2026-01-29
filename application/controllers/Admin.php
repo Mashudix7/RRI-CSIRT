@@ -64,7 +64,7 @@ class Admin extends Admin_Controller {
     public function users()
     {
         // RBAC: Admin Only
-        if ($this->session->userdata('role') !== 'admin') {
+        if ($this->session->userdata('role') !== 'admin' && $this->session->userdata('role') !== 'auditor') {
             show_error('Unauthorized Access', 403);
         }
 
@@ -782,8 +782,8 @@ class Admin extends Admin_Controller {
      */
     public function settings()
     {
-        if ($this->session->userdata('role') !== 'admin') {
-             show_error('Unauthorized', 403);
+        if ($this->session->userdata('role') !== 'admin' && $this->session->userdata('role') !== 'auditor') {
+            show_error('Unauthorized Access', 403);
         }
 
         $this->load->model('Settings_model');

@@ -12,10 +12,12 @@
                 </p>
             </div>
             <div class="flex items-center gap-3">
+                <?php if ($this->session->userdata('role') === 'admin'): ?>
                 <button type="submit" form="settingsForm" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2 active:scale-95">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                     <span>Simpan Perubahan</span>
                 </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -50,6 +52,7 @@
 
         <!-- Settings Form Area -->
         <div class="flex-1 w-full" data-aos="fade-up">
+            <?php $isDisabled = ($this->session->userdata('role') === 'auditor') ? 'disabled' : ''; ?>
             <form id="settingsForm" action="<?= base_url('admin/settings_update') ?>" method="POST">
                 <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 
@@ -89,13 +92,13 @@
 
                                                 <?php if($item['input_type'] === 'textarea'): ?>
                                                     <div class="relative group/field">
-                                                        <textarea name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" rows="6" 
+                                                        <textarea <?= $isDisabled ?> name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" rows="6" 
                                                                   class="w-full bg-slate-50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-700 rounded-2xl p-5 text-slate-700 dark:text-slate-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium leading-relaxed"
                                                                   placeholder="Masukkan konten <?= $item['setting_key'] ?>..."><?= $item['setting_value'] ?></textarea>
                                                         <div class="absolute bottom-4 right-4 text-[10px] text-slate-400 font-bold uppercase pointer-events-none opacity-0 group-hover/field:opacity-100 transition-opacity">Editable Area</div>
                                                     </div>
                                                 <?php else: ?>
-                                                    <input type="<?= $item['input_type'] ?>" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" value="<?= $item['setting_value'] ?>" 
+                                                    <input <?= $isDisabled ?> type="<?= $item['input_type'] ?>" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" value="<?= $item['setting_value'] ?>" 
                                                            class="w-full bg-slate-50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 text-slate-800 dark:text-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold">
                                                 <?php endif; ?>
                                             </div>
@@ -123,24 +126,24 @@
 
                                         <div class="flex-1">
                                             <?php if ($item['input_type'] == 'textarea'): ?>
-                                                <textarea name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" rows="4" 
+                                                <textarea <?= $isDisabled ?> name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" rows="4" 
                                                           class="w-full bg-slate-50 dark:bg-slate-950/30 border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all leading-relaxed"><?= $item['setting_value'] ?></textarea>
                                             
                                             <?php elseif ($item['input_type'] == 'toggle' || $item['input_type'] == 'boolean'): ?>
                                                 <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
                                                     <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Fitur</span>
                                                     <div class="flex items-center gap-1 p-1 bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden shadow-inner">
-                                                        <input type="radio" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>_on" value="1" <?= $item['setting_value'] == '1' ? 'checked' : '' ?> class="hidden peer/on">
+                                                        <input <?= $isDisabled ?> type="radio" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>_on" value="1" <?= $item['setting_value'] == '1' ? 'checked' : '' ?> class="hidden peer/on">
                                                         <label for="<?= $item['setting_key'] ?>_on" class="px-4 py-2 text-[10px] font-black rounded-lg cursor-pointer transition-all peer-checked/on:bg-emerald-500 peer-checked/on:text-white peer-checked/on:shadow-lg text-slate-500 whitespace-nowrap">ENABLE</label>
                                                         
-                                                        <input type="radio" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>_off" value="0" <?= $item['setting_value'] == '0' ? 'checked' : '' ?> class="hidden peer/off">
+                                                        <input <?= $isDisabled ?> type="radio" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>_off" value="0" <?= $item['setting_value'] == '0' ? 'checked' : '' ?> class="hidden peer/off">
                                                         <label for="<?= $item['setting_key'] ?>_off" class="px-4 py-2 text-[10px] font-black rounded-lg cursor-pointer transition-all peer-checked/off:bg-rose-500 peer-checked/off:text-white peer-checked/off:shadow-lg text-slate-500 whitespace-nowrap">DISABLE</label>
                                                     </div>
                                                 </div>
                                             
                                             <?php else: ?>
                                                 <div class="relative group">
-                                                    <input type="<?= $item['input_type'] ?>" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" value="<?= $item['setting_value'] ?>" 
+                                                    <input <?= $isDisabled ?> type="<?= $item['input_type'] ?>" name="<?= $item['setting_key'] ?>" id="<?= $item['setting_key'] ?>" value="<?= $item['setting_value'] ?>" 
                                                            class="w-full bg-slate-50 dark:bg-slate-950/30 border-slate-200 dark:border-slate-700 rounded-2xl pl-12 pr-4 py-3.5 text-sm text-slate-800 dark:text-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold italic">
                                                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
